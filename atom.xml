@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[M78Snail Blog]]></title>
+  <link href="m78star.com/atom.xml" rel="self"/>
+  <link href="m78star.com/"/>
+  <updated>2016-07-20T18:41:08+08:00</updated>
+  <id>m78star.com/</id>
+  <author>
+    <name><![CDATA[]]></name>
+    
+  </author>
+  <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[Android]]></title>
+    <link href="m78star.com/14690090446229.html"/>
+    <updated>2016-07-20T18:04:04+08:00</updated>
+    <id>m78star.com/14690090446229.html</id>
+    <content type="html"><![CDATA[
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[第一篇日记]]></title>
+    <link href="m78star.com/14690075075215.html"/>
+    <updated>2016-07-20T17:38:27+08:00</updated>
+    <id>m78star.com/14690075075215.html</id>
+    <content type="html"><![CDATA[
+
+]]></content>
+  </entry>
+  
+</feed>
