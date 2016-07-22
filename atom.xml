@@ -4,7 +4,7 @@
   <title><![CDATA[M78Snail Blog]]></title>
   <link href="m78star.com/atom.xml" rel="self"/>
   <link href="m78star.com/"/>
-  <updated>2016-07-22T15:03:20+08:00</updated>
+  <updated>2016-07-22T15:13:10+08:00</updated>
   <id>m78star.com/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -13,7 +13,7 @@
   <generator uri="http://www.mweb.im/">MWeb</generator>
   
   <entry>
-    <title type="html"><![CDATA[Android Studio快捷键－mac版]]></title>
+    <title type="html"><![CDATA[Android Studio快捷键－Mac版]]></title>
     <link href="m78star.com/14691586966343.html"/>
     <updated>2016-07-22T11:38:16+08:00</updated>
     <id>m78star.com/14691586966343.html</id>
@@ -89,7 +89,7 @@
 
 <p><code>⌃L</code>:翻译</p>
 
-<p>参考 <a href="">http://blog.csdn.net/janice0529/article/details/45322871</a></p>
+<p>参考 <a href="http://blog.csdn.net/janice0529/article/details/45322871">http://blog.csdn.net/janice0529/article/details/45322871</a></p>
 
 ]]></content>
   </entry>
