@@ -4,7 +4,7 @@
   <title><![CDATA[M78Snail Blog]]></title>
   <link href="m78star.com/atom.xml" rel="self"/>
   <link href="m78star.com/"/>
-  <updated>2016-07-21T16:47:49+08:00</updated>
+  <updated>2016-07-22T15:02:43+08:00</updated>
   <id>m78star.com/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -13,13 +13,95 @@
   <generator uri="http://www.mweb.im/">MWeb</generator>
   
   <entry>
+    <title type="html"><![CDATA[Android Studio快捷键－mac版]]></title>
+    <link href="m78star.com/14691586966343.html"/>
+    <updated>2016-07-22T11:38:16+08:00</updated>
+    <id>m78star.com/14691586966343.html</id>
+    <content type="html"><![CDATA[
+<p>从windows转到mac需要改变很多，以前在Android Studio培养的操作习惯也要跟着改变。为了以后工作方便打算总结一下Mac下的Android Studio的一些快捷键。</p>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">Mac下快捷键的符号所对应的按键</h2>
+
+<p><code>⌥</code> —&gt; option|alt<br/>
+<code>⇧</code> —&gt; shift<br/>
+<code>⌃</code> —&gt; control<br/>
+<code>⌘</code> —&gt; command<br/>
+<code>⎋</code> —&gt; esc</p>
+
+<pre><code>注: 与F6/F7/F12等F功能键开头的组合的快捷键需要按住fn开启功能键
+如：快捷键 ⌘F12 的按键组合为：fn + command + F12
+</code></pre>
+
+<h2 id="toc_1">Android Studio 常用快捷键 for mac</h2>
+
+<p><strong>查找／查看相关</strong><br/>
+<code>⌘O</code>:  全局查找class类名&lt;使用率非常高&gt;</p>
+
+<p><code>⌘F</code>: 在当前编辑文件中查找&lt;使用率非常高&gt; ｜ 对应window中的Ctrl + F</p>
+
+<p><code>⌘F12</code>：当前编辑的文件中结构快速导航 | 对应window中的 Ctrl + F12</p>
+
+<p><code>⌘E</code>: 打开最近访问的文件列表 | 对应window中的Ctrl + E</p>
+
+<p><code>⌥⌘O</code>: 输入类名／方法名／字段名来查找任何匹配的类／方法／字段&lt;使用率非常高&gt;</p>
+
+<p><code>⇧⌘O</code>: 全局项目查找文件（类／资源文件／布局文件都通过该快捷键查找）&lt;使用率非常高&gt;</p>
+
+<p><code>⌃H</code>: 查看当前编辑class类的hierarchy结构 | 对应window中的Ctrl + H</p>
+
+<p><code>⌥F7</code>: 列出全局项目中该类／方法 被引用／调用的情况&lt;使用率非常高&gt;[比<code>⌥⌘F7</code>显示效果好] | 对应window中的Alt + F7</p>
+
+<p><code>⌃⌥H</code>: 方法被调用结构［method’s Call Hierarchy］| 对应window中的ctrl + alt + h</p>
+
+<p><code>⌘P</code>: 列出函数方法一系列的有效参数，如果光标是一个方法调用的括号之间 | 对应window中的Ctrl + P</p>
+
+<p><code>⌃J</code>: 查看类／方法的注释文档</p>
+
+<p><code>⌥L</code>:代码提示功能</p>
+
+<p><strong>控制操作相关</strong></p>
+
+<p><code>⌘/</code>: 注释与取消注释，注释效果 //... | 对应window中的Ctrl + /</p>
+
+<p><code>⌥⌘/</code>: 注释与取消注释，注释效果 /<em>...</em>/ | 对应window中的Ctrl+Shift+/</p>
+
+<p><code>⇧⌥up/down</code>: 移动行上下移动 | 对应window中的alt + shift + up/down</p>
+
+<p><code>⌘delete</code>: 删除行 ｜ 对应window中的ctrl + y</p>
+
+<p><code>⌘d</code>: 复制行 ｜ 对应window中的 ctrl + d</p>
+
+<p><code>⌘J</code>: 快速生成模版代码块，如if,while,return等&lt;使用频率非常高，高效率编写代码&gt; | 对应window中的Ctrl + J</p>
+
+<p><code>⌘N</code>: 快速生成getter／setter方法，构造方法，toString()方法等 &lt;使用率非常高&gt; | 对应window中的Alt + Insert</p>
+
+<p><code>⌃O</code>: 引入重写父类的方法［Override Methods］&lt;使用率非常高&gt;</p>
+
+<p><code>⌃I</code>: 引入实现接口或抽象类方法［Implement Methods］&lt;使用率非常高&gt;</p>
+
+<p><code>⌃Space</code>: 当申明一个变量时，根据变量类型提示给出建议的变量名称，等还有其他很多智能提示作用&lt;使用率非常高&gt;</p>
+
+<p><code>⌥⌘L</code>: 代码格式化 &lt;使用率非常高&gt; | 对应window中的Ctrl+Alt+L</p>
+
+<p><code>⌘⇧U</code>: 切换选中内容的大小写 &lt;使用率非常高&gt; | 对应window中的Ctrl+Shift+U</p>
+
+<p><code>⌃L</code>:翻译</p>
+
+<p>参考 <a href="">http://blog.csdn.net/janice0529/article/details/45322871</a></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[谈谈新买的Mac和最近的生活]]></title>
     <link href="m78star.com/14690075075215.html"/>
     <updated>2016-07-20T17:38:27+08:00</updated>
     <id>m78star.com/14690075075215.html</id>
     <content type="html"><![CDATA[
 <p>大学毕业也快一个月了，脱离了学生的身份，我也正式进入了社会为了生计而打拼。从学生变成打工仔，对于我来说其实影响不是多么大，也许是因为自己本来就不是什么循规蹈矩的好学生吧。<br/>
-    在公司实习的时候我就知道公司给每个人办公配的电脑是笔记本，说实话我挺失望的，不过公司有另外一个福利就是自己买电脑公司可以报销4000，前提是3年不能离开公司，这一点倒是挺爽的，因为我所属于的部门出差比较多，所以我打算入手一台Mac Pro。下面是我用了3天的使用体验。</p>
+    在公司实习的时候我就知道公司给每个人办公配的电脑是笔记本，说实话我挺失望的，不过公司有另外一个福利就是自己买电脑公司可以报销4000，前提是3年不能离开公司，这一点倒是挺爽的，因为我所属于的部门出差比较多，所以我打算入手一台MacBook Pro。下面是我用了3天的使用体验。</p>
 
 <span id="more"></span><!-- more -->
 
