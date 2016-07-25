@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  心情日记 - M78Snail Blog
+  实用笔记－WebView大讲堂 - M78Snail Blog
   
   </title>
   
@@ -94,106 +94,144 @@
        
 
  <script type="text/javascript">
-	$(function(){
-		$('#menu_item_index').addClass('is_active');
-	});
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
 </script>
 <div class="row">
-	<div class="large-8 medium-8 columns">
-		<div class="markdown-body home-categories">
-		
-			<div class="article">
-                <a class="clearlink" href="14691773229465.html">
-                
-                  <h1>用力的人跑不远</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>写在前面：有阶段的自己，会用蛮力去学习一些东西，就是这东西不管是否适合目前自己的知识体系， 觉得学了之后会更牛逼就去学，但是这样的东西往往学了记不住。 学习的过程越用力反而显得越吃力， 太吃力的事情，自然就无法有恒心， 这就是很多人会觉得自己做事总是无法持之以恒的原因。</p>
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>实用笔记－WebView大讲堂</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2016/7/24</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='index.html'>Android</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+              &nbsp;<a  class="ds-thread-count" data-thread-key="14693271804281.html" data-count-type="comments" href="14693271804281.html#ds-thread"></a>
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <p>最近手头的项目界面要改成HTML5的，以前自己对于WebView仅仅只是一知半解，这次想好好总结下，我的博客不喜欢讲太多没用的东西，我追求实用主义，所以我的技术博客，永远只有两个主题：怎么用和怎么优化。典型的拿来主义。</p>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">怎么用？</h2>
+
+<ul>
+<li>WebView 基本操作</li>
+<li>WebView 下载文件</li>
+<li>WebView 注入cookie信息</li>
+<li>Webview 中native与js交互</li>
+</ul>
+
+<p>暂时只讲解一下这四个方面，以后再添加。</p>
+
+<h3 id="toc_1">WebView 基本操作</h3>
+
+<pre><code>mWebView.setWebViewClient() // 帮助WebView处理各种通知、请求事件的
+
+mWebView.setWebChromeClient();// 主要处理解析，渲染网页等浏览器做的事情器
+
+</code></pre>
+
+<p>上面两个方法是你加载一个网页肯定会实现的两个方法。</p>
+
+<pre><code>mWebView.setWebChromeClient(new WebChromeClient(){
+           @Override
+            public void onReceivedTitle(WebView view, String title) {
+                super.onReceivedTitle(view, title);
+                txtTitle.setText(title);
+            }
+        });
+ 
+mWebView.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return super.shouldOverrideUrlLoading(view, url);
+            }
+        });
+</code></pre>
+
+<p>例子：<br/>
+加载百度主页，包含返回按钮，页面地址，刷新。如图：<br/>
+<img src="media/14693271804281/14694114281052.jpg" alt="" class="mw_img_center" style="width:200px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<h3 id="toc_2">WebView 下载文件</h3>
+
+<p>在WebView的网页里面我们可能要点击链接进行下载，这时候我们首先要新建一个DownloadListener，然后在onDownloadStart（）方法里面我们有两种方式进行下载：</p>
+
+<pre><code>1. 直接调用系统浏览器进行下载
+2. 自己编写或使用其他网络框架进行下载文件
+</code></pre>
+
+<h4 id="toc_3">调用系统浏览器</h4>
+
+<pre><code>class MyDownload implements DownloadListener {
+
+        @Override
+        public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long l) {
+            Uri uri=Uri.parse(url);
+            Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+            startActivity(intent);
+        }
+ }
+    
+mWebView.setDownloadListener(new MyDownload());
+
+</code></pre>
+
+<h4 id="toc_4">自定义下载</h4>
+
+<p>使用普通文件下载方式即可，此处不给出代码了。</p>
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="14691773229465.html" 
+          title="Next Post: 用力的人跑不远">用力的人跑不远 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+              <div class="ds-thread" data-thread-key="14693271804281.html" data-url="m78star.com/14693271804281.html" data-title="实用笔记－WebView大讲堂"></div>
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
 
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                   <a href="14691773229465.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2016/7/22</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html'>心情日记</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
 
-                      
-                        &nbsp;<a  class="ds-thread-count" data-thread-key="14691773229465.html" data-count-type="comments" href="14691773229465.html#ds-thread"></a>
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14690075075215.html">
-                
-                  <h1>谈谈新买的Mac和最近的生活</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>大学毕业也快一个月了，脱离了学生的身份，我也正式进入了社会为了生计而打拼。从学生变成打工仔，对于我来说其实影响不是多么大，也许是因为自己本来就不是什么循规蹈矩的好学生吧。<br/>
-    在公司实习的时候我就知道公司给每个人办公配的电脑是笔记本，说实话我挺失望的，不过公司有另外一个福利就是自己买电脑公司可以报销4000，前提是3年不能离开公司，这一点倒是挺爽的，因为我所属于的部门出差比较多，所以我打算入手一台MacBook Pro。下面是我用了3天的使用体验。</p>
-
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                   <a href="14690075075215.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2016/7/20</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html'>心情日记</a></span>
-          				  
-          					    <span class="posted-in"><a href='Mac.html'>Mac</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                      
-                        &nbsp;<a  class="ds-thread-count" data-thread-key="14690075075215.html" data-count-type="comments" href="14690075075215.html#ds-thread"></a>
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-              
-
-
-			<div class="row">
-			  <div class="large-6 columns">
-			  <p class="text-left" style="padding-top:25px;">
-			   
-			  </p>
-			  </div>
-			  <div class="large-6 columns">
-			<p class="text-right" style="padding-top:25px;">
-			
-			</p>
-			  </div>
-			</div>
-		</div>
-	</div><!-- large 8 -->
 
  <div class="large-4 medium-4 columns">
   <div class="hide-for-small">
