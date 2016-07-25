@@ -4,7 +4,7 @@
   <title><![CDATA[M78Snail Blog]]></title>
   <link href="m78star.com/atom.xml" rel="self"/>
   <link href="m78star.com/"/>
-  <updated>2016-07-25T11:37:25+08:00</updated>
+  <updated>2016-07-25T11:37:59+08:00</updated>
   <id>m78star.com/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -33,7 +33,7 @@
 
 <p>暂时只讲解一下这四个方面，以后再添加。</p>
 
-<h3 id="toc_1">WebView 基本操作</h3>
+<h3 id="toc_1">一. WebView 基本操作</h3>
 
 <pre><code>mWebView.setWebViewClient() // 帮助WebView处理各种通知、请求事件的
 
@@ -64,7 +64,7 @@ mWebView.setWebViewClient(new WebViewClient(){
 加载百度主页，包含返回按钮，页面地址，刷新。如图：<br/>
 <img src="media/14693271804281/14694114281052.jpg" alt="" class="mw_img_center" style="width:200px;display: block; clear:both; margin: 0 auto;"/></p>
 
-<h3 id="toc_2">WebView 下载文件</h3>
+<h3 id="toc_2">二. WebView 下载文件</h3>
 
 <p>在WebView的网页里面我们可能要点击链接进行下载，这时候我们首先要新建一个DownloadListener，然后在onDownloadStart（）方法里面我们有两种方式进行下载：</p>
 
@@ -72,7 +72,7 @@ mWebView.setWebViewClient(new WebViewClient(){
 2. 自己编写或使用其他网络框架进行下载文件
 </code></pre>
 
-<h4 id="toc_3">调用系统浏览器</h4>
+<h4 id="toc_3">(1)调用系统浏览器</h4>
 
 <pre><code>class MyDownload implements DownloadListener {
 
@@ -88,9 +88,99 @@ mWebView.setDownloadListener(new MyDownload());
 
 </code></pre>
 
-<h4 id="toc_4">自定义下载</h4>
+<h4 id="toc_4">(2)自定义下载</h4>
 
 <p>使用普通文件下载方式即可，此处不给出代码了。</p>
+
+<h3 id="toc_5">三. WebView 注入cookie信息</h3>
+
+<p>关于Cookie我就不说了，以登陆csdn作为示例直接说用法：<br/>
+1. App在html页面登录<br/>
+<img src="media/14693271804281/14694326778770.jpg" alt="" class="mw_img_center" style="width:200px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<pre><code>mWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                CookieManager cookieManager = CookieManager.getInstance();
+                String cookie = cookieManager.getCookie(url);
+                
+            }
+});
+</code></pre>
+
+<p>通过上面方法可以获取到登陆成功跳转页面以后服务器返回的Cookie,这辆我们可以通过SharedPreferences将Cookie信息保存起来</p>
+
+<p>2.当你再一次进入该页面时，将Cookie通过下面的方法返回给服务器：</p>
+
+<pre><code>private void syncCookie(Context context, String url, String oldcookie) {
+        CookieSyncManager.createInstance(context);
+        CookieManager cookieManager = CookieManager.getInstance();
+        String cookie = cookieManager.getCookie(url);
+        cookieManager.setAcceptCookie(true);
+        cookieManager.setCookie(url,oldcookie);
+        CookieSyncManager.getInstance().sync();
+}
+</code></pre>
+
+<p>注意：syncCookie函数要在webview.load()之前调用</p>
+
+<h3 id="toc_6">四. Webview 中native与js交互</h3>
+
+<p>通过java代码与js代码直接相互调用的方式实现Android native与H5信息的相互，这里简单的介绍一下使用方式</p>
+
+<h4 id="toc_7">native代码调用H5的js代码</h4>
+
+<p>（1）在H5页面中添加一个js函数</p>
+
+<pre><code>&lt;script type=&quot;text/javascript&quot;&gt;
+function uu_click(clicked_id) {
+    alert(clicked_id);
+}
+</code></pre>
+
+<p>（2）在Native中通过java代码调用 <br/>
+若这时候H5页面已经被加载到webview中,则可以通过java代码直接调用js函数：</p>
+
+<pre><code>h5Fragment.mWebView.loadUrl(&quot;javascript:uu_click&quot; + &quot;(&#39;&quot; + clickId + &quot;&#39;)&quot;);
+</code></pre>
+
+<h4 id="toc_8">js代码调用java函数</h4>
+
+<p>（1）首先在java端编写能够被js代码调用的java函数</p>
+
+<ul>
+<li>native方法的实现</li>
+</ul>
+
+<pre><code>/**
+ * 自定义实现的native函数，可被js代码调用
+ */
+class JsInteration {
+    ...
+    @JavascriptInterface
+        public void toastMessage(String message) {
+            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+        }
+    ...
+}
+</code></pre>
+
+<p>（2）在native中注入本地方法，供js调用；</p>
+
+<pre><code>mWebView.addJavascriptInterface(new JsInteration(), &quot;control&quot;);
+</code></pre>
+
+<p>（3）在js代码中调用java代码：</p>
+
+<pre><code>function reply_click(clicked_id {
+    window.control.toastMessage(clicked_id)
+}
+</code></pre>
+
+<p>关于WebView的四个基本用法就介绍到这里，再下一章会介绍WebView的优化。<br/>
+欢迎留言讨论。<br/>
+项目示例代码在：<a href="https://github.com/M78Snail/WebViewStudy">https://github.com/M78Snail/WebViewStudy</a></p>
 
 ]]></content>
   </entry>
