@@ -4,13 +4,91 @@
   <title><![CDATA[M78Snail Blog]]></title>
   <link href="m78star.com/atom.xml" rel="self"/>
   <link href="m78star.com/"/>
-  <updated>2016-07-26T10:42:23+08:00</updated>
+  <updated>2016-08-11T11:31:30+08:00</updated>
   <id>m78star.com/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[镇远旅行游记]]></title>
+    <link href="m78star.com/14708809297450.html"/>
+    <updated>2016-08-11T10:02:09+08:00</updated>
+    <id>m78star.com/14708809297450.html</id>
+    <content type="html"><![CDATA[
+<p>2016.8.5镇远旅游小记。</p>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">第一天 入住酒店 观夜景 吃烤鱼</h2>
+
+<ul class="example-orbit" data-orbit style="height: 120px;">
+  <li>
+    <img src="media/14708809297450/14708821760631.jpg" alt="" />
+    <div class="orbit-caption">山地水城驿站 1</div>
+  </li>
+  <li>
+    <img src="media/14708809297450/14708822552032.jpg" alt="" />
+    <div class="orbit-caption">江景房 2</div>
+  </li>
+  <li>
+    <img src="media/14708809297450/14708844285072.jpg" alt="" />
+    <div class="orbit-caption"> 江边烧烤街 3</div>
+  </li>
+</ul>
+
+<h2 id="toc_1">第二天 游舞阳河</h2>
+
+<div class="large-column">
+<a data-orbit-link="headline-1" class="small button">
+  舞阳河石碑
+</a>
+<a data-orbit-link="headline-2" class="small button">
+  天眼石
+</a>
+<a data-orbit-link="headline-3" class="small button">
+  舞阳河江景
+</a>
+<a data-orbit-link="headline-4" class="small button">
+  凤凰石
+</a>
+
+<div class="orbt-container">
+<ul class="example-orbit-content" data-orbit style="height: 58px;">
+  <li data-orbit-slide="headline-1">
+    <div>
+      <img src="media/14708809297450/14708846320662.jpg" alt="" />
+    </div>
+  </li>
+  <li data-orbit-slide="headline-2">
+    <div>
+      <img src="media/14708809297450/14708846853058.jpg" alt="" />
+    </div>
+  </li>
+  <li data-orbit-slide="headline-3">
+    <div>
+      <img src="media/14708809297450/14708847291929.jpg" alt="" />
+    </div>
+  </li>
+  <li data-orbit-slide="headline-4">
+    <div>
+      <img src="media/14708809297450/14708847758845.jpg" alt="" />
+    </div>
+  </li>
+</ul>
+</div>
+</div>
+
+<h2 id="toc_2">第三天 高过河漂流</h2>
+
+<p><img src="media/14708809297450/14708852478635.jpg" alt=""/></p>
+
+<p>由于怕手机进水，只照了一张出行前的照片。</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[实用笔记－WebView大讲堂（二）～性能优化]]></title>
