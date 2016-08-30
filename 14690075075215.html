@@ -334,53 +334,56 @@
 </div><!-- row -->
 
  <div class="page-bottom clearfix">
-  <div class="row">
-   <p class="copyright">Copyright &copy; 2015
-Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
-Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
-  </div>
+	<div class="row">
+		<p class="copyright">Copyright &copy; 2015 Powered by
+			<a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; Theme used
+			<a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+	</div>
 </div>
 
-        </section>
-      </div>
-    </div>
+</section>
+</div>
+</div>
+
+ 
+
+<script type="text/javascript">
+	var duoshuoQuery = {
+		short_name: 'm78snail'
+	};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';
+		ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] ||
+			document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+
+
+<script src="asset/js/foundation.min.js"></script>
+<script>
+	$(document).foundation();
+
+	function fixSidebarHeight() {
+		var w1 = $('.markdown-body').height();
+		var w2 = $('#sidebar').height();
+		if(w1 > w2) {
+			$('#sidebar').height(w1);
+		};
+	}
+	$(function() {
+		fixSidebarHeight();
+	})
+	$(window).load(function() {
+		fixSidebarHeight();
+	});
+</script>
 
   
 
+</body>
 
-<script type="text/javascript">
-var duoshuoQuery = {short_name:'m78snail'};
-  (function() {
-    var ds = document.createElement('script');
-    ds.type = 'text/javascript';ds.async = true;
-    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-    ds.charset = 'UTF-8';
-    (document.getElementsByTagName('head')[0] 
-     || document.getElementsByTagName('body')[0]).appendChild(ds);
-  })();
-  </script>
-    
-
-    <script src="asset/js/foundation.min.js"></script>
-    <script>
-      $(document).foundation();
-      function fixSidebarHeight(){
-        var w1 = $('.markdown-body').height();
-          var w2 = $('#sidebar').height();
-          if (w1 > w2) { $('#sidebar').height(w1); };
-      }
-      $(function(){
-        fixSidebarHeight();
-      })
-      $(window).load(function(){
-          fixSidebarHeight();
-      });
-     
-    </script>
-
-    
-
-
-
-  </body>
 </html>
