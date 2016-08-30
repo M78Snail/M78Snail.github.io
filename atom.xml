@@ -4,7 +4,7 @@
   <title><![CDATA[M78Snail Blog]]></title>
   <link href="m78star.com/atom.xml" rel="self"/>
   <link href="m78star.com/"/>
-  <updated>2016-08-30T15:43:20+08:00</updated>
+  <updated>2016-08-30T16:10:48+08:00</updated>
   <id>m78star.com/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -112,11 +112,16 @@
 <p>　　xUtils是github上的一个Android开源工具项目，xUtils包含了很多实用的android工具，其中HttpUtils模块是处理网络连接部分。在我上一个项目《数据铁笼》中经常用到，作为与服务器连接的工具，所以想要深入学习一下。<br/>
 　　项目最近更新到了3.0，我项目中用到的还是2.6有些方面可能和最新的有出入，请以作者最新的代码为准。<br/>
 　　<a href="https://github.com/wyouflf/xUtils3">https://github.com/wyouflf/xUtils3</a><br/>
-　　惯例是例举出我在学习中借鉴的一些大神的博客，以此来表示对他们的尊重<br/>
-　　1.<a href="http://kb.cnblogs.com/page/130970/#threeconcept">HTTP 协议详解</a><br/>
-　　2.<a href="http://www.tuicool.com/articles/nMFb2q">Android开源项目xUtils HttpUtils模块分析</a><br/>
-　　3.<a href="http://uule.iteye.com/blog/1539084">Future和FutureTask</a><br/>
-　　4.<a href="http://blog.csdn.net/cjj198561/article/details/40475771">xUtils异步HTTP源码分析</a></p>
+　　惯例是例举出我在学习中借鉴的一些大神的博客，以此来表示对他们的尊重</p>
+
+<blockquote>
+<ol>
+<li><a href="http://kb.cnblogs.com/page/130970/#threeconcept">HTTP 协议详解</a></li>
+<li><a href="http://www.tuicool.com/articles/nMFb2q">Android开源项目xUtils HttpUtils模块分析</a></li>
+<li><a href="http://uule.iteye.com/blog/1539084">Future和FutureTask</a></li>
+<li><a href="http://blog.csdn.net/cjj198561/article/details/40475771">xUtils异步HTTP源码分析</a></li>
+</ol>
+</blockquote>
 
 <p>　　上面这些文章讲的都特别好，大家如果有时间可以都看看。</p>
 
@@ -516,8 +521,6 @@ git clone只能clone远程库的master分支，无法clone所有分支，解决�
     <updated>2016-08-30T09:20:44+08:00</updated>
     <id>m78star.com/14725200443130.html</id>
     <content type="html"><![CDATA[
-<hr/>
-
 <h2 id="toc_0">一. 命名规范</h2>
 
 <h3 id="toc_1">1. 包命名</h3>
