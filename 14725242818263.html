@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  实用笔记－WebView大讲堂（二）～性能优化 - M78Snail Blog
+  otto 框架分析 - M78Snail Blog
   
   </title>
   
@@ -105,21 +105,21 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>实用笔记－WebView大讲堂（二）～性能优化</h1>
+          <h1>otto 框架分析</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2016/7/26</span>
+          <span class="date">2016/8/30</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='index.html'>Android</a></span>
+              <span class="posted-in"><a href='%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html'>开源框架</a></span>
            
          
           <span class="comments">
             
 
             
-              &nbsp;<a  class="ds-thread-count" data-thread-key="14694992191842.html" data-count-type="comments" href="14694992191842.html#ds-thread"></a>
+              &nbsp;<a  class="ds-thread-count" data-thread-key="14725242818263.html" data-count-type="comments" href="14725242818263.html#ds-thread"></a>
             
           </span>
 
@@ -127,122 +127,87 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>上一节我总结了下WebView的实用用法：<a href="http://m78star.com/14693271804281.html">实用笔记－WebView大讲堂</a>。这一节我想总结下针对WebView的优化。</p>
+      <p>　　最近项目上经常会用到otto框架，它是在EventBus基础上，进行的二次开发，这里希望总结一下：<br/>
+　　</p>
 
-<pre><code>1. WebView缓存机制
-2. 几种缓存方式的实现
-3. 其他的缓存策略
-</code></pre>
+<blockquote>
+<ul>
+<li>运行时动态处理（注解）</li>
+<li>IOC 控制反转</li>
+<li>观察者模式 EventBus模式</li>
+</ul>
+</blockquote>
+
+<p>　　大体上要学习otto框架就是上面三个方面，看着名词很高端？没事，让我一一解释一下。</p>
 
 <span id="more"></span><!-- more -->
 
-<h2 id="toc_0">一 . Android WebView缓存机制</h2>
+<h2 id="toc_0">一 . 运行时动态处理（注解）</h2>
 
-<p>WebView中存在着两种缓存：网页数据缓存（网页数据，url等）、H5缓存（H5代码缓存数据）</p>
+<p>　　我们最初学习安卓的时候最先接触的类恐怕就是Activity了吧，在里面onCreate()这些方法会要求我们重写，在上面会有一个注解@Override,难道仅仅起到注释的作用吗？其实注解分为两种<br/>
+　　① 运行时动态处理：在运行时拿到类的Class对象，然后遍历其方法、变量，判断有无注解声明，然后做一些事情<br/>
+　　② 编译时动态处理：这类注解会在编译的时候，根据注解标识，动态生成一些类或者生成一些xml都可以，在运行时期，这类注解是没有的~~会依靠动态生成的类做一些操作，因为没有反射，效率和直接调用方法没什么区别<br/>
+　　今天我们只研究运行时动态处理。<br/>
+　　有句话说得好，叫<strong>无反射没框架</strong>。<br/>
+　　任何框架都离不开反射，反射以前只在书本上了解过就是运行时获取对象的类方法，变量吗.现在反射在速度上已经有了很大的提高，我们完全不必担心性能方面会变差很多。<br/>
+　　说了半天，你只要记住注解，作为一种标志，可以帮你在你的类加载时替你记住那些你希望以后用来调用的方法和对象。<br/>
+　　在otto中最重要的两个注解就是@Subscribe和@Produce，这两个是什么作用等下再说。</p>
 
-<p>不同的缓存数据会保存在不同的文件目录下.<br/>
-当我们加载Html时候，会在我们data/应用package下生成database与cache两个文件夹: </p>
+<h2 id="toc_1">二 . IOC 控制反转</h2>
 
-<p>我们请求的Url记录是保存在webviewCache.db里，而url的内容是保存在webviewCache文件夹下。 <br/>
-<img src="media/14694992191842/14695000993706.jpg" alt=""/></p>
+<p>　　什么事IOC控制反转？<br/>
+　　当A类想使用B类的一个方法时，我们传统的做法是new一个B类实例出来，再去调用方法，但是这就使得A,B两个类纠缠在一起。当我们改变了B类时，所有调用了B类的文件我们都需要去改，这样是不是太麻烦，好的做法是写一个主线类，它会自动帮我们去注入（new）,当我们需要改动时，只要改这个主线类就可以了。这个主线类也就是我要提到的otto框架中的Bus类，这是otto最重要的类，它有什么作用？这玩意就是在类加载时调用register，扫描类中复合命名规范的方法，存到一个map，然后post的时候，查找到匹配的方法，反射调用。不理解？等下我们举个例子你就明白了，现在我们先解释完名词。</p>
 
-<p>我们需要首先确保这里设置了缓存可用，才可以继续设置使用何种缓存策略。</p>
+<h2 id="toc_2">三 . 观察者模式 EventBus模式</h2>
 
-<p>下面我们来看一下webview的五种缓存模式： </p>
+<p>　　otto框架是基于EventBus框架，这是一个是一个发布 / 订阅的事件总线，大家可以看下鸿洋大神的这篇<a href="http://blog.csdn.net/lmj623565791/article/details/40794879">Android EventBus实战 没听过你就out了</a>讲的特别好</p>
 
-<pre><code>LOAD_CACHE_ONLY: 不使用网络，只读取本地缓存数据 
-LOAD_DEFAULT: 根据cache-control决定是否从网络上取数据。 
-LOAD_CACHE_NORMAL: API level 17中已经废弃, 从API level 11开始作用同LOAD_DEFAULT模式 
-LOAD_NO_CACHE: 不使用缓存，只从网络获取数据. 
-LOAD_CACHE_ELSE_NETWORK，只要本地有，无论是否过期，或者no-cache，都使用缓存中的数据。
+<h2 id="toc_3">四 . 应用实战</h2>
+
+<p>　　任何一个App都一定会提供软件更新功能，当我们在更新过程中突然不想更新了，点击了取消，让我们的代码去调用SplashActivity里面的DoCancelUpdate方法。由于我们的下载更新类是写在UpdateManager类里面，那我们怎么做呢，没学会otto框架之前我们可能会在新建UpdateManager时传进去一个Context，这会不会导致Context引发的内存泄漏，我们需要很小心的检查，现在我们使用otto框架就不需要担心这个问题，因为他们两人几乎没有交集，他们都是通过Bus类来沟通。废话不多说上代码：</p>
+
+<h3 id="toc_4">1 . SplashActivity中让bus注册，并订阅事件</h3>
+
+<pre><code class="language-python">   @Override
+    protected void onCreate(Bundle arg0) {
+        super.onCreate(arg0);
+        BusProvider.getInstance().register(this);
+        setContentView(getLayoutResource());
+    }
+    
+    @Subscribe
+    public void DoCancelUpdate(CancelUpdateEvent event){
+        continueRun();
+    } 
 </code></pre>
 
-<ul>
-<li>几种缓存方式的实现</li>
-</ul>
+<h3 id="toc_5">2 . BusProvider为一个单例模式类，Bus最好只有一个</h3>
 
-<p>（1）使用LOAD_CACHE_ELSE_NETWORK缓存模式，这样需要在APP退出的时候清除webview缓存，但是这样做有一个弊端就是如果当前App已经是打开状态，网页内容有更新的话不会看到；</p>
+<pre><code class="language-python">public class BusProvider {
 
-<p>（2）使用LOAD_DEFAULT这种缓存方式，数据从缓存中获取还是从网络中获取根据H5页面的参数判断，这样做的好处是可以动态的处理更新内容；</p>
+    public static Bus bus;
 
-<p>设置缓存</p>
+    public static Bus getInstance() {
+        if (bus == null) {
+            bus = new Bus(ThreadEnforcer.ANY);
+        }
+        return bus;
+    }
 
-<pre><code>mWebView.getSettings().setJavaScriptEnabled(true); 
-
-mWebView.getSettings().setRenderPriority(RenderPriority.HIGH);
-
-//设置 缓存模式 
-mWebView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);  
-
-// 开启 DOM storage API 功能     
-mWebView.getSettings().setDomStorageEnabled(true); 
-
-//开启 database storage API 功能 
-mWebView.getSettings().setDatabaseEnabled(true);  
-
-String cacheDirPath = getFilesDir().getAbsolutePath()+APP_CACAHE_DIRNAME; 
-//      String cacheDirPath = getCacheDir().getAbsolutePath()+Constant.APP_DB_DIRNAME; 
-
-Log.i(TAG, &quot;cacheDirPath=&quot;+cacheDirPath); 
-
-//设置数据库缓存路径 
-mWebView.getSettings().setDatabasePath(cacheDirPath); 
-
-//设置  Application Caches 缓存目录 
-mWebView.getSettings().setAppCachePath(cacheDirPath); 
-
-//开启Application Caches 功能 
-mWebView.getSettings().setAppCacheEnabled(true);
-</code></pre>
-
-<ul>
-<li>退出App时清除缓存</li>
-</ul>
-
-<pre><code>//清理Webview缓存数据库 
-try { 
-    deleteDatabase(&quot;webview.db&quot;);
-    deleteDatabase(&quot;webviewCache.db&quot;); 
-    } catch (Exception e) { 
-            e.printStackTrace(); 
-} 
-
-//WebView 缓存文件 
-File appCacheDir = new File(getFilesDir().getAbsolutePath()+APP_CACAHE_DIRNAME); 
-Log.e(TAG, &quot;appCacheDir path=&quot;+appCacheDir.getAbsolutePath()); 
-
-File webviewCacheDir = new File(getCacheDir().getAbsolutePath()+&quot;/webviewCache&quot;); 
-Log.e(TAG, &quot;webviewCacheDir path=&quot;+webviewCacheDir.getAbsolutePath()); 
-
-//删除webview 缓存目录 
-if(webviewCacheDir.exists()){ 
-     deleteFile(webviewCacheDir); 
-} 
-//删除webview 缓存 缓存目录 
-if(appCacheDir.exists()){ 
-     deleteFile(appCacheDir); 
+    private BusProvider() {
+    
+    }
 }
 </code></pre>
 
-<h2 id="toc_1">二 .其他的缓存策略</h2>
+<h3 id="toc_6">3 . UpdateManager类中使用post发出事件，凡是订阅了的都会调用</h3>
 
-<p>网页在加载的时候暂时不加载图片，当所有的HTML标签加载完成时在加载图片具体的做法如下初始化webview的时候设置不加载图片</p>
-
-<pre><code>webSettings.setBlockNetworkImage(true);
+<pre><code class="language-python">BusProvider.bus.post(new CancelUpdateEvent());
 </code></pre>
 
-<p>然后在html标签加载完成之后在加载图片内容:</p>
-
-<pre><code>@Override
-    public void onPageFinished(WebView view, String url) {
-        super.onPageFinished(view, url);
-        mWebView.getSettings().setBlockNetworkImage(false);   
-    }
-</code></pre>
-
-<p>关于更多的WebView可以参考：<a href="http://blog.csdn.net/qq_23547831/article/details/51820139">WebView问题集锦</a></p>
-
-<p>欢迎大家留言，点赞。</p>
+<p>　　至此算是完成了otto框架的总结，分享一些自己在找资料时遇到的大神博客文章：<br/>
+　　<a href="http://blog.csdn.net/lmj623565791/article/details/40794879">Android EventBus实战 没听过你就out了</a><br/>
+　　<a href="http://blog.csdn.net/lmj623565791/article/details/39269193">Android 进阶 教你打造 Android 中的 IOC 框架</a></p>
 
       </div>
 
@@ -250,16 +215,13 @@ if(appCacheDir.exists()){
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14708809297450.html" 
-          title="Previous Post: 镇远旅行游记">&laquo; 镇远旅行游记</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14693271804281.html" 
-          title="Next Post: 实用笔记－WebView大讲堂（一）">实用笔记－WebView大讲堂（一） &raquo;</a>
+          <a  href="14725217717871.html" 
+          title="Next Post: xUtils框架中HttpUtils模块源码剖析">xUtils框架中HttpUtils模块源码剖析 &raquo;</a>
       
       </p>
         </div>
@@ -271,7 +233,7 @@ if(appCacheDir.exists()){
           
 
           
-              <div class="ds-thread" data-thread-key="14694992191842.html" data-url="m78star.com/14694992191842.html" data-title="实用笔记－WebView大讲堂（二）～性能优化"></div>
+              <div class="ds-thread" data-thread-key="14725242818263.html" data-url="m78star.com/14725242818263.html" data-title="otto 框架分析"></div>
           
         </div>
       </div>

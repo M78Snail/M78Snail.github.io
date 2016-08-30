@@ -1,0 +1,617 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  xUtils框架中HttpUtils模块源码剖析 - M78Snail Blog
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="M78Snail Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:m78star.com ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        <li id="menu_item_index"><a href="index.html">HOME</a></li>
+        <li id="menu_item_archives"><a href="archives.html">Archives</a></li>
+        <li id="menu_item_about"><a href="about.html">ABOUT</a></li>
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="http://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; M78Snail Blog</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+       
+       <li><a href="index.html">HOME</a></li>
+    <li><a href="archives.html">Archives</a></li>
+    <li><a href="about.html">ABOUT</a></li>
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html">心情日记</a></li>
+        
+            <li><a href="index.html">Android</a></li>
+        
+            <li><a href="%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html">工具使用</a></li>
+        
+            <li><a href="Mac.html">Mac</a></li>
+        
+            <li><a href="%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html">开源框架</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>xUtils框架中HttpUtils模块源码剖析</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2016/8/30</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html'>开源框架</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+              &nbsp;<a  class="ds-thread-count" data-thread-key="14725217717871.html" data-count-type="comments" href="14725217717871.html#ds-thread"></a>
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <p>　　xUtils是github上的一个Android开源工具项目，xUtils包含了很多实用的android工具，其中HttpUtils模块是处理网络连接部分。在我上一个项目《数据铁笼》中经常用到，作为与服务器连接的工具，所以想要深入学习一下。<br/>
+　　项目最近更新到了3.0，我项目中用到的还是2.6有些方面可能和最新的有出入，请以作者最新的代码为准。<br/>
+　　<a href="https://github.com/wyouflf/xUtils3">https://github.com/wyouflf/xUtils3</a><br/>
+　　惯例是例举出我在学习中借鉴的一些大神的博客，以此来表示对他们的尊重<br/>
+　　1.<a href="http://kb.cnblogs.com/page/130970/#threeconcept">HTTP 协议详解</a><br/>
+　　2.<a href="http://www.tuicool.com/articles/nMFb2q">Android开源项目xUtils HttpUtils模块分析</a><br/>
+　　3.<a href="http://uule.iteye.com/blog/1539084">Future和FutureTask</a><br/>
+　　4.<a href="http://blog.csdn.net/cjj198561/article/details/40475771">xUtils异步HTTP源码分析</a></p>
+
+<p>　　上面这些文章讲的都特别好，大家如果有时间可以都看看。</p>
+
+<span id="more"></span><!-- more -->
+
+<p>　　</p>
+
+<h2 id="toc_0">一 . 以前的HttpClient 方法</h2>
+
+<p>　　首先我先说下以前如果使用Http协议的话，我会使用Apache的HttpClient，大体上分为六步：<br/>
+　　<br/>
+　　<br/>
+　　<strong>以Post方法为例</strong></p>
+
+<pre><code>//第一步创建DefaultHttpClient对象
+HttpClient httpClient=new DefaultHttpClient();
+//第二步创建HttpPost
+HttpPost post=new HttpPost(&quot;http:192.168.3.1:8080/login.jsp&quot;);
+//第三步对传递参数进行封装
+List&lt;NameValuePairs&gt; params=new ArrayList&lt;NameValuePair&gt;()；
+params.add(new BasicNameValuePair(&quot;name&quot;,name));
+params.add(new BasicNameValuePair(&quot;pass&quot;,pass));
+//第四步为post设置请求参数
+post.setEntity(new UriEncodedFormEntity(params,HTTP.UTF_8));
+//第五步发送post请求
+HttpResponse respones=httpClient.execute(post);
+//第六步解析
+String msg=EntityUtils.toString(respones.getEntity());
+</code></pre>
+
+<p>　　为什么这么详细的介绍Apache 的HttpClient，因为2.6版本中，使用的就是HttpClient，但是在3.0版本中已经替换HttpClient为UrlConnection，这个回来还要再研究下。现在就当复习一遍Apache的HttpClient了吧。<br/>
+　　</p>
+
+<h2 id="toc_1">二 . 上Demo，看用法</h2>
+
+<p>废话不多说，先看看怎么用</p>
+
+<pre><code>//第一步设置请求参数的编码
+RequestParams params = new RequestParams(); // 默认编码UTF-8
+//第二步根据你服务器要求的参数，进行传参
+params.setHeader(&quot;Content-Type&quot;, &quot;application/json; charset=utf-8&quot;);
+JSONObject object = new JSONObject();
+object.put(&quot;policenum&quot;, uLogin.getPolicenum());
+object.put(&quot;taskid&quot;, taskid);
+String json = JSON.toJSONString(object);
+StringEntity entity=null;
+try {
+        entity = new StringEntity(json, &quot;UTF-8&quot;);
+    } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+    }
+params.setBodyEntity(entity);
+//第三步调用HttpUtiles的send方法,可重写这两个方法，作为回调
+http.send(HttpRequest.HttpMethod.POST, url,params, 
+     new RequestCallBack&lt;String&gt;() {
+        @Override
+        public void onFailure(HttpException exception, String msg) {}
+        @Override
+        public void onSuccess(ResponseInfo&lt;String&gt; Response) {});
+        }
+）
+</code></pre>
+
+<h2 id="toc_2">三 . 解析源码</h2>
+
+<h3 id="toc_3">1 . 构造函数</h3>
+
+<p>　　首先我们使用HttpUtils模块，一般都要使用new一个HttpUtils出来，默认的构造函数为</p>
+
+<pre><code> public HttpUtils(int connTimeout, String userAgent) {
+        HttpParams params = new BasicHttpParams();
+        ConnManagerParams.setTimeout(params, connTimeout);
+        HttpConnectionParams.setSoTimeout(params, connTimeout);
+        HttpConnectionParams.setConnectionTimeout(params, connTimeout);
+
+        if (TextUtils.isEmpty(userAgent)) {
+            userAgent = OtherUtils.getUserAgent(null);
+        }
+        HttpProtocolParams.setUserAgent(params, userAgent);
+
+        ConnManagerParams.setMaxConnectionsPerRoute(params, new ConnPerRouteBean(10));
+        ConnManagerParams.setMaxTotalConnections(params, 10);
+
+        HttpConnectionParams.setTcpNoDelay(params, true);
+        HttpConnectionParams.setSocketBufferSize(params, 1024 * 8);
+        HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+  }
+</code></pre>
+
+<p>　　这里就不全部截出来了，这里会设置Http协议的一些参数，这些参数往往对于不同的服务器都是固定的，比如采用Http1.1，设置超时时间等等，当然你也可以自己设置，不调用它默认的也可以，根据自己的公司业务要求自己设置。</p>
+
+<h3 id="toc_4">2 . send()方法</h3>
+
+<pre><code class="language-java">public &lt;T&gt; HttpHandler&lt;T&gt; send(HttpRequest.HttpMethod method, String url, RequestParams params, RequestCallBack&lt;T&gt; callBack) {
+        if (url == null) 
+        throw new IllegalArgumentException(&quot;url may not be null&quot;);
+        HttpRequest request = new HttpRequest(method, url);
+        return sendRequest(request, params, callBack);
+}
+</code></pre>
+
+<p>解释下上述参数：<br/>
+　　第一个参数 method:HttpRequest.HttpMethod 里面设定好的10种；<br/>
+　　第二个参数 url：服务器地址或者接口地址；<br/>
+　　第三个参数 params：传给服务器的参数；<br/>
+　　第四个参数 callBack：看名字就知道，服务器返回消息后回调的接口，可以重写其中的方法；</p>
+
+<p>　　HttpHandler实际上是一个异步AsyncTask，后面我们会详细解释</p>
+
+<h3 id="toc_5">3 . 重点解析 HttpRequest</h3>
+
+<p>　　全部代码就不截图了HttpRequest（HttpMethod method, String uri），作为参数</p>
+
+<pre><code class="language-java">public HttpRequest(HttpMethod method, String uri) {
+        super();
+        this.method = method;
+        setURI(uri);
+}
+</code></pre>
+
+<h4 id="toc_6">(1). setRequestParams方法</h4>
+
+<p>主要干了三件事:</p>
+
+<h5 id="toc_7">①保存Header头部</h5>
+
+<pre><code class="language-java">List&lt;RequestParams.HeaderItem&gt; headerItems = param.getHeaders();
+</code></pre>
+
+<h5 id="toc_8">②保存entity整体</h5>
+
+<pre><code class="language-java">HttpEntity entity = param.getEntity();
+this.setEntity(entity);
+</code></pre>
+
+<h5 id="toc_9">③保存回调函数</h5>
+
+<pre><code>entity.setCallBackHandler(callBackHandler);
+</code></pre>
+
+<p>　　至此Http协议中的大部分信息都保存到了<strong>HttpRequest</strong>中，函数最后运行:<br/>
+　　</p>
+
+<pre><code>handler.executeOnExecutor(EXECUTOR, request);
+</code></pre>
+
+<h3 id="toc_10">4 . HttpHandler类：</h3>
+
+<p>　　HttpHandler继承自PriorityAsyncTask，前面我们已经说了HttpHandler实际上是一个异步AsyncTask，让我们直接去HttpHandler继承自PriorityAsyncTask里面看executeOnExecutor方法：<br/>
+　　</p>
+
+<pre><code>//EXECUTOR：线程池
+//params：参数也就是HttpRequest
+public final PriorityAsyncTask&lt;Params,Progress,Result&gt;executeOnExecutor(Executor exec,Params... params) {
+        if (mExecuteInvoked) {
+            throw new IllegalStateException(&quot;Cannot execute task:&quot;
+                    + &quot; the task is already executed.&quot;);
+        }
+
+        mExecuteInvoked = true;
+
+        onPreExecute();
+
+        mWorker.mParams = params;
+        exec.execute(new PriorityRunnable(priority, mFuture));
+
+       return this;
+}
+</code></pre>
+
+<pre><code>解释下：
+
+mWorker.mParams = params;
+...
+private static abstract class WorkerRunnable&lt;Params,Result&gt;implements Callable&lt;Result&gt; {
+        Params[] mParams;
+    }
+</code></pre>
+
+<p>　　mWorker是一个Callable，用于后面的调用这点很重要，因为最后其实就是调用的mWork；</p>
+
+<pre><code class="language-java"> exec.execute(new PriorityRunnable(priority, mFuture));
+</code></pre>
+
+<p>　　调用PriorityObject的run方法，会去调用mFuture的run方法，mFuture是一个FutureTask，为什么前面说最后其实会去调用mWorker呢，注意mFuture定义的地方：<br/>
+　　</p>
+
+<pre><code>  mFuture = new FutureTask&lt;Result&gt;(mWorker) {
+            @Override
+            protected void done() {
+               ...
+            }
+  };
+</code></pre>
+
+<p>　　我们去找FutureTask的run函数，翻开FutureTask的源码，找到run的源码</p>
+
+<pre><code>public void run() {
+       ....
+        try {
+            Callable&lt;V&gt; c = callable;
+            if (c != null &amp;&amp; state == NEW) {
+                V result;
+                boolean ran;
+                try {
+        //////////////////////////////这里调用的mWorker的call方法
+                    result = c.call();
+                    ran = true;
+                } catch (Throwable ex) {
+                    result = null;
+                    ran = false;
+                    setException(ex);
+                }
+                if (ran)
+                    set(result);
+            }
+        } finally {
+            ....
+        }
+}
+</code></pre>
+
+<p>　　也就是说最终会去调用mWork的call()方法，那就让我们看看call（）方法<br/>
+　　</p>
+
+<pre><code>mWorker = new WorkerRunnable&lt;Params, Result&gt;() {
+            public Result call() throws Exception {
+              ....
+                return postResult(doInBackground(mParams));
+            }
+};
+</code></pre>
+
+<p>　　最终会去最后的BOSS级代码，HttpHandler的doInBackground，其实上面的一系列方法很好理解，就是为了创建异步AsyncTask，以前都只是直接拿AsyncTask来用，根本没想过自己实现一个，分析源码也算是对我自己的一个学习，好了不感概了看一下doInBackground（）：<br/>
+首先肯定是要取出来之前保存在HttpRequest里面的各种参数.</p>
+
+<pre><code>request = (HttpRequestBase) params[0];
+requestUrl = request.getURI().toString();
+</code></pre>
+
+<p>　　接下来就是重头戏发送请求</p>
+
+<pre><code>ResponseInfo&lt;T&gt; responseInfo = sendRequest(request);
+</code></pre>
+
+<p>　　看一下sendRequest（）方法：</p>
+
+<pre><code>    ...
+ ResponseInfo&lt;T&gt; responseInfo = null;
+ if (!isCancelled()) {
+    HttpResponse response = client.execute(request, context);
+                    responseInfo = handleResponse(response);
+                }
+    return responseInfo;
+    ...
+</code></pre>
+
+<p>　　最后调用</p>
+
+<pre><code>this.publishProgress(UPDATE_SUCCESS, responseInfo);
+....
+case UPDATE_SUCCESS:
+        if (values.length != 2) return;
+        this.state = State.SUCCESS;
+        //回调callback
+        callback.onSuccess((ResponseInfo&lt;T&gt;) values[1]);
+        break;
+</code></pre>
+
+<p>　　xUtils里面还有很多细节我没有说到，大家可以自己去研究下。</p>
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="14725242818263.html" 
+          title="Previous Post: otto 框架分析">&laquo; otto 框架分析</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="14725209008931.html" 
+          title="Next Post: Git 常用方法">Git 常用方法 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+              <div class="ds-thread" data-thread-key="14725217717871.html" data-url="m78star.com/14725217717871.html" data-title="xUtils框架中HttpUtils模块源码剖析"></div>
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+	<div class="hide-for-small">
+		<div id="sidebar" class="sidebar">
+			<div id="site-info" class="site-info">
+				
+				<div class="site-a-logo"><img src="asset/img/icon2.jpeg" /></div>
+				
+				<h1>M78Snail Blog</h1>
+				<div class="site-des">求知若饥，虚心若愚。</div>
+				<div class="social">
+					
+					
+					
+						
+					
+					
+					
+					<a target="_blank" class="weibo" href="http://weibo.com/2811618257/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">Weibo</a>
+					
+					<a target="_blank" class="github" target="_blank" href="https://github.com/M78Snail" title="GitHub">GitHub</a>
+					<a target="_blank" class="email" href="mailto:957708598@qq.com" title="Email">Email</a>
+					<a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+
+				</div>
+			</div>
+
+			
+
+			<div id="site-categories" class="side-item ">
+				<div class="side-header">
+					<h2>Categories</h2>
+				</div>
+				<div class="side-content">
+
+					<p class="cat-list">
+						
+						<a href="%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html"><strong>心情日记</strong></a>
+						
+						<a href="index.html"><strong>Android</strong></a>
+						
+						<a href="%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html"><strong>工具使用</strong></a>
+						
+						<a href="Mac.html"><strong>Mac</strong></a>
+						
+						<a href="%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html"><strong>开源框架</strong></a>
+						 
+					</p>
+
+
+				</div>
+			</div>
+
+			<div id="site-categories" class="side-item">
+				<div class="side-header">
+					<h2>Recent Posts</h2>
+				</div>
+				<div class="side-content">
+					<ul class="posts-list">
+						
+						
+						<li class="post">
+							<a href="14725242818263.html">otto 框架分析</a>
+						</li>
+						
+						
+						
+						<li class="post">
+							<a href="14725217717871.html">xUtils框架中HttpUtils模块源码剖析</a>
+						</li>
+						
+						
+						
+						<li class="post">
+							<a href="14725209008931.html">Git 常用方法</a>
+						</li>
+						
+						
+						
+						<li class="post">
+							<a href="14725200443130.html">Android技术积累:开发规范</a>
+						</li>
+						
+						
+						
+						<li class="post">
+							<a href="14708809297450.html">镇远旅行游记</a>
+						</li>
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						 
+					</ul>
+				</div>
+			</div>
+			<div id="site-categories" class="side-item">
+				<div class="side-header">
+					<h2>Friendship Link</h2>
+				</div>
+				<div class="side-content">
+					<ul class="posts-list">
+						<li class="post">
+							<a href="http://neras.github.io/">蒋正兴blog：neras.github.io/</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div><!-- sidebar -->
+</div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+
+
+<script type="text/javascript">
+var duoshuoQuery = {short_name:'m78snail'};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+
+
+
+  </body>
+</html>
