@@ -4,7 +4,7 @@
   <title><![CDATA[M78Snail Blog]]></title>
   <link href="m78star.com/atom.xml" rel="self"/>
   <link href="m78star.com/"/>
-  <updated>2016-08-30T16:10:48+08:00</updated>
+  <updated>2016-08-30T17:19:00+08:00</updated>
   <id>m78star.com/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -18,7 +18,7 @@
     <updated>2016-08-30T10:31:21+08:00</updated>
     <id>m78star.com/14725242818263.html</id>
     <content type="html"><![CDATA[
-<p>　　最近项目上经常会用到otto框架，它是在EventBus基础上，进行的二次开发，这里希望总结一下：<br/>
+<p>　　最近项目上经常会用到otto框架，它跟EventBus很像，这里希望总结一下：<br/>
 　　</p>
 
 <blockquote>
