@@ -4,7 +4,7 @@
   <title><![CDATA[M78Snail Blog]]></title>
   <link href="m78star.com/atom.xml" rel="self"/>
   <link href="m78star.com/"/>
-  <updated>2016-09-14T11:29:13+08:00</updated>
+  <updated>2016-09-14T11:32:30+08:00</updated>
   <id>m78star.com/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -13,7 +13,7 @@
   <generator uri="http://www.mweb.im/">MWeb</generator>
   
   <entry>
-    <title type="html"><![CDATA[EasyAndroid (Android面试复习) #]]></title>
+    <title type="html"><![CDATA[EasyAndroid (Android面试复习)]]></title>
     <link href="m78star.com/14738219571613.html"/>
     <updated>2016-09-14T10:59:17+08:00</updated>
     <id>m78star.com/14738219571613.html</id>
@@ -49,19 +49,12 @@
 <h2 id="toc_2">三、运行截图</h2>
 
 <p><strong>侧边导航</strong><br/>
-<img src="media/14738219571613/14738221654980.png" alt="" class="mw_img_center" style="width:130px;display: block; clear:both; margin: 0 auto;"/></p>
+<img src="media/14738219571613/14738238996477.jpg" alt="" class="mw_img_center" style="width:130px;display: block; clear:both; margin: 0 auto;"/></p>
 
 <p><strong>行内咨询</strong><br/>
 <img src="media/14738219571613/14738225511102.jpg" alt="" class="mw_img_center" style="width:130px;display: block; clear:both; margin: 0 auto;"/><br/>
 <strong>知识体系</strong><br/>
 <img src="media/14738219571613/14738223351014.jpg" alt="" class="mw_img_center" style="width:130px;display: block; clear:both; margin: 0 auto;"/></p>
-
-<h2 id="toc_3">六、声明</h2>
-
-<p>应用中展示的所有内容均搜集自互联网，若内容有侵权请联系作者进行删除处理。本应用仅用作分享与学习，<a href="https://github.com/envyfan/AndroidReview/blob/master/LICENSE"><strong>源代码在 GPL v3 协议下发布</strong></a>, 使用前, 请确保你了解这个协议!。<br/>
-<strong>交流QQ群：206944327</strong></p>
-
-<p><a href="http://www.v-sounds.com/2016/03/11/%E4%BD%9C%E5%93%81/%E5%81%9A%E4%B8%80%E6%AC%BE%E5%B1%9E%E4%BA%8E%E8%87%AA%E5%B7%B1%E7%9A%84%E5%AE%9E%E7%94%A8%E5%B0%8F%E5%BA%94%E7%94%A8/"><strong>Android程序员：做一款属于自己的实用小应用</strong></a></p>
 
 ]]></content>
   </entry>
