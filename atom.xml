@@ -4,13 +4,217 @@
   <title><![CDATA[M78Snail Blog]]></title>
   <link href="m78star.com/atom.xml" rel="self"/>
   <link href="m78star.com/"/>
-  <updated>2016-08-30T19:27:52+08:00</updated>
+  <updated>2016-08-31T20:30:12+08:00</updated>
   <id>m78star.com/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[HTML5之元素与标签结构]]></title>
+    <link href="m78star.com/14726111635178.html"/>
+    <updated>2016-08-31T10:39:23+08:00</updated>
+    <id>m78star.com/14726111635178.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">一 . HTML5语法</h2>
+
+<h3 id="toc_1">1. DOCTYPE及字符编码</h3>
+
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;zh-CN&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;/head&gt;
+&lt;/html&gt;
+</code></pre>
+
+<span id="more"></span><!-- more -->
+
+<p>　　1⃣️ 字符集 简化为 &lt;!DOCTYPE html&gt;<br/>
+　　2⃣️ 给文档指定语言 &lt; html <strong>lang=&quot;zh-CN&quot;</strong>&gt;<br/>
+　　3⃣️ 字符编码 &lt; meta charset=&quot;utf-8&quot;&gt;</p>
+
+<p>　　定义性语言会变的简单。　　</p>
+
+<h3 id="toc_2">2. 大小写都可以</h3>
+
+<pre><code>&lt;Input tYpe=Radio/&gt;
+</code></pre>
+
+<p>　　这种大小写混用的方式是可以的，但是极其<strong>不推荐</strong>这样写，在 HTML4中也是可以，但是XHTML是不可以大小写混写的。</p>
+
+<h3 id="toc_3">3. 布尔值</h3>
+
+<pre><code>HTML4:需要重写一遍
+　　&lt;input type=&quot;checkbox&quot; checked=&quot;check&quot;/&gt;
+HTML5:不需要重写,默认不写时为false。
+　　&lt;input type=&quot;checkbox&quot; checked/&gt; 为true
+</code></pre>
+
+<h3 id="toc_4">4. 省略引号</h3>
+
+<p>　　属性的双引号可以写成单引号，也可以省略不写，但这两个都不推荐，推荐<strong>双引号</strong>。</p>
+
+<h3 id="toc_5">5. 可以进行省略的标签</h3>
+
+<p><img src="media/14726111635178/14726129455836.png" alt=""/></p>
+
+<p>　　&lt; input&gt; &lt; /input&gt;这一类标签不允许写结束标签，只能写&lt; input /&gt;<br/>
+　　<br/>
+　　可以省略结束符的和可以完全省略的都不建议使用。<br/>
+　</p>
+
+<h2 id="toc_6">二 . 新增及删除的标签</h2>
+
+<h3 id="toc_7">1 . 新增标签</h3>
+
+<h4 id="toc_8">1⃣️ 结构标签</h4>
+
+<p><strong>&lt; section&gt;标签</strong>    　<br/>
+　　&lt; section&gt; 标签定义文档中的节（section、区段）。比如章节、页眉、页脚或文档中的其他部分，可以和其他标签如h1,h2..进行组合。<br/>
+　　　　<br/>
+     <strong>&lt; article&gt;标签</strong><br/>
+　　表示页面中与上下文不相关的独立内容。比如一篇文章。<br/>
+　　<br/>
+<strong>&lt; aside&gt;标签</strong><br/>
+　　表示article内容之外，与article标签内容相辅的信息</p>
+
+<p><strong>&lt; header&gt;标签</strong><br/>
+　　表示页面一个区域快或整个页面的标题<br/>
+　　<br/>
+<strong>&lt; hgroup&gt;标签</strong><br/>
+　　表示对整个页面或一个内容块的标题进行组合。<br/>
+　　　<br/>
+<strong>&lt; footer&gt;标签</strong><br/>
+　　一个页面的脚注。<br/>
+　　<br/>
+<strong>&lt; nav&gt;标签</strong><br/>
+　  表示页面中的链接导航部分。</p>
+
+<p><strong>&lt; figure&gt;标签</strong><br/>
+　  标签规定独立的流内容（图像、图表、照片、代码等等）。</p>
+
+<h4 id="toc_9">2⃣️ 表单标签</h4>
+
+<ul>
+<li>email
+　  必须输入email</li>
+<li>url
+　  必须输入url地址</li>
+<li>number
+　  必须输入数值</li>
+<li>range
+　  必须输入一定范围内数值</li>
+<li>Data Pickers(日期选择器)</li>
+<li>search
+　  用于搜索域，域显示为常规的文本域</li>
+</ul>
+
+<h4 id="toc_10">3⃣️ 媒体标签</h4>
+
+<p><strong>&lt; video&gt;标签</strong> 定义视频。<br/>
+HTML4:</p>
+
+<pre><code>&lt;object type=&quot;video/ogg&quot; data=&quot;move.opv&quot;&gt;
+    &lt;param name=&quot;src&quot; value=&quot;movie.ogv&quot; /&gt;
+&lt;/object&gt;
+</code></pre>
+
+<p>HTML5:</p>
+
+<pre><code>&lt;video src=&quot;moive.ogg&quot; controls=&quot;controls&quot;&gt;video标签&lt;/controls&gt;
+</code></pre>
+
+<p><strong>&lt; audio&gt;标签</strong> 定义音频<br/>
+HTML4:</p>
+
+<pre><code>&lt;object type=&quot;application/ogg&quot; data=&quot;someaudio.wav&quot;&gt;
+        &lt;param name=&quot;src&quot; value=&quot;someaudio.wav&quot; /&gt;
+&lt;/object&gt;
+</code></pre>
+
+<p>HTML5:</p>
+
+<pre><code>&lt;audio src=&quot;someaudio.wav&quot;&gt;audio标签&lt;/audio&gt;
+</code></pre>
+
+<p><strong>&lt; embed&gt;标签</strong><br/>
+用来嵌入内容（各种媒体）。</p>
+
+<p>HTML4:</p>
+
+<pre><code>&lt;object data=&quot;flash.swf&quot; type=&quot;application/x-shockwave-flash&quot;&gt;&lt;/object&gt;
+</code></pre>
+
+<p>HTML5:</p>
+
+<pre><code>&lt;embed src=&quot;flash.swf&quot;&gt;
+</code></pre>
+
+<h4 id="toc_11">4⃣️. 其他功能标签</h4>
+
+<h2 id="toc_12"></h2>
+
+<p><strong>mark 标签</strong><br/>
+代码：</p>
+
+<pre><code>&lt;p&gt; I AM A &lt;mark&gt;BOY&lt;/mark&gt;
+</code></pre>
+
+<p>例子：</p>
+
+<h2 id="toc_13"><p> I AM A <mark>BOY</mark></h2>
+
+<p><strong>progress 标签</strong><br/>
+代码：</p>
+
+<pre><code>&lt;progress max=&quot;100&quot; value=&quot;85&quot;&gt;&lt;span&gt;85&lt;/span&gt;%&lt;/progress&gt;
+</code></pre>
+
+<p>例子：</p>
+
+<h2 id="toc_14"><progress max="100" value="85"><span>85</span>%</progress></h2>
+
+<p><strong>detail标签</strong></p>
+
+<p>代码：</p>
+
+<pre><code>&lt;details open&gt;
+   &lt;summary&gt;Macbook pro&lt;/summary&gt;
+   &lt;ul&gt;
+     &lt;li&gt;iphone1&lt;/li&gt;
+     &lt;li&gt;iphone2&lt;/li&gt;
+     &lt;li&gt;iphone3&lt;/li&gt;
+   &lt;/ul&gt;
+&lt;/details&gt;
+</code></pre>
+
+<p>例子：<br/>
+<details close><br/>
+   <summary>Macbook pro</summary><br/>
+   <ul><br/>
+     <li>iphone1</li><br/>
+     <li>iphone2</li><br/>
+     <li>iphone3</li></p>
+
+<p></ul></p>
+
+<h2 id="toc_15"></details></h2>
+
+<h3 id="toc_16">2 . 删除标签</h3>
+
+<h4 id="toc_17">1⃣️.可以用css代替的标签</h4>
+
+<h4 id="toc_18">2⃣️.不再使用frame</h4>
+
+<h4 id="toc_19">3⃣️.只有个别浏览器支持的标签</h4>
+
+<h4 id="toc_20">4⃣️.其他不常用的标签</h4>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[otto 框架分析]]></title>
