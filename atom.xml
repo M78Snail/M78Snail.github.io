@@ -1,0 +1,1708 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[m78star.com]]></title>
+  <link href="m78star.com/atom.xml" rel="self"/>
+  <link href="m78star.com/"/>
+  <updated>2016-11-02T17:22:25+08:00</updated>
+  <id>m78star.com/</id>
+  <author>
+    <name><![CDATA[]]></name>
+    
+  </author>
+  <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[EasyAndroid (Android面试复习)]]></title>
+    <link href="m78star.com/14779863113216.html"/>
+    <updated>2016-11-01T15:45:11+08:00</updated>
+    <id>m78star.com/14779863113216.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">一、项目简介</h2>
+
+<p>　　<a href="https://github.com/M78Snail/EasyAndroid">项目源码：EasyAndroid</a><br/>
+　　EasyAndroid是一款专门面向Android开发者的面试复习与关注业内动态的手机App，里面包含知识体系，业内动态，开发技术周报三大模块。<br/>
+　　<br/>
+<strong>特点：</strong><br/>
+<img src="media/14737385475257/14738207920248.jpg" alt="" class="mw_img_center" style="width:300px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<ul>
+<li><p>知识点归类明细，每一个知识点采用的博文都是经过精心的挑选和改进，确保一个知识点只保留一篇博文。</p></li>
+<li><p>博文采用了缓存机制，会根据不同网络环境调整缓存存活时间，给使用者一个良好的体验。</p></li>
+<li><p>提供业内动态新闻查看功能，数据爬取自CSDN，提供新闻缓存，方便随时查看。</p></li>
+<li><p>每周会提供安卓开发周报，提供给用户最新的开发技术。</p></li>
+</ul>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_1">二、第三方引用</h2>
+
+<p>1、<a href="https://github.com/daimajia/AndroidSwipeLayout">Swipelayout下拉刷新</a></p>
+
+<p>2、<a href="http://www.bmob.cn/">Bmob移动云服务</a></p>
+
+<p>3、<a href="https://github.com/orhanobut/logger">Logger调试日志插件</a></p>
+
+<p>4、<a href="https://github.com/astuetz/PagerSlidingTabStrip">PagerSlidingTabStrip导航</a></p>
+
+<h2 id="toc_2">三、运行截图</h2>
+
+<p><img src="media/14738219571613/14738389372531.jpg" alt=""/></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[xUtils框架中HttpUtils模块源码剖析]]></title>
+    <link href="m78star.com/14779864962440.html"/>
+    <updated>2016-11-01T15:48:16+08:00</updated>
+    <id>m78star.com/14779864962440.html</id>
+    <content type="html"><![CDATA[
+<p>　　xUtils是github上的一个Android开源工具项目，xUtils包含了很多实用的android工具，其中HttpUtils模块是处理网络连接部分。在我上一个项目《数据铁笼》中经常用到，作为与服务器连接的工具，所以想要深入学习一下。<br/>
+　　项目最近更新到了3.0，我项目中用到的还是2.6有些方面可能和最新的有出入，请以作者最新的代码为准。<br/>
+　　<a href="https://github.com/wyouflf/xUtils3">https://github.com/wyouflf/xUtils3</a><br/>
+　　惯例是例举出我在学习中借鉴的一些大神的博客，以此来表示对他们的尊重</p>
+
+<blockquote>
+<ol>
+<li><a href="http://kb.cnblogs.com/page/130970/#threeconcept">HTTP 协议详解</a></li>
+<li><a href="http://www.tuicool.com/articles/nMFb2q">Android开源项目xUtils HttpUtils模块分析</a></li>
+<li><a href="http://uule.iteye.com/blog/1539084">Future和FutureTask</a></li>
+<li><a href="http://blog.csdn.net/cjj198561/article/details/40475771">xUtils异步HTTP源码分析</a></li>
+</ol>
+</blockquote>
+
+<p>　　上面这些文章讲的都特别好，大家如果有时间可以都看看。</p>
+
+<span id="more"></span><!-- more -->
+
+<p>　　</p>
+
+<h2 id="toc_0">一 . 以前的HttpClient 方法</h2>
+
+<p>　　首先我先说下以前如果使用Http协议的话，我会使用Apache的HttpClient，大体上分为六步：<br/>
+　　<br/>
+　　<br/>
+　　<strong>以Post方法为例</strong></p>
+
+<pre><code>//第一步创建DefaultHttpClient对象
+HttpClient httpClient=new DefaultHttpClient();
+//第二步创建HttpPost
+HttpPost post=new HttpPost(&quot;http:192.168.3.1:8080/login.jsp&quot;);
+//第三步对传递参数进行封装
+List&lt;NameValuePairs&gt; params=new ArrayList&lt;NameValuePair&gt;()；
+params.add(new BasicNameValuePair(&quot;name&quot;,name));
+params.add(new BasicNameValuePair(&quot;pass&quot;,pass));
+//第四步为post设置请求参数
+post.setEntity(new UriEncodedFormEntity(params,HTTP.UTF_8));
+//第五步发送post请求
+HttpResponse respones=httpClient.execute(post);
+//第六步解析
+String msg=EntityUtils.toString(respones.getEntity());
+</code></pre>
+
+<p>　　为什么这么详细的介绍Apache 的HttpClient，因为2.6版本中，使用的就是HttpClient，但是在3.0版本中已经替换HttpClient为UrlConnection，这个回来还要再研究下。现在就当复习一遍Apache的HttpClient了吧。<br/>
+　　</p>
+
+<h2 id="toc_1">二 . 上Demo，看用法</h2>
+
+<p>废话不多说，先看看怎么用</p>
+
+<pre><code>//第一步设置请求参数的编码
+RequestParams params = new RequestParams(); // 默认编码UTF-8
+//第二步根据你服务器要求的参数，进行传参
+params.setHeader(&quot;Content-Type&quot;, &quot;application/json; charset=utf-8&quot;);
+JSONObject object = new JSONObject();
+object.put(&quot;policenum&quot;, uLogin.getPolicenum());
+object.put(&quot;taskid&quot;, taskid);
+String json = JSON.toJSONString(object);
+StringEntity entity=null;
+try {
+        entity = new StringEntity(json, &quot;UTF-8&quot;);
+    } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+    }
+params.setBodyEntity(entity);
+//第三步调用HttpUtiles的send方法,可重写这两个方法，作为回调
+http.send(HttpRequest.HttpMethod.POST, url,params, 
+     new RequestCallBack&lt;String&gt;() {
+        @Override
+        public void onFailure(HttpException exception, String msg) {}
+        @Override
+        public void onSuccess(ResponseInfo&lt;String&gt; Response) {});
+        }
+）
+</code></pre>
+
+<h2 id="toc_2">三 . 解析源码</h2>
+
+<h3 id="toc_3">1 . 构造函数</h3>
+
+<p>　　首先我们使用HttpUtils模块，一般都要使用new一个HttpUtils出来，默认的构造函数为</p>
+
+<pre><code> public HttpUtils(int connTimeout, String userAgent) {
+        HttpParams params = new BasicHttpParams();
+        ConnManagerParams.setTimeout(params, connTimeout);
+        HttpConnectionParams.setSoTimeout(params, connTimeout);
+        HttpConnectionParams.setConnectionTimeout(params, connTimeout);
+
+        if (TextUtils.isEmpty(userAgent)) {
+            userAgent = OtherUtils.getUserAgent(null);
+        }
+        HttpProtocolParams.setUserAgent(params, userAgent);
+
+        ConnManagerParams.setMaxConnectionsPerRoute(params, new ConnPerRouteBean(10));
+        ConnManagerParams.setMaxTotalConnections(params, 10);
+
+        HttpConnectionParams.setTcpNoDelay(params, true);
+        HttpConnectionParams.setSocketBufferSize(params, 1024 * 8);
+        HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+  }
+</code></pre>
+
+<p>　　这里就不全部截出来了，这里会设置Http协议的一些参数，这些参数往往对于不同的服务器都是固定的，比如采用Http1.1，设置超时时间等等，当然你也可以自己设置，不调用它默认的也可以，根据自己的公司业务要求自己设置。</p>
+
+<h3 id="toc_4">2 . send()方法</h3>
+
+<pre><code class="language-java">public &lt;T&gt; HttpHandler&lt;T&gt; send(HttpRequest.HttpMethod method, String url, RequestParams params, RequestCallBack&lt;T&gt; callBack) {
+        if (url == null) 
+        throw new IllegalArgumentException(&quot;url may not be null&quot;);
+        HttpRequest request = new HttpRequest(method, url);
+        return sendRequest(request, params, callBack);
+}
+</code></pre>
+
+<p>解释下上述参数：<br/>
+　　第一个参数 method:HttpRequest.HttpMethod 里面设定好的10种；<br/>
+　　第二个参数 url：服务器地址或者接口地址；<br/>
+　　第三个参数 params：传给服务器的参数；<br/>
+　　第四个参数 callBack：看名字就知道，服务器返回消息后回调的接口，可以重写其中的方法；</p>
+
+<p>　　HttpHandler实际上是一个异步AsyncTask，后面我们会详细解释</p>
+
+<h3 id="toc_5">3 . 重点解析 HttpRequest</h3>
+
+<p>　　全部代码就不截图了HttpRequest（HttpMethod method, String uri），作为参数</p>
+
+<pre><code class="language-java">public HttpRequest(HttpMethod method, String uri) {
+        super();
+        this.method = method;
+        setURI(uri);
+}
+</code></pre>
+
+<h4 id="toc_6">(1). setRequestParams方法</h4>
+
+<p>主要干了三件事:</p>
+
+<h5 id="toc_7">①保存Header头部</h5>
+
+<pre><code class="language-java">List&lt;RequestParams.HeaderItem&gt; headerItems = param.getHeaders();
+</code></pre>
+
+<h5 id="toc_8">②保存entity整体</h5>
+
+<pre><code class="language-java">HttpEntity entity = param.getEntity();
+this.setEntity(entity);
+</code></pre>
+
+<h5 id="toc_9">③保存回调函数</h5>
+
+<pre><code>entity.setCallBackHandler(callBackHandler);
+</code></pre>
+
+<p>　　至此Http协议中的大部分信息都保存到了<strong>HttpRequest</strong>中，函数最后运行:<br/>
+　　</p>
+
+<pre><code>handler.executeOnExecutor(EXECUTOR, request);
+</code></pre>
+
+<h3 id="toc_10">4 . HttpHandler类：</h3>
+
+<p>　　HttpHandler继承自PriorityAsyncTask，前面我们已经说了HttpHandler实际上是一个异步AsyncTask，让我们直接去HttpHandler继承自PriorityAsyncTask里面看executeOnExecutor方法：<br/>
+　　</p>
+
+<pre><code>//EXECUTOR：线程池
+//params：参数也就是HttpRequest
+public final PriorityAsyncTask&lt;Params,Progress,Result&gt;executeOnExecutor(Executor exec,Params... params) {
+        if (mExecuteInvoked) {
+            throw new IllegalStateException(&quot;Cannot execute task:&quot;
+                    + &quot; the task is already executed.&quot;);
+        }
+
+        mExecuteInvoked = true;
+
+        onPreExecute();
+
+        mWorker.mParams = params;
+        exec.execute(new PriorityRunnable(priority, mFuture));
+
+       return this;
+}
+</code></pre>
+
+<pre><code>解释下：
+
+mWorker.mParams = params;
+...
+private static abstract class WorkerRunnable&lt;Params,Result&gt;implements Callable&lt;Result&gt; {
+        Params[] mParams;
+    }
+</code></pre>
+
+<p>　　mWorker是一个Callable，用于后面的调用这点很重要，因为最后其实就是调用的mWork；</p>
+
+<pre><code class="language-java"> exec.execute(new PriorityRunnable(priority, mFuture));
+</code></pre>
+
+<p>　　调用PriorityObject的run方法，会去调用mFuture的run方法，mFuture是一个FutureTask，为什么前面说最后其实会去调用mWorker呢，注意mFuture定义的地方：<br/>
+　　</p>
+
+<pre><code>  mFuture = new FutureTask&lt;Result&gt;(mWorker) {
+            @Override
+            protected void done() {
+               ...
+            }
+  };
+</code></pre>
+
+<p>　　我们去找FutureTask的run函数，翻开FutureTask的源码，找到run的源码</p>
+
+<pre><code>public void run() {
+       ....
+        try {
+            Callable&lt;V&gt; c = callable;
+            if (c != null &amp;&amp; state == NEW) {
+                V result;
+                boolean ran;
+                try {
+        //////////////////////////////这里调用的mWorker的call方法
+                    result = c.call();
+                    ran = true;
+                } catch (Throwable ex) {
+                    result = null;
+                    ran = false;
+                    setException(ex);
+                }
+                if (ran)
+                    set(result);
+            }
+        } finally {
+            ....
+        }
+}
+</code></pre>
+
+<p>　　也就是说最终会去调用mWork的call()方法，那就让我们看看call（）方法<br/>
+　　</p>
+
+<pre><code>mWorker = new WorkerRunnable&lt;Params, Result&gt;() {
+            public Result call() throws Exception {
+              ....
+                return postResult(doInBackground(mParams));
+            }
+};
+</code></pre>
+
+<p>　　最终会去最后的BOSS级代码，HttpHandler的doInBackground，其实上面的一系列方法很好理解，就是为了创建异步AsyncTask，以前都只是直接拿AsyncTask来用，根本没想过自己实现一个，分析源码也算是对我自己的一个学习，好了不感概了看一下doInBackground（）：<br/>
+首先肯定是要取出来之前保存在HttpRequest里面的各种参数.</p>
+
+<pre><code>request = (HttpRequestBase) params[0];
+requestUrl = request.getURI().toString();
+</code></pre>
+
+<p>　　接下来就是重头戏发送请求</p>
+
+<pre><code>ResponseInfo&lt;T&gt; responseInfo = sendRequest(request);
+</code></pre>
+
+<p>　　看一下sendRequest（）方法：</p>
+
+<pre><code>    ...
+ ResponseInfo&lt;T&gt; responseInfo = null;
+ if (!isCancelled()) {
+    HttpResponse response = client.execute(request, context);
+                    responseInfo = handleResponse(response);
+                }
+    return responseInfo;
+    ...
+</code></pre>
+
+<p>　　最后调用</p>
+
+<pre><code>this.publishProgress(UPDATE_SUCCESS, responseInfo);
+....
+case UPDATE_SUCCESS:
+        if (values.length != 2) return;
+        this.state = State.SUCCESS;
+        //回调callback
+        callback.onSuccess((ResponseInfo&lt;T&gt;) values[1]);
+        break;
+</code></pre>
+
+<p>　　xUtils里面还有很多细节我没有说到，大家可以自己去研究下。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[xUtils框架中HttpUtils模块源码剖析]]></title>
+    <link href="m78star.com/14779862326092.html"/>
+    <updated>2016-11-01T15:43:52+08:00</updated>
+    <id>m78star.com/14779862326092.html</id>
+    <content type="html"><![CDATA[
+<p>　　xUtils是github上的一个Android开源工具项目，xUtils包含了很多实用的android工具，其中HttpUtils模块是处理网络连接部分。在我上一个项目《数据铁笼》中经常用到，作为与服务器连接的工具，所以想要深入学习一下。<br/>
+　　项目最近更新到了3.0，我项目中用到的还是2.6有些方面可能和最新的有出入，请以作者最新的代码为准。<br/>
+　　<a href="https://github.com/wyouflf/xUtils3">https://github.com/wyouflf/xUtils3</a><br/>
+　　惯例是例举出我在学习中借鉴的一些大神的博客，以此来表示对他们的尊重</p>
+
+<blockquote>
+<ol>
+<li><a href="http://kb.cnblogs.com/page/130970/#threeconcept">HTTP 协议详解</a></li>
+<li><a href="http://www.tuicool.com/articles/nMFb2q">Android开源项目xUtils HttpUtils模块分析</a></li>
+<li><a href="http://uule.iteye.com/blog/1539084">Future和FutureTask</a></li>
+<li><a href="http://blog.csdn.net/cjj198561/article/details/40475771">xUtils异步HTTP源码分析</a></li>
+</ol>
+</blockquote>
+
+<p>　　上面这些文章讲的都特别好，大家如果有时间可以都看看。</p>
+
+<span id="more"></span><!-- more -->
+
+<p>　　</p>
+
+<h2 id="toc_0">一 . 以前的HttpClient 方法</h2>
+
+<p>　　首先我先说下以前如果使用Http协议的话，我会使用Apache的HttpClient，大体上分为六步：<br/>
+　　<br/>
+　　<br/>
+　　<strong>以Post方法为例</strong></p>
+
+<pre><code>//第一步创建DefaultHttpClient对象
+HttpClient httpClient=new DefaultHttpClient();
+//第二步创建HttpPost
+HttpPost post=new HttpPost(&quot;http:192.168.3.1:8080/login.jsp&quot;);
+//第三步对传递参数进行封装
+List&lt;NameValuePairs&gt; params=new ArrayList&lt;NameValuePair&gt;()；
+params.add(new BasicNameValuePair(&quot;name&quot;,name));
+params.add(new BasicNameValuePair(&quot;pass&quot;,pass));
+//第四步为post设置请求参数
+post.setEntity(new UriEncodedFormEntity(params,HTTP.UTF_8));
+//第五步发送post请求
+HttpResponse respones=httpClient.execute(post);
+//第六步解析
+String msg=EntityUtils.toString(respones.getEntity());
+</code></pre>
+
+<p>　　为什么这么详细的介绍Apache 的HttpClient，因为2.6版本中，使用的就是HttpClient，但是在3.0版本中已经替换HttpClient为UrlConnection，这个回来还要再研究下。现在就当复习一遍Apache的HttpClient了吧。<br/>
+　　</p>
+
+<h2 id="toc_1">二 . 上Demo，看用法</h2>
+
+<p>废话不多说，先看看怎么用</p>
+
+<pre><code>//第一步设置请求参数的编码
+RequestParams params = new RequestParams(); // 默认编码UTF-8
+//第二步根据你服务器要求的参数，进行传参
+params.setHeader(&quot;Content-Type&quot;, &quot;application/json; charset=utf-8&quot;);
+JSONObject object = new JSONObject();
+object.put(&quot;policenum&quot;, uLogin.getPolicenum());
+object.put(&quot;taskid&quot;, taskid);
+String json = JSON.toJSONString(object);
+StringEntity entity=null;
+try {
+        entity = new StringEntity(json, &quot;UTF-8&quot;);
+    } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+    }
+params.setBodyEntity(entity);
+//第三步调用HttpUtiles的send方法,可重写这两个方法，作为回调
+http.send(HttpRequest.HttpMethod.POST, url,params, 
+     new RequestCallBack&lt;String&gt;() {
+        @Override
+        public void onFailure(HttpException exception, String msg) {}
+        @Override
+        public void onSuccess(ResponseInfo&lt;String&gt; Response) {});
+        }
+）
+</code></pre>
+
+<h2 id="toc_2">三 . 解析源码</h2>
+
+<h3 id="toc_3">1 . 构造函数</h3>
+
+<p>　　首先我们使用HttpUtils模块，一般都要使用new一个HttpUtils出来，默认的构造函数为</p>
+
+<pre><code> public HttpUtils(int connTimeout, String userAgent) {
+        HttpParams params = new BasicHttpParams();
+        ConnManagerParams.setTimeout(params, connTimeout);
+        HttpConnectionParams.setSoTimeout(params, connTimeout);
+        HttpConnectionParams.setConnectionTimeout(params, connTimeout);
+
+        if (TextUtils.isEmpty(userAgent)) {
+            userAgent = OtherUtils.getUserAgent(null);
+        }
+        HttpProtocolParams.setUserAgent(params, userAgent);
+
+        ConnManagerParams.setMaxConnectionsPerRoute(params, new ConnPerRouteBean(10));
+        ConnManagerParams.setMaxTotalConnections(params, 10);
+
+        HttpConnectionParams.setTcpNoDelay(params, true);
+        HttpConnectionParams.setSocketBufferSize(params, 1024 * 8);
+        HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+  }
+</code></pre>
+
+<p>　　这里就不全部截出来了，这里会设置Http协议的一些参数，这些参数往往对于不同的服务器都是固定的，比如采用Http1.1，设置超时时间等等，当然你也可以自己设置，不调用它默认的也可以，根据自己的公司业务要求自己设置。</p>
+
+<h3 id="toc_4">2 . send()方法</h3>
+
+<pre><code class="language-java">public &lt;T&gt; HttpHandler&lt;T&gt; send(HttpRequest.HttpMethod method, String url, RequestParams params, RequestCallBack&lt;T&gt; callBack) {
+        if (url == null) 
+        throw new IllegalArgumentException(&quot;url may not be null&quot;);
+        HttpRequest request = new HttpRequest(method, url);
+        return sendRequest(request, params, callBack);
+}
+</code></pre>
+
+<p>解释下上述参数：<br/>
+　　第一个参数 method:HttpRequest.HttpMethod 里面设定好的10种；<br/>
+　　第二个参数 url：服务器地址或者接口地址；<br/>
+　　第三个参数 params：传给服务器的参数；<br/>
+　　第四个参数 callBack：看名字就知道，服务器返回消息后回调的接口，可以重写其中的方法；</p>
+
+<p>　　HttpHandler实际上是一个异步AsyncTask，后面我们会详细解释</p>
+
+<h3 id="toc_5">3 . 重点解析 HttpRequest</h3>
+
+<p>　　全部代码就不截图了HttpRequest（HttpMethod method, String uri），作为参数</p>
+
+<pre><code class="language-java">public HttpRequest(HttpMethod method, String uri) {
+        super();
+        this.method = method;
+        setURI(uri);
+}
+</code></pre>
+
+<h4 id="toc_6">(1). setRequestParams方法</h4>
+
+<p>主要干了三件事:</p>
+
+<h5 id="toc_7">①保存Header头部</h5>
+
+<pre><code class="language-java">List&lt;RequestParams.HeaderItem&gt; headerItems = param.getHeaders();
+</code></pre>
+
+<h5 id="toc_8">②保存entity整体</h5>
+
+<pre><code class="language-java">HttpEntity entity = param.getEntity();
+this.setEntity(entity);
+</code></pre>
+
+<h5 id="toc_9">③保存回调函数</h5>
+
+<pre><code>entity.setCallBackHandler(callBackHandler);
+</code></pre>
+
+<p>　　至此Http协议中的大部分信息都保存到了<strong>HttpRequest</strong>中，函数最后运行:<br/>
+　　</p>
+
+<pre><code>handler.executeOnExecutor(EXECUTOR, request);
+</code></pre>
+
+<h3 id="toc_10">4 . HttpHandler类：</h3>
+
+<p>　　HttpHandler继承自PriorityAsyncTask，前面我们已经说了HttpHandler实际上是一个异步AsyncTask，让我们直接去HttpHandler继承自PriorityAsyncTask里面看executeOnExecutor方法：<br/>
+　　</p>
+
+<pre><code>//EXECUTOR：线程池
+//params：参数也就是HttpRequest
+public final PriorityAsyncTask&lt;Params,Progress,Result&gt;executeOnExecutor(Executor exec,Params... params) {
+        if (mExecuteInvoked) {
+            throw new IllegalStateException(&quot;Cannot execute task:&quot;
+                    + &quot; the task is already executed.&quot;);
+        }
+
+        mExecuteInvoked = true;
+
+        onPreExecute();
+
+        mWorker.mParams = params;
+        exec.execute(new PriorityRunnable(priority, mFuture));
+
+       return this;
+}
+</code></pre>
+
+<pre><code>解释下：
+
+mWorker.mParams = params;
+...
+private static abstract class WorkerRunnable&lt;Params,Result&gt;implements Callable&lt;Result&gt; {
+        Params[] mParams;
+    }
+</code></pre>
+
+<p>　　mWorker是一个Callable，用于后面的调用这点很重要，因为最后其实就是调用的mWork；</p>
+
+<pre><code class="language-java"> exec.execute(new PriorityRunnable(priority, mFuture));
+</code></pre>
+
+<p>　　调用PriorityObject的run方法，会去调用mFuture的run方法，mFuture是一个FutureTask，为什么前面说最后其实会去调用mWorker呢，注意mFuture定义的地方：<br/>
+　　</p>
+
+<pre><code>  mFuture = new FutureTask&lt;Result&gt;(mWorker) {
+            @Override
+            protected void done() {
+               ...
+            }
+  };
+</code></pre>
+
+<p>　　我们去找FutureTask的run函数，翻开FutureTask的源码，找到run的源码</p>
+
+<pre><code>public void run() {
+       ....
+        try {
+            Callable&lt;V&gt; c = callable;
+            if (c != null &amp;&amp; state == NEW) {
+                V result;
+                boolean ran;
+                try {
+        //////////////////////////////这里调用的mWorker的call方法
+                    result = c.call();
+                    ran = true;
+                } catch (Throwable ex) {
+                    result = null;
+                    ran = false;
+                    setException(ex);
+                }
+                if (ran)
+                    set(result);
+            }
+        } finally {
+            ....
+        }
+}
+</code></pre>
+
+<p>　　也就是说最终会去调用mWork的call()方法，那就让我们看看call（）方法<br/>
+　　</p>
+
+<pre><code>mWorker = new WorkerRunnable&lt;Params, Result&gt;() {
+            public Result call() throws Exception {
+              ....
+                return postResult(doInBackground(mParams));
+            }
+};
+</code></pre>
+
+<p>　　最终会去最后的BOSS级代码，HttpHandler的doInBackground，其实上面的一系列方法很好理解，就是为了创建异步AsyncTask，以前都只是直接拿AsyncTask来用，根本没想过自己实现一个，分析源码也算是对我自己的一个学习，好了不感概了看一下doInBackground（）：<br/>
+首先肯定是要取出来之前保存在HttpRequest里面的各种参数.</p>
+
+<pre><code>request = (HttpRequestBase) params[0];
+requestUrl = request.getURI().toString();
+</code></pre>
+
+<p>　　接下来就是重头戏发送请求</p>
+
+<pre><code>ResponseInfo&lt;T&gt; responseInfo = sendRequest(request);
+</code></pre>
+
+<p>　　看一下sendRequest（）方法：</p>
+
+<pre><code>    ...
+ ResponseInfo&lt;T&gt; responseInfo = null;
+ if (!isCancelled()) {
+    HttpResponse response = client.execute(request, context);
+                    responseInfo = handleResponse(response);
+                }
+    return responseInfo;
+    ...
+</code></pre>
+
+<p>　　最后调用</p>
+
+<pre><code>this.publishProgress(UPDATE_SUCCESS, responseInfo);
+....
+case UPDATE_SUCCESS:
+        if (values.length != 2) return;
+        this.state = State.SUCCESS;
+        //回调callback
+        callback.onSuccess((ResponseInfo&lt;T&gt;) values[1]);
+        break;
+</code></pre>
+
+<p>　　xUtils里面还有很多细节我没有说到，大家可以自己去研究下。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Android技术积累:开发规范]]></title>
+    <link href="m78star.com/14779857522261.html"/>
+    <updated>2016-11-01T15:35:52+08:00</updated>
+    <id>m78star.com/14779857522261.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">一. 命名规范</h2>
+
+<h3 id="toc_1">1. 包命名</h3>
+
+<p>域名反写+项目名称+模块名称，全部单词用小写字母。<br/>
+例如，我的KAndroid项目的Model模块包名如下：</p>
+
+<pre><code>me.keeganlee.kandroid.model
+</code></pre>
+
+<h3 id="toc_2">2. 类和接口命名</h3>
+
+<p>使用大驼峰规则，用名词或名词词组命名，每个单词的首字母大写。<br/>
+以下为几种常用类的命名：</p>
+
+<pre><code>activity类，命名以Activity为后缀，如：LoginActivity
+fragment类，命名以Fragment为后缀，如：ShareDialogFragment
+service类，命名以Service为后缀，如：DownloadService
+adapter类，命名以Adapter为后缀，如：CouponListAdapter
+工具类，命名以Util为后缀，如：EncryptUtil
+模型类，命名以BO为后缀，如：CouponBO
+接口实现类，命名以Impl为后缀，如：ApiImpl
+</code></pre>
+
+<span id="more"></span><!-- more -->
+
+<h3 id="toc_3">3. 方法命名</h3>
+
+<p>使用小驼峰规则，用动词命名，第一个单词的首字母小写，其他单词的首字母大写。<br/>
+以下为几种常用方法的命名：</p>
+
+<pre><code>初始化方法，命名以init开头，例：initView
+按钮点击方法，命名以to开头，例：toLogin
+设置方法，命名以set开头，例：setData
+具有返回值的获取方法，命名以get开头，例：getData
+通过异步加载数据的方法，命名以load开头，例：loadData
+布尔型的判断方法，命名以is或has，或具有逻辑意义的单词如equals，例：isEmpty
+</code></pre>
+
+<h3 id="toc_4">4. 控件缩写</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: center">控件</th>
+<th style="text-align: center">缩写</th>
+<th style="text-align: center">控件</th>
+<th style="text-align: center">缩写</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td style="text-align: center">TextView</td>
+<td style="text-align: center">txt</td>
+<td style="text-align: center">ImageButton</td>
+<td style="text-align: center">ibtn</td>
+</tr>
+<tr>
+<td style="text-align: center">EditText</td>
+<td style="text-align: center">edt</td>
+<td style="text-align: center">ListView</td>
+<td style="text-align: center">list</td>
+</tr>
+<tr>
+<td style="text-align: center">Button</td>
+<td style="text-align: center">btn</td>
+<td style="text-align: center">RadioButton</td>
+<td style="text-align: center">rbtn</td>
+</tr>
+<tr>
+<td style="text-align: center">ImageView</td>
+<td style="text-align: center">img</td>
+<td style="text-align: center">SeekBar</td>
+<td style="text-align: center">seek</td>
+</tr>
+<tr>
+<td style="text-align: center">RadioGroup</td>
+<td style="text-align: center">group</td>
+<td style="text-align: center">Spinner</td>
+<td style="text-align: center">spinner</td>
+</tr>
+<tr>
+<td style="text-align: center">ProgressBar</td>
+<td style="text-align: center">progress</td>
+<td style="text-align: center">TableRow</td>
+<td style="text-align: center">row</td>
+</tr>
+<tr>
+<td style="text-align: center">CheckBox</td>
+<td style="text-align: center">chk</td>
+<td style="text-align: center">RelativeLayout</td>
+<td style="text-align: center">rlayout</td>
+</tr>
+<tr>
+<td style="text-align: center">TableLayout</td>
+<td style="text-align: center">table</td>
+<td style="text-align: center">SearchView</td>
+<td style="text-align: center">search</td>
+</tr>
+<tr>
+<td style="text-align: center">LinearLayout</td>
+<td style="text-align: center">llayout</td>
+<td style="text-align: center">TabWidget</td>
+<td style="text-align: center">widget</td>
+</tr>
+<tr>
+<td style="text-align: center">ScrollView</td>
+<td style="text-align: center">scroll</td>
+<td style="text-align: center">TabHost</td>
+<td style="text-align: center">host</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="toc_5">5. 常量命名</h3>
+
+<p>全部为大写单词，单词之间用下划线分开。</p>
+
+<pre><code>public final static int PAGE_SIZE = 20;
+</code></pre>
+
+<h3 id="toc_6">6. 变量命名</h3>
+
+<p>{范围描述+}意义描述+类型描述的组合，用驼峰式，首字母小写。</p>
+
+<pre><code>private TextView headerTitleTxt; // 标题栏的标题
+private Button loginBtn; // 登录按钮
+private CouponBO couponBO; // 券实例
+</code></pre>
+
+<h3 id="toc_7">7. 控件id命名</h3>
+
+<p>控件缩写_{范围_}意义，范围可选，只在有明确定义的范围内才需要加上。</p>
+
+<pre><code>&lt;!-- 这是标题栏的标题 --&gt;
+    &lt;TextView
+    android:id=&quot;@+id/txt_header_title&quot;
+    ... /&gt;
+
+&lt;!-- 这是登录按钮 --&gt;
+    &lt;Button
+    android:id=&quot;@+id/btn_login&quot;
+    ... /&gt;
+</code></pre>
+
+<h3 id="toc_8">8. layout命名</h3>
+
+<p>组件类型_{范围_}功能，范围可选，只在有明确定义的范围内才需要加上。<br/>
+以下为几种常用的组件类型命名：</p>
+
+<pre><code>activity_{范围_}功能，为Activity的命名格式
+fragment_{范围_}功能，为Fragment的命名格式
+dialog_{范围_}功能，为Dialog的命名格式
+item_list_{范围_}功能，为ListView的item命名格式
+item_grid_{范围_}功能，为GridView的item命名格式
+header_list_{范围_}功能，为ListView的HeaderView命名格式
+footer_list_{范围_}功能，为ListView的FooterView命名格式
+</code></pre>
+
+<h3 id="toc_9">9. strings的命名</h3>
+
+<p>类型_{范围_}功能，范围可选。<br/>
+以下为几种常用的命名：</p>
+
+<pre><code>页面标题，命名格式为：title_页面
+按钮文字，命名格式为：btn_按钮事件
+标签文字，命名格式为：label_标签文字
+选项卡文字，命名格式为：tab_选项卡文字
+消息框文字，命名格式为：toast_消息
+编辑框的提示文字，命名格式为：hint_提示信息
+图片的描述文字，命名格式为：desc_图片文字
+对话框的文字，命名格式为：dialog_文字
+menu的item文字，命名格式为：action_文字
+</code></pre>
+
+<h3 id="toc_10">10. colors的命名</h3>
+
+<p>前缀{_控件}{_范围}{_后缀}，控件、范围、后缀可选，但控件和范围至少要有一个。</p>
+
+<pre><code>背景颜色，添加bg前缀
+文本颜色，添加text前缀
+分割线颜色，添加div前缀
+区分状态时，默认状态的颜色，添加normal后缀
+区分状态时，按下时的颜色，添加pressed后缀
+区分状态时，选中时的颜色，添加selected后缀
+区分状态时，不可用时的颜色，添加disable后缀
+</code></pre>
+
+<h3 id="toc_11">11. drawable的命名</h3>
+
+<p>前缀{_控件}{_范围}{_后缀}，控件、范围、后缀可选，但控件和范围至少要有一个。</p>
+
+<pre><code>图标类，添加ic前缀
+背景类，添加bg前缀
+分隔类，添加div前缀
+默认类，添加def前缀
+区分状态时，默认状态，添加normal后缀
+区分状态时，按下时的状态，添加pressed后缀
+区分状态时，选中时的状态，添加selected后缀
+区分状态时，不可用时的状态，添加disable后缀
+多种状态的，添加selector后缀（一般为ListView的selector或按钮的selector）
+</code></pre>
+
+<h3 id="toc_12">12. 动画文件命名</h3>
+
+<p>动画类型_动画方向。</p>
+
+<pre><code>fade_in，淡入
+fade_out，淡出
+push_down_in，从下方推入
+push_down_out，从下方推出
+slide_in_from_top，从头部滑动进入
+zoom_enter，变形进入
+shrink_to_middle，中间缩小
+</code></pre>
+
+<h2 id="toc_13">二. 注释规范</h2>
+
+<h3 id="toc_14">1. 文件头注释</h3>
+
+<pre><code>文件顶部统一添加版权声明，声明的格式如下：
+
+/**
+ * Copyright (c) 2015. Keegan小钢 Inc. All rights reserved.
+ */
+</code></pre>
+
+<h3 id="toc_15">2. 类和接口注释</h3>
+
+<p>类和接口统一添加javadoc注释，格式如下：</p>
+
+<pre><code>/**
+ * 类或接口的描述信息
+ *
+ * @author ${USER}
+ * @date ${DATE}
+ */
+</code></pre>
+
+<h3 id="toc_16">3. 方法注释</h3>
+
+<p>下面几种方法，都必须添加javadoc注释，说明该方法的用途和参数说明，以及返回值的说明。</p>
+
+<p>(1).接口中定义的所有方法<br/>
+(2).抽象类中自定义的抽象方法<br/>
+(3).抽象父类的自定义公用方法<br/>
+(4).工具类的公用方法</p>
+
+<pre><code>/**
+  * 登录
+  *
+  * @param loginName 登录名
+  * @param password  密码
+  * @param listener  回调监听器
+  */
+public void login(String loginName, String password, ActionCallbackListener&lt;Void&gt; listener);
+</code></pre>
+
+<h3 id="toc_17">4. 变量和常量注释</h3>
+
+<p>下面几种情况下的常量和变量，都要添加注释说明，优先采用右侧//来注释，若注释说明太长则在上方添加注释。</p>
+
+<p>(1).接口中定义的所有常量<br/>
+ (2).公有类的公有常量<br/>
+ (3).枚举类定义的所有枚举常量<br/>
+ (4).实体类的所有属性变量</p>
+
+<pre><code>public static final int TYPE_CASH = 1; // 现金券
+public static final int TYPE_DEBIT = 2; // 抵扣券
+public static final int TYPE_DISCOUNT = 3; // 折扣券
+private int id;// 券id
+private String name;// 券名称
+private String introduce;// 券简介
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[otto 框架分析]]></title>
+    <link href="m78star.com/14779857522449.html"/>
+    <updated>2016-11-01T15:35:52+08:00</updated>
+    <id>m78star.com/14779857522449.html</id>
+    <content type="html"><![CDATA[
+<p>　　最近项目上经常会用到otto框架，它跟EventBus很像，这里希望总结一下：<br/>
+　　</p>
+
+<blockquote>
+<ul>
+<li>运行时动态处理（注解）</li>
+<li>IOC 控制反转</li>
+<li>观察者模式 EventBus模式</li>
+</ul>
+</blockquote>
+
+<p>　　大体上要学习otto框架就是上面三个方面，看着名词很高端？没事，让我一一解释一下。</p>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">一 . 运行时动态处理（注解）</h2>
+
+<p>　　我们最初学习安卓的时候最先接触的类恐怕就是Activity了吧，在里面onCreate()这些方法会要求我们重写，在上面会有一个注解@Override,难道仅仅起到注释的作用吗？其实注解分为两种<br/>
+　　① 运行时动态处理：在运行时拿到类的Class对象，然后遍历其方法、变量，判断有无注解声明，然后做一些事情<br/>
+　　② 编译时动态处理：这类注解会在编译的时候，根据注解标识，动态生成一些类或者生成一些xml都可以，在运行时期，这类注解是没有的~~会依靠动态生成的类做一些操作，因为没有反射，效率和直接调用方法没什么区别<br/>
+　　今天我们只研究运行时动态处理。<br/>
+　　有句话说得好，叫<strong>无反射没框架</strong>。<br/>
+　　任何框架都离不开反射，反射以前只在书本上了解过就是运行时获取对象的类方法，变量吗.现在反射在速度上已经有了很大的提高，我们完全不必担心性能方面会变差很多。<br/>
+　　说了半天，你只要记住注解，作为一种标志，可以帮你在你的类加载时替你记住那些你希望以后用来调用的方法和对象。<br/>
+　　在otto中最重要的两个注解就是@Subscribe和@Produce，这两个是什么作用等下再说。</p>
+
+<h2 id="toc_1">二 . IOC 控制反转</h2>
+
+<p>　　什么事IOC控制反转？<br/>
+　　当A类想使用B类的一个方法时，我们传统的做法是new一个B类实例出来，再去调用方法，但是这就使得A,B两个类纠缠在一起。当我们改变了B类时，所有调用了B类的文件我们都需要去改，这样是不是太麻烦，好的做法是写一个主线类，它会自动帮我们去注入（new）,当我们需要改动时，只要改这个主线类就可以了。这个主线类也就是我要提到的otto框架中的Bus类，这是otto最重要的类，它有什么作用？这玩意就是在类加载时调用register，扫描类中复合命名规范的方法，存到一个map，然后post的时候，查找到匹配的方法，反射调用。不理解？等下我们举个例子你就明白了，现在我们先解释完名词。</p>
+
+<h2 id="toc_2">三 . 观察者模式 EventBus模式</h2>
+
+<p>　　otto框架是基于EventBus框架，这是一个是一个发布 / 订阅的事件总线，大家可以看下鸿洋大神的这篇<a href="http://blog.csdn.net/lmj623565791/article/details/40794879">Android EventBus实战 没听过你就out了</a>讲的特别好</p>
+
+<h2 id="toc_3">四 . 应用实战</h2>
+
+<p>　　任何一个App都一定会提供软件更新功能，当我们在更新过程中突然不想更新了，点击了取消，让我们的代码去调用SplashActivity里面的DoCancelUpdate方法。由于我们的下载更新类是写在UpdateManager类里面，那我们怎么做呢，没学会otto框架之前我们可能会在新建UpdateManager时传进去一个Context，这会不会导致Context引发的内存泄漏，我们需要很小心的检查，现在我们使用otto框架就不需要担心这个问题，因为他们两人几乎没有交集，他们都是通过Bus类来沟通。废话不多说上代码：</p>
+
+<h3 id="toc_4">1 . SplashActivity中让bus注册，并订阅事件</h3>
+
+<pre><code class="language-python">   @Override
+    protected void onCreate(Bundle arg0) {
+        super.onCreate(arg0);
+        BusProvider.getInstance().register(this);
+        setContentView(getLayoutResource());
+    }
+    
+    @Subscribe
+    public void DoCancelUpdate(CancelUpdateEvent event){
+        continueRun();
+    } 
+</code></pre>
+
+<h3 id="toc_5">2 . BusProvider为一个单例模式类，Bus最好只有一个</h3>
+
+<pre><code class="language-python">public class BusProvider {
+
+    public static Bus bus;
+
+    public static Bus getInstance() {
+        if (bus == null) {
+            bus = new Bus(ThreadEnforcer.ANY);
+        }
+        return bus;
+    }
+
+    private BusProvider() {
+    
+    }
+}
+</code></pre>
+
+<h3 id="toc_6">3 . UpdateManager类中使用post发出事件，凡是订阅了的都会调用</h3>
+
+<pre><code class="language-python">BusProvider.bus.post(new CancelUpdateEvent());
+</code></pre>
+
+<p>　　至此算是完成了otto框架的总结，分享一些自己在找资料时遇到的大神博客文章：<br/>
+　　<a href="http://blog.csdn.net/lmj623565791/article/details/40794879">Android EventBus实战 没听过你就out了</a><br/>
+　　<a href="http://blog.csdn.net/lmj623565791/article/details/39269193">Android 进阶 教你打造 Android 中的 IOC 框架</a></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[镇远旅行游记]]></title>
+    <link href="m78star.com/14779858228537.html"/>
+    <updated>2016-11-01T15:37:02+08:00</updated>
+    <id>m78star.com/14779858228537.html</id>
+    <content type="html"><![CDATA[
+<p>2016.8.5镇远旅游小记。</p>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">第一天 入住酒店 观夜景 吃烤鱼</h2>
+
+<ul class="example-orbit" data-orbit style="height: 120px;">
+  <li>
+    <img src="media/14708809297450/14708821760631.jpg" alt="" />
+    <div class="orbit-caption">山地水城驿站 1</div>
+  </li>
+  <li>
+    <img src="media/14708809297450/14708822552032.jpg" alt="" />
+    <div class="orbit-caption">江景房 2</div>
+  </li>
+  <li>
+    <img src="media/14708809297450/14708844285072.jpg" alt="" />
+    <div class="orbit-caption"> 江边烧烤街 3</div>
+  </li>
+</ul>
+
+<h2 id="toc_1">第二天 游舞阳河</h2>
+
+<div class="large-column">
+<a data-orbit-link="headline-1" class="small button">
+  舞阳河石碑
+</a>
+<a data-orbit-link="headline-2" class="small button">
+  天眼石
+</a>
+<a data-orbit-link="headline-3" class="small button">
+  舞阳河江景
+</a>
+<a data-orbit-link="headline-4" class="small button">
+  凤凰石
+</a>
+
+<div class="orbt-container">
+<ul class="example-orbit-content" data-orbit style="height: 58px;">
+  <li data-orbit-slide="headline-1">
+    <div>
+      <img src="media/14708809297450/14708846320662.jpg" alt="" />
+    </div>
+  </li>
+  <li data-orbit-slide="headline-2">
+    <div>
+      <img src="media/14708809297450/14708846853058.jpg" alt="" />
+    </div>
+  </li>
+  <li data-orbit-slide="headline-3">
+    <div>
+      <img src="media/14708809297450/14708847291929.jpg" alt="" />
+    </div>
+  </li>
+  <li data-orbit-slide="headline-4">
+    <div>
+      <img src="media/14708809297450/14708847758845.jpg" alt="" />
+    </div>
+  </li>
+</ul>
+</div>
+</div>
+
+<h2 id="toc_2">第三天 高过河漂流</h2>
+
+<p><img src="media/14708809297450/14708852478635.jpg" alt=""/></p>
+
+<p>由于怕手机进水，只照了一张出行前的照片。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Git 常用方法]]></title>
+    <link href="m78star.com/14779861870049.html"/>
+    <updated>2016-11-01T15:43:07+08:00</updated>
+    <id>m78star.com/14779861870049.html</id>
+    <content type="html"><![CDATA[
+<p>下面总结一下自己在学习Git时用到的一些语法<br/>
+更多详细内容请浏览：<a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000">Git教程 - 廖雪峰的官方网站</a></p>
+
+<h2 id="toc_0">一 . 修改文件</h2>
+
+<pre><code>git init：创建git
+git add readme.txt ：将readme.txt变化提交到库
+git status ：获取修改的状态
+git diff readme.txt：获取我们与库中哪里不同
+git commit :将修改提交到库中
+</code></pre>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_1">二 . 回溯版本</h2>
+
+<pre><code>git log：显示从最近到最远的提交日志
+git log --pretty=oneline ：简化日志
+git reset --hard HEAD^ ：HEAD代表当前版本，一个代表上一版
+git reflog：获取记录的commit id
+git reset --hard (commit id) :回溯到指定id的版本
+</code></pre>
+
+<h2 id="toc_2">三 . 撤销修改</h2>
+
+<pre><code>git checkout -- file :撤销回到最近一次git commit或git add时的状态
+git reset HEAD file : 把暂存区的修改撤销掉
+</code></pre>
+
+<h2 id="toc_3">四 . 删除文件</h2>
+
+<pre><code>rm test.txt :删除test.txt
+git rm test.txt：将删除操作提交到暂存区，commit之后版本里的删除
+git checkout -- test.txt :用版本库里的版本替换工作区的版本
+</code></pre>
+
+<h2 id="toc_4">五 . 远程库</h2>
+
+<pre><code>git remote add origin git@github.com:username/name.git :添加远程库
+git push -u origin master :第一次将本地库传送到远程库
+git push origin master :将本地库传送到远程库 #### 2.从远程库克隆
+git clone git@github.com:username/name.git :克隆一个本地库
+</code></pre>
+
+<h2 id="toc_5">六 . 分支管理</h2>
+
+<h3 id="toc_6">1. 创建与合并分支</h3>
+
+<pre><code>git checkout -b dev :git checkout 命令加上-b参数表示创建分支并切换
+git branch : 查看当前分支,列出所有分支
+git checkout master :切换回主分支
+git merge dev ：合并指定分支dev到当前分支
+git branch -d dev ：删除分支dev
+</code></pre>
+
+<h3 id="toc_7">2. 解决冲突</h3>
+
+<pre><code>git log ：看到分支的合并情况
+git merge --no-ff -m &quot;merge with no-ff&quot; dev :加上--no-ff参数就可以用普通模式合并，合并后的历史有分支
+</code></pre>
+
+<h3 id="toc_8">3. Bug分支</h3>
+
+<pre><code>git stash :把当前工作现场“储藏”起来，以后恢复现场后继续工作
+git stash list :查看stash
+git stash apply :恢复工作，但是恢复后，stash内容并不删除
+git stash drop :删除stash
+git stash pop ：恢复的同时把stash内容也删了
+</code></pre>
+
+<h3 id="toc_9">4. Feature分支</h3>
+
+<h4 id="toc_10">(1). 多人协作</h4>
+
+<p>先用git pull把最新的提交从origin/dev抓下来,遇到错误的话<br/>
+git branch --set-upstream dev origin/dev :指定本地dev分支与远程origin/dev分支的链接，再pull<br/>
+合并冲突，需要手动解决<br/>
+解决后，提交，再push : git push origin dev。<br/>
+git clone只能clone远程库的master分支，无法clone所有分支，解决办法如下：</p>
+
+<pre><code>1. 找一个干净目录，假设是git_work
+2. cd git_work
+3. git clone http://myrepo.xxx.com/project/.git ,这样在git_work目录下得到一个project子目录
+4. cd project
+5. git branch -a，列出所有分支名称如下： remotes/origin/dev remotes/origin/release
+6. git checkout -b dev origin/dev，作用是checkout远程的dev分支，在本地起名为dev分支，并切换到本地的dev分支
+7. git checkout -b release origin/release，作用参见上一步解释
+8. git checkout dev，切换回dev分支，并开始开发。
+</code></pre>
+
+<h4 id="toc_11">(2). 多人协作的工作模式通常是这样：</h4>
+
+<p>　　首先，可以试图用git push origin branch-name推送自己的修改；</p>
+
+<p>　　如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；</p>
+
+<p>　　如果合并有冲突，则解决冲突，并在本地提交；没有冲突或者解决掉冲突后，再用git push origin branch-name推送就能成功！如果git pull提示“no tracking information”，则说明本地分支和远程分支的链接关系没有创建，用命令git branch --set-upstream branch-name origin/branch-name。</p>
+
+<p>　　这就是多人协作的工作模式，一旦熟悉了，就非常简单。</p>
+
+<h2 id="toc_12">七. Github 的使用</h2>
+
+<p>　　如何参与一个开源项目呢？比如人气极高的bootstrap项目，这是一个非常强大的CSS框架，你可以访问它的项目主页<a href="https://github.com/twbs/bootstrap">https://github.com/twbs/bootstrap</a><br/>
+点“Fork”就在自己的账号下克隆了一个bootstrap仓库，然后，从自己的账号下clone：</p>
+
+<p>git clone <a href="mailto:git@github.com">git@github.com</a>:michaelliao/bootstrap.git<br/>
+　　一定要从自己的账号下clone仓库，这样你才能推送修改。如果从bootstrap的作者的仓库地址<a href="mailto:git@github.com">git@github.com</a>:twbs/bootstrap.git克隆，因为没有权限，你将不能推送修改。<br/>
+　　如果你想修复bootstrap的一个bug，或者新增一个功能，立刻就可以开始干活，干完后，往自己的仓库推送。<br/>
+　　如果你希望bootstrap的官方库能接受你的修改，你就可以在GitHub上发起一个pull request。当然，对方是否接受你的pull request就不一定了。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[实用笔记－WebView大讲堂（二）～性能优化]]></title>
+    <link href="m78star.com/14779857522080.html"/>
+    <updated>2016-11-01T15:35:52+08:00</updated>
+    <id>m78star.com/14779857522080.html</id>
+    <content type="html"><![CDATA[
+<p>上一节我总结了下WebView的实用用法：<a href="http://m78star.com/14693271804281.html">实用笔记－WebView大讲堂</a>。这一节我想总结下针对WebView的优化。</p>
+
+<pre><code>1. WebView缓存机制
+2. 几种缓存方式的实现
+3. 其他的缓存策略
+</code></pre>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">一 . Android WebView缓存机制</h2>
+
+<p>WebView中存在着两种缓存：网页数据缓存（网页数据，url等）、H5缓存（H5代码缓存数据）</p>
+
+<p>不同的缓存数据会保存在不同的文件目录下.<br/>
+当我们加载Html时候，会在我们data/应用package下生成database与cache两个文件夹: </p>
+
+<p>我们请求的Url记录是保存在webviewCache.db里，而url的内容是保存在webviewCache文件夹下。 <br/>
+<img src="media/14694992191842/14695000993706.jpg" alt=""/></p>
+
+<p>我们需要首先确保这里设置了缓存可用，才可以继续设置使用何种缓存策略。</p>
+
+<p>下面我们来看一下webview的五种缓存模式： </p>
+
+<pre><code>LOAD_CACHE_ONLY: 不使用网络，只读取本地缓存数据 
+LOAD_DEFAULT: 根据cache-control决定是否从网络上取数据。 
+LOAD_CACHE_NORMAL: API level 17中已经废弃, 从API level 11开始作用同LOAD_DEFAULT模式 
+LOAD_NO_CACHE: 不使用缓存，只从网络获取数据. 
+LOAD_CACHE_ELSE_NETWORK，只要本地有，无论是否过期，或者no-cache，都使用缓存中的数据。
+</code></pre>
+
+<ul>
+<li>几种缓存方式的实现</li>
+</ul>
+
+<p>（1）使用LOAD_CACHE_ELSE_NETWORK缓存模式，这样需要在APP退出的时候清除webview缓存，但是这样做有一个弊端就是如果当前App已经是打开状态，网页内容有更新的话不会看到；</p>
+
+<p>（2）使用LOAD_DEFAULT这种缓存方式，数据从缓存中获取还是从网络中获取根据H5页面的参数判断，这样做的好处是可以动态的处理更新内容；</p>
+
+<p>设置缓存</p>
+
+<pre><code>mWebView.getSettings().setJavaScriptEnabled(true); 
+
+mWebView.getSettings().setRenderPriority(RenderPriority.HIGH);
+
+//设置 缓存模式 
+mWebView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);  
+
+// 开启 DOM storage API 功能     
+mWebView.getSettings().setDomStorageEnabled(true); 
+
+//开启 database storage API 功能 
+mWebView.getSettings().setDatabaseEnabled(true);  
+
+String cacheDirPath = getFilesDir().getAbsolutePath()+APP_CACAHE_DIRNAME; 
+//      String cacheDirPath = getCacheDir().getAbsolutePath()+Constant.APP_DB_DIRNAME; 
+
+Log.i(TAG, &quot;cacheDirPath=&quot;+cacheDirPath); 
+
+//设置数据库缓存路径 
+mWebView.getSettings().setDatabasePath(cacheDirPath); 
+
+//设置  Application Caches 缓存目录 
+mWebView.getSettings().setAppCachePath(cacheDirPath); 
+
+//开启Application Caches 功能 
+mWebView.getSettings().setAppCacheEnabled(true);
+</code></pre>
+
+<ul>
+<li>退出App时清除缓存</li>
+</ul>
+
+<pre><code>//清理Webview缓存数据库 
+try { 
+    deleteDatabase(&quot;webview.db&quot;);
+    deleteDatabase(&quot;webviewCache.db&quot;); 
+    } catch (Exception e) { 
+            e.printStackTrace(); 
+} 
+
+//WebView 缓存文件 
+File appCacheDir = new File(getFilesDir().getAbsolutePath()+APP_CACAHE_DIRNAME); 
+Log.e(TAG, &quot;appCacheDir path=&quot;+appCacheDir.getAbsolutePath()); 
+
+File webviewCacheDir = new File(getCacheDir().getAbsolutePath()+&quot;/webviewCache&quot;); 
+Log.e(TAG, &quot;webviewCacheDir path=&quot;+webviewCacheDir.getAbsolutePath()); 
+
+//删除webview 缓存目录 
+if(webviewCacheDir.exists()){ 
+     deleteFile(webviewCacheDir); 
+} 
+//删除webview 缓存 缓存目录 
+if(appCacheDir.exists()){ 
+     deleteFile(appCacheDir); 
+}
+</code></pre>
+
+<h2 id="toc_1">二 .其他的缓存策略</h2>
+
+<p>网页在加载的时候暂时不加载图片，当所有的HTML标签加载完成时在加载图片具体的做法如下初始化webview的时候设置不加载图片</p>
+
+<pre><code>webSettings.setBlockNetworkImage(true);
+</code></pre>
+
+<p>然后在html标签加载完成之后在加载图片内容:</p>
+
+<pre><code>@Override
+    public void onPageFinished(WebView view, String url) {
+        super.onPageFinished(view, url);
+        mWebView.getSettings().setBlockNetworkImage(false);   
+    }
+</code></pre>
+
+<p>关于更多的WebView可以参考：<a href="http://blog.csdn.net/qq_23547831/article/details/51820139">WebView问题集锦</a></p>
+
+<p>欢迎大家留言，点赞。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[实用笔记－WebView大讲堂（一）]]></title>
+    <link href="m78star.com/14779857521960.html"/>
+    <updated>2016-11-01T15:35:52+08:00</updated>
+    <id>m78star.com/14779857521960.html</id>
+    <content type="html"><![CDATA[
+<p>最近手头的项目界面要改成HTML5的，以前自己对于WebView仅仅只是一知半解，这次想好好总结下，我的博客不喜欢讲太多没用的东西，我追求实用主义，所以我的技术博客，永远只有两个主题：怎么用和怎么优化。典型的拿来主义。</p>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">怎么用？</h2>
+
+<ul>
+<li>WebView 基本操作</li>
+<li>WebView 下载文件</li>
+<li>WebView 注入cookie信息</li>
+<li>Webview 中native与js交互</li>
+</ul>
+
+<p>暂时只讲解一下这四个方面，以后再添加。</p>
+
+<h3 id="toc_1">一. WebView 基本操作</h3>
+
+<pre><code>mWebView.setWebViewClient() // 帮助WebView处理各种通知、请求事件的
+
+mWebView.setWebChromeClient();// 主要处理解析，渲染网页等浏览器做的事情器
+
+</code></pre>
+
+<p>上面两个方法是你加载一个网页肯定会实现的两个方法。</p>
+
+<pre><code>mWebView.setWebChromeClient(new WebChromeClient(){
+           @Override
+            public void onReceivedTitle(WebView view, String title) {
+                super.onReceivedTitle(view, title);
+                txtTitle.setText(title);
+            }
+        });
+ 
+mWebView.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return super.shouldOverrideUrlLoading(view, url);
+            }
+        });
+</code></pre>
+
+<p>例子：<br/>
+加载百度主页，包含返回按钮，页面地址，刷新。如图：<br/>
+<img src="media/14693271804281/14694114281052.jpg" alt="" class="mw_img_center" style="width:200px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<h3 id="toc_2">二. WebView 下载文件</h3>
+
+<p>在WebView的网页里面我们可能要点击链接进行下载，这时候我们首先要新建一个DownloadListener，然后在onDownloadStart（）方法里面我们有两种方式进行下载：</p>
+
+<pre><code>1. 直接调用系统浏览器进行下载
+2. 自己编写或使用其他网络框架进行下载文件
+</code></pre>
+
+<h4 id="toc_3">(1)调用系统浏览器</h4>
+
+<pre><code>class MyDownload implements DownloadListener {
+
+        @Override
+        public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long l) {
+            Uri uri=Uri.parse(url);
+            Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+            startActivity(intent);
+        }
+ }
+    
+mWebView.setDownloadListener(new MyDownload());
+
+</code></pre>
+
+<h4 id="toc_4">(2)自定义下载</h4>
+
+<p>使用普通文件下载方式即可，此处不给出代码了。</p>
+
+<h3 id="toc_5">三. WebView 注入cookie信息</h3>
+
+<p>关于Cookie我就不说了，以登陆csdn作为示例直接说用法：<br/>
+1. App在html页面登录<br/>
+<img src="media/14693271804281/14694326778770.jpg" alt="" class="mw_img_center" style="width:200px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<pre><code>mWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                CookieManager cookieManager = CookieManager.getInstance();
+                String cookie = cookieManager.getCookie(url);
+                
+            }
+});
+</code></pre>
+
+<p>通过上面方法可以获取到登陆成功跳转页面以后服务器返回的Cookie,这辆我们可以通过SharedPreferences将Cookie信息保存起来</p>
+
+<p>2.当你再一次进入该页面时，将Cookie通过下面的方法返回给服务器：</p>
+
+<pre><code>private void syncCookie(Context context, String url, String oldcookie) {
+        CookieSyncManager.createInstance(context);
+        CookieManager cookieManager = CookieManager.getInstance();
+        String cookie = cookieManager.getCookie(url);
+        cookieManager.setAcceptCookie(true);
+        cookieManager.setCookie(url,oldcookie);
+        CookieSyncManager.getInstance().sync();
+}
+</code></pre>
+
+<p>注意：syncCookie函数要在webview.load()之前调用</p>
+
+<h3 id="toc_6">四. Webview 中native与js交互</h3>
+
+<p>通过java代码与js代码直接相互调用的方式实现Android native与H5信息的相互，这里简单的介绍一下使用方式</p>
+
+<h4 id="toc_7">native代码调用H5的js代码</h4>
+
+<p>（1）在H5页面中添加一个js函数</p>
+
+<pre><code>&lt;script type=&quot;text/javascript&quot;&gt;
+function uu_click(clicked_id) {
+    alert(clicked_id);
+}
+</code></pre>
+
+<p>（2）在Native中通过java代码调用 <br/>
+若这时候H5页面已经被加载到webview中,则可以通过java代码直接调用js函数：</p>
+
+<pre><code>h5Fragment.mWebView.loadUrl(&quot;javascript:uu_click&quot; + &quot;(&#39;&quot; + clickId + &quot;&#39;)&quot;);
+</code></pre>
+
+<h4 id="toc_8">js代码调用java函数</h4>
+
+<p>（1）首先在java端编写能够被js代码调用的java函数</p>
+
+<ul>
+<li>native方法的实现</li>
+</ul>
+
+<pre><code>/**
+ * 自定义实现的native函数，可被js代码调用
+ */
+class JsInteration {
+    ...
+    @JavascriptInterface
+        public void toastMessage(String message) {
+            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+        }
+    ...
+}
+</code></pre>
+
+<p>（2）在native中注入本地方法，供js调用；</p>
+
+<pre><code>mWebView.addJavascriptInterface(new JsInteration(), &quot;control&quot;);
+</code></pre>
+
+<p>（3）在js代码中调用java代码：</p>
+
+<pre><code>function reply_click(clicked_id {
+    window.control.toastMessage(clicked_id)
+}
+</code></pre>
+
+<p>关于WebView的四个基本用法就介绍到这里，再下一章会介绍WebView的优化。<br/>
+欢迎留言讨论。<br/>
+项目示例代码在：<a href="https://github.com/M78Snail/WebViewStudy">https://github.com/M78Snail/WebViewStudy</a></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[用力的人跑不远]]></title>
+    <link href="m78star.com/14779864279806.html"/>
+    <updated>2016-11-01T15:47:07+08:00</updated>
+    <id>m78star.com/14779864279806.html</id>
+    <content type="html"><![CDATA[
+<p>写在前面：有阶段的自己，会用蛮力去学习一些东西，就是这东西不管是否适合目前自己的知识体系， 觉得学了之后会更牛逼就去学，但是这样的东西往往学了记不住。 学习的过程越用力反而显得越吃力， 太吃力的事情，自然就无法有恒心， 这就是很多人会觉得自己做事总是无法持之以恒的原因。</p>
+
+<span id="more"></span><!-- more -->
+
+<p>努力不应该是某种需要被时常觉知的东西，意志力是短期内会用完的精神能量。</p>
+
+<p>真正坚持到最后的人靠的不是激情，而是恰到好处的喜欢和投入。</p>
+
+<p>太用力的人更容易产生期望落差，更不愿接受自己找错了方向的事实——没有什么比这样的“失落”更能让人心寒的了，太用力的人大多都因心累而倒在了半途中。</p>
+
+<p>精神上的用力并不会让你跑得更快，但是精神上的疲惫却可以让你停下。</p>
+
+<p>人越用力，就会越想要得到及时的良好刺激。越用力的人对于正刺激的需求就越高，越不能忍受暂时的负反馈。遗憾的是，人生常常是没有下文的考卷，这种刺激来得太慢、太不稳定。</p>
+
+<p>真正的坚持归于平静，靠的是温和的发力，而不是时时刻刻的刺激。</p>
+
+<p>太用力的人增加了执行的功耗。纠结，是太用力的一种表现，造成内部的运转处于空转的状态——意识与行动的主观脱节；从心所欲，就是把运转效率最大化后的结果——所想即所为。执行阶段最大的敌人，是纠结，是埋怨，是内心的冲突——太用力，就是心理额外动作太多。想好之后就只管去做。</p>
+
+<p>我一直告诫自己不要用力过猛，以保持自己对困难的顿感和不顺的接受程度。<br/>
+短期的过度用力极容易造成身体和心理上的挫伤。哪怕你在做的事情非常重要，也要保证基本的休息和放松。</p>
+
+<p>不论是以后的工作还是将来的创业，都要保持一颗平常心。你需要更多的“寸劲”而不是“用力感”。在找到受力点“all in”之前，一切都要顺势而行，自然随和。</p>
+
+<p>人在学习的过程会经历一系列的过程，先是笨拙期，再是熟练期——这两个过程他虽然能运用出技能，但是头脑中仍然能感受到使用时的提取感。这两个阶段都需要用力，但是用力的程度却大幅度减小。</p>
+
+<p>技能掌握的最后阶段是运用自如期，就是张三丰把太极拳的形态全部都忘了的阶段。这个时候头脑中已经能下意识地去进行活动，达到了能耗最低的理想阶段。</p>
+
+<p>从用力感，到毫无感觉，是一种技能掌握上的纯熟。年轻的时候太认真是件好事，或许只有用力过了，才能体会从心所欲、顺其自然的难得。</p>
+
+<p>IT人员怎么用力<br/>
+总有在校的学生问我现在 X,Y,Z... 技术很火热，应该学哪个？ 我看他列出的那些准备学习的选项中，其实前景和热门程度都差不多。 这让他陷入了选择焦虑症，不管做什么决定都怕「一失足成千古恨」。</p>
+
+<p>对技术发展趋势关心是好事，就像之前那篇「不要总是选择困难模式」里面说的那样。 但是其实在「不要总是选择困难模式」里面忽略了很重要的一点，就是你个人的兴趣。 比如有的人对苹果的东西有天生的热爱，所以选择「iOS开发」对他来说就更容易做好。 尽可能选择会让自己 Enjoy 的技术方向，路还很长，不享受过程的话容易半途而废。</p>
+
+<p>『太用力的人跑不远』</p>
+
+<p>有阶段的自己，会用蛮力去学习一些东西，就是这东西不管是否适合目前自己的知识体系， 觉得学了之后会更牛逼就去学，但是这样的东西往往学了记不住。 学习的过程越用力反而显得越吃力， 太吃力的事情，自然就无法有恒心， 这就是很多人会觉得自己做事总是无法持之以恒的原因。</p>
+
+<p>记得之前本科的时候喜欢和舍友一起打Dota，打Dota开局之前一般要等人齐， 等人的这段时间我有时候会切出来写写代码，叫舍友开局了告诉我一声。 然后别人看到我在打Dota间隙都在写代码，就觉得我有多努力多努力，给人了一种非常「刻苦」的印象。 以至于上次和一个本科同学吃饭他还说起这个事情，觉得我能做到这样非常「牛逼」。</p>
+
+<p>但是其实这样的事情，如果对于真的对写代码有经历过热爱的人，是不会觉得有多么刻苦的事情。 这是自然而然的事情，甚至其实有些代码，那种满足好奇心的快感，是比打游戏有意思的多， 是件很Enjoy的事情，而不是所谓的「刻苦」。</p>
+
+<p>就像跑步，「太用力的人跑不远」。</p>
+
+<p>『不要用蛮力去学编程』</p>
+
+<p>记得当年初学 C++ 的同学，听别人说 C++ 很基础也很重要的一个知识点就是STL， 然后听说要学好 STL 就应该去看看侯捷的「STL源码剖析」。 然后就买了书硬啃，然后没啃几天就放弃了，觉得太讳莫如深了没法理解。</p>
+
+<p>但是如果换个学习的方式， 先假设现在没有STL这个标准库， 让你用已有的C++语法知识去自己写一个仿造STL标准库的功能， 哪怕是最最简单的 vector 。 你在编写的时候就会自然而然得体会到内存动态扩展的一些缺点和潜在的坑。 会知道为什么适当使用 reserve 和 swap 能非常明显的提高性能。</p>
+
+<p>然后在自己思考的过程中会提出很多相关的疑惑， 带着疑惑再去翻看「STL源码剖析」， 就会让你对一个个数据结构恍然大悟知根知底。 自然而然你的看书体验会非常的 Enjoy， 而不是觉得苦涩难咽。</p>
+
+<p>编程和求知本身是一件愉悦身心的事情， 如果只是为了高薪，而用蛮力去写代码，只会让自己疲惫不堪。</p>
+
+<p>『最后』</p>
+
+<p>希望对在学习编程的路上很挣扎的朋友有所帮助。 毕竟工作是生活的很大一部分， 如果工作不开心，生活怎么办。</p>
+
+<p>寄语<br/>
+生活可能像一根弹簧，最好的状态是张弛有度，太紧-压力太大，太松-没有活力，像那位矮大紧所说的，生活不只有眼前的苟且还有诗和远方。</p>
+
+<pre><code>文章是我在csdn上看到的，我觉得写的特别好，所以转到自己的blog来。
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Android Studio快捷键－Mac版]]></title>
+    <link href="m78star.com/14779858991590.html"/>
+    <updated>2016-11-01T15:38:19+08:00</updated>
+    <id>m78star.com/14779858991590.html</id>
+    <content type="html"><![CDATA[
+<p>从windows转到mac需要改变很多，以前在Android Studio培养的操作习惯也要跟着改变。为了以后工作方便打算总结一下Mac下的Android Studio的一些快捷键。</p>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">Mac下快捷键的符号所对应的按键</h2>
+
+<p><code>⌥</code> —&gt; option|alt<br/>
+<code>⇧</code> —&gt; shift<br/>
+<code>⌃</code> —&gt; control<br/>
+<code>⌘</code> —&gt; command<br/>
+<code>⎋</code> —&gt; esc</p>
+
+<pre><code>注: 与F6/F7/F12等F功能键开头的组合的快捷键需要按住fn开启功能键
+如：快捷键 ⌘F12 的按键组合为：fn + command + F12
+</code></pre>
+
+<h2 id="toc_1">Android Studio 常用快捷键 for mac</h2>
+
+<p><strong>查找／查看相关</strong><br/>
+<code>⌘O</code>:  全局查找class类名&lt;使用率非常高&gt;</p>
+
+<p><code>⌘F</code>: 在当前编辑文件中查找&lt;使用率非常高&gt; ｜ 对应window中的Ctrl + F</p>
+
+<p><code>⌘F12</code>：当前编辑的文件中结构快速导航 | 对应window中的 Ctrl + F12</p>
+
+<p><code>⌘E</code>: 打开最近访问的文件列表 | 对应window中的Ctrl + E</p>
+
+<p><code>⌥⌘O</code>: 输入类名／方法名／字段名来查找任何匹配的类／方法／字段&lt;使用率非常高&gt;</p>
+
+<p><code>⇧⌘O</code>: 全局项目查找文件（类／资源文件／布局文件都通过该快捷键查找）&lt;使用率非常高&gt;</p>
+
+<p><code>⌃H</code>: 查看当前编辑class类的hierarchy结构 | 对应window中的Ctrl + H</p>
+
+<p><code>⌥F7</code>: 列出全局项目中该类／方法 被引用／调用的情况&lt;使用率非常高&gt;[比<code>⌥⌘F7</code>显示效果好] | 对应window中的Alt + F7</p>
+
+<p><code>⌃⌥H</code>: 方法被调用结构［method’s Call Hierarchy］| 对应window中的ctrl + alt + h</p>
+
+<p><code>⌘P</code>: 列出函数方法一系列的有效参数，如果光标是一个方法调用的括号之间 | 对应window中的Ctrl + P</p>
+
+<p><code>⌃J</code>: 查看类／方法的注释文档</p>
+
+<p><code>⌥L</code>:代码提示功能</p>
+
+<p><strong>控制操作相关</strong></p>
+
+<p><code>⌘/</code>: 注释与取消注释，注释效果 //... | 对应window中的Ctrl + /</p>
+
+<p><code>⌥⌘/</code>: 注释与取消注释，注释效果 /<em>...</em>/ | 对应window中的Ctrl+Shift+/</p>
+
+<p><code>⇧⌥up/down</code>: 移动行上下移动 | 对应window中的alt + shift + up/down</p>
+
+<p><code>⌘delete</code>: 删除行 ｜ 对应window中的ctrl + y</p>
+
+<p><code>⌘d</code>: 复制行 ｜ 对应window中的 ctrl + d</p>
+
+<p><code>⌘J</code>: 快速生成模版代码块，如if,while,return等&lt;使用频率非常高，高效率编写代码&gt; | 对应window中的Ctrl + J</p>
+
+<p><code>⌘N</code>: 快速生成getter／setter方法，构造方法，toString()方法等 &lt;使用率非常高&gt; | 对应window中的Alt + Insert</p>
+
+<p><code>⌃O</code>: 引入重写父类的方法［Override Methods］&lt;使用率非常高&gt;</p>
+
+<p><code>⌃I</code>: 引入实现接口或抽象类方法［Implement Methods］&lt;使用率非常高&gt;</p>
+
+<p><code>⌃Space</code>: 当申明一个变量时，根据变量类型提示给出建议的变量名称，等还有其他很多智能提示作用&lt;使用率非常高&gt;</p>
+
+<p><code>⌥⌘L</code>: 代码格式化 &lt;使用率非常高&gt; | 对应window中的Ctrl+Alt+L</p>
+
+<p><code>⌘⇧U</code>: 切换选中内容的大小写 &lt;使用率非常高&gt; | 对应window中的Ctrl+Shift+U</p>
+
+<p><code>⌃L</code>:翻译</p>
+
+<p>参考 <a href="http://blog.csdn.net/janice0529/article/details/45322871">http://blog.csdn.net/janice0529/article/details/45322871</a></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[谈谈新买的Mac和最近的生活]]></title>
+    <link href="m78star.com/14779858228757.html"/>
+    <updated>2016-11-01T15:37:02+08:00</updated>
+    <id>m78star.com/14779858228757.html</id>
+    <content type="html"><![CDATA[
+<p>大学毕业也快一个月了，脱离了学生的身份，我也正式进入了社会为了生计而打拼。从学生变成打工仔，对于我来说其实影响不是多么大，也许是因为自己本来就不是什么循规蹈矩的好学生吧。<br/>
+    在公司实习的时候我就知道公司给每个人办公配的电脑是笔记本，说实话我挺失望的，不过公司有另外一个福利就是自己买电脑公司可以报销4000，前提是3年不能离开公司，这一点倒是挺爽的，因为我所属于的部门出差比较多，所以我打算入手一台MacBook Pro。下面是我用了3天的使用体验。</p>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">Mac</h2>
+
+<p>三天的使用带给我以下5点，最直观的使用感受：</p>
+
+<ul>
+<li>1. 超细致的屏幕视觉</li>
+<li>2. 精致的外观感受</li>
+<li>3. 超强的电池续航</li>
+<li>4. 秒杀一切电脑厂商的触摸板</li>
+<li>5. 良好的苹果生态</li>
+</ul>
+
+<p><img src="media/14690075075215/14690892264815.jpg" alt="" class="mw_img_center" style="width:200px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>有人说Mac 有什么好的，同样的电脑配置，别的牌子价格可能低3，4千，说实话我以前也是这么觉得，觉得Mac就是装逼而已，但是用了以后才会发现 苹果这家公司觉不是那些仅仅为追求表明上的性能数值的公司可以比的。细腻到每一个触控按键，超人性化的设计。真的是用过苹果的产品，你再也不会想要去用别家的产品了。</p>
+
+<h2 id="toc_1">贵阳出差</h2>
+
+<p>说完了Mac想谈几句贵阳出差的事情。公司是做大数据平台的，在贵阳这边有项目。才刚毕业没多久就要出差，也算是过上了四海为家的日子，不愿意去考虑太多的事情，做好眼前的事情吧。<br/>
+贵阳这里我是第二次来了，上一次还是冬天的时候过来实习，贵阳的冬天冷啊，山里的风又大，这一次正好是酷暑7月，全国很多地方都能把人热死，但是贵阳的夏天真的舒服，不是狠毒的太阳，凉爽的风拂过脸庞，还有那未被污染的蓝蓝的天空，这里真的像世外桃源。<br/>
+现在的我很快乐，来到贵阳，这里有脾气超好的鹏哥，有脾气相投的哥们，当然还有我最爱的女朋友，嘿嘿。</p>
+
+<hr/>
+
+<p><img src="media/14690075075215/14690892999707.jpg" alt="" class="mw_img_center" style="width:300px;display: block; clear:both; margin: 0 auto;"/></p>
+
+]]></content>
+  </entry>
+  
+</feed>
