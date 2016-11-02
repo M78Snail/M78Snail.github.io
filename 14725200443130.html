@@ -1,0 +1,637 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>
+			 Android技术积累:开发规范 - M78Snail Blog 
+		</title>
+		 
+		<link href="atom.xml" rel="alternate" title="M78Snail Blog" type="application/atom+xml">
+		<link rel="stylesheet" href="asset/css/foundation.min.css" />
+		<link rel="stylesheet" href="asset/css/docs.css" />
+		<script src="asset/js/vendor/modernizr.js"></script>
+		<script src="asset/js/vendor/jquery.js"></script>
+		<script src="asset/highlightjs/highlight.pack.js"></script>
+		<link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+		<script>
+			hljs.initHighlightingOnLoad();
+		</script>
+		<script type="text/javascript">
+			function before_search() {
+				var searchVal = 'site:m78star.com ' + document.getElementById('search_input').value;
+				document.getElementById('search_q').value = searchVal;
+				return true;
+			}
+		</script>
+	</head>
+
+	<body class="antialiased hide-extras">
+
+		<div class="marketing off-canvas-wrap" data-offcanvas>
+			<div class="inner-wrap">
+
+				<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+					<section class="top-bar-section">
+						<div class="row">
+							<div style="position: relative;width:100%;">
+								<div style="position: absolute; width:100%;">
+									<ul id="main-menu" class="left">
+										<li id="menu_item_index">
+											<a href="index.html">主页</a>
+										</li>
+										<li id="menu_item_archives">
+											<a href="archives.html">文章</a>
+										</li>
+										<li id="menu_item_about">
+											<a href="about.html">关于</a>
+										</li>
+									</ul>
+
+									<ul class="right" id="search-wrap">
+										<li>
+											<form target="_blank" onsubmit="return before_search();" action="http://google.com/search" method="get">
+												<input type="hidden" id="search_q" name="q" value="" />
+												<input tabindex="1" type="search" id="search_input" placeholder="Search" />
+											</form>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</section>
+
+				</nav>
+
+				<nav class="tab-bar show-for-small">
+					<a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+						<span> &nbsp; M78Snail Blog</span>
+					</a>
+				</nav>
+
+				<aside class="left-off-canvas-menu">
+					<ul class="off-canvas-list">
+
+						<li>
+							<a href="index.html">主页</a>
+						</li>
+						<li>
+							<a href="archives.html">文章</a>
+						</li>
+						<li>
+							<a href="about.html">关于</a>
+						</li>
+
+						<li><label>文章分类</label></li>
+
+						
+						<li>
+							<a href="%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html">心情日记</a>
+						</li>
+						
+						<li>
+							<a href="index.html">Android</a>
+						</li>
+						
+						<li>
+							<a href="%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html">工具使用</a>
+						</li>
+						
+						<li>
+							<a href="Mac.html">Mac</a>
+						</li>
+						
+						<li>
+							<a href="%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html">开源框架</a>
+						</li>
+						
+
+					</ul>
+				</aside>
+
+				<a class="exit-off-canvas" href="#"></a>
+
+				<section id="main-content" role="main" class="scroll-container"> <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>Android技术积累:开发规范</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2016/8/30</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='index.html'>Android</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+              &nbsp;<a  class="ds-thread-count" data-thread-key="14725200443130.html" data-count-type="comments" href="14725200443130.html#ds-thread"></a>
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <h2 id="toc_0">一. 命名规范</h2>
+
+<h3 id="toc_1">1. 包命名</h3>
+
+<p>域名反写+项目名称+模块名称，全部单词用小写字母。<br/>
+例如，我的KAndroid项目的Model模块包名如下：</p>
+
+<pre><code>me.keeganlee.kandroid.model
+</code></pre>
+
+<h3 id="toc_2">2. 类和接口命名</h3>
+
+<p>使用大驼峰规则，用名词或名词词组命名，每个单词的首字母大写。<br/>
+以下为几种常用类的命名：</p>
+
+<pre><code>activity类，命名以Activity为后缀，如：LoginActivity
+fragment类，命名以Fragment为后缀，如：ShareDialogFragment
+service类，命名以Service为后缀，如：DownloadService
+adapter类，命名以Adapter为后缀，如：CouponListAdapter
+工具类，命名以Util为后缀，如：EncryptUtil
+模型类，命名以BO为后缀，如：CouponBO
+接口实现类，命名以Impl为后缀，如：ApiImpl
+</code></pre>
+
+<span id="more"></span><!-- more -->
+
+<h3 id="toc_3">3. 方法命名</h3>
+
+<p>使用小驼峰规则，用动词命名，第一个单词的首字母小写，其他单词的首字母大写。<br/>
+以下为几种常用方法的命名：</p>
+
+<pre><code>初始化方法，命名以init开头，例：initView
+按钮点击方法，命名以to开头，例：toLogin
+设置方法，命名以set开头，例：setData
+具有返回值的获取方法，命名以get开头，例：getData
+通过异步加载数据的方法，命名以load开头，例：loadData
+布尔型的判断方法，命名以is或has，或具有逻辑意义的单词如equals，例：isEmpty
+</code></pre>
+
+<h3 id="toc_4">4. 控件缩写</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: center">控件</th>
+<th style="text-align: center">缩写</th>
+<th style="text-align: center">控件</th>
+<th style="text-align: center">缩写</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td style="text-align: center">TextView</td>
+<td style="text-align: center">txt</td>
+<td style="text-align: center">ImageButton</td>
+<td style="text-align: center">ibtn</td>
+</tr>
+<tr>
+<td style="text-align: center">EditText</td>
+<td style="text-align: center">edt</td>
+<td style="text-align: center">ListView</td>
+<td style="text-align: center">list</td>
+</tr>
+<tr>
+<td style="text-align: center">Button</td>
+<td style="text-align: center">btn</td>
+<td style="text-align: center">RadioButton</td>
+<td style="text-align: center">rbtn</td>
+</tr>
+<tr>
+<td style="text-align: center">ImageView</td>
+<td style="text-align: center">img</td>
+<td style="text-align: center">SeekBar</td>
+<td style="text-align: center">seek</td>
+</tr>
+<tr>
+<td style="text-align: center">RadioGroup</td>
+<td style="text-align: center">group</td>
+<td style="text-align: center">Spinner</td>
+<td style="text-align: center">spinner</td>
+</tr>
+<tr>
+<td style="text-align: center">ProgressBar</td>
+<td style="text-align: center">progress</td>
+<td style="text-align: center">TableRow</td>
+<td style="text-align: center">row</td>
+</tr>
+<tr>
+<td style="text-align: center">CheckBox</td>
+<td style="text-align: center">chk</td>
+<td style="text-align: center">RelativeLayout</td>
+<td style="text-align: center">rlayout</td>
+</tr>
+<tr>
+<td style="text-align: center">TableLayout</td>
+<td style="text-align: center">table</td>
+<td style="text-align: center">SearchView</td>
+<td style="text-align: center">search</td>
+</tr>
+<tr>
+<td style="text-align: center">LinearLayout</td>
+<td style="text-align: center">llayout</td>
+<td style="text-align: center">TabWidget</td>
+<td style="text-align: center">widget</td>
+</tr>
+<tr>
+<td style="text-align: center">ScrollView</td>
+<td style="text-align: center">scroll</td>
+<td style="text-align: center">TabHost</td>
+<td style="text-align: center">host</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="toc_5">5. 常量命名</h3>
+
+<p>全部为大写单词，单词之间用下划线分开。</p>
+
+<pre><code>public final static int PAGE_SIZE = 20;
+</code></pre>
+
+<h3 id="toc_6">6. 变量命名</h3>
+
+<p>{范围描述+}意义描述+类型描述的组合，用驼峰式，首字母小写。</p>
+
+<pre><code>private TextView headerTitleTxt; // 标题栏的标题
+private Button loginBtn; // 登录按钮
+private CouponBO couponBO; // 券实例
+</code></pre>
+
+<h3 id="toc_7">7. 控件id命名</h3>
+
+<p>控件缩写_{范围_}意义，范围可选，只在有明确定义的范围内才需要加上。</p>
+
+<pre><code>&lt;!-- 这是标题栏的标题 --&gt;
+    &lt;TextView
+    android:id=&quot;@+id/txt_header_title&quot;
+    ... /&gt;
+
+&lt;!-- 这是登录按钮 --&gt;
+    &lt;Button
+    android:id=&quot;@+id/btn_login&quot;
+    ... /&gt;
+</code></pre>
+
+<h3 id="toc_8">8. layout命名</h3>
+
+<p>组件类型_{范围_}功能，范围可选，只在有明确定义的范围内才需要加上。<br/>
+以下为几种常用的组件类型命名：</p>
+
+<pre><code>activity_{范围_}功能，为Activity的命名格式
+fragment_{范围_}功能，为Fragment的命名格式
+dialog_{范围_}功能，为Dialog的命名格式
+item_list_{范围_}功能，为ListView的item命名格式
+item_grid_{范围_}功能，为GridView的item命名格式
+header_list_{范围_}功能，为ListView的HeaderView命名格式
+footer_list_{范围_}功能，为ListView的FooterView命名格式
+</code></pre>
+
+<h3 id="toc_9">9. strings的命名</h3>
+
+<p>类型_{范围_}功能，范围可选。<br/>
+以下为几种常用的命名：</p>
+
+<pre><code>页面标题，命名格式为：title_页面
+按钮文字，命名格式为：btn_按钮事件
+标签文字，命名格式为：label_标签文字
+选项卡文字，命名格式为：tab_选项卡文字
+消息框文字，命名格式为：toast_消息
+编辑框的提示文字，命名格式为：hint_提示信息
+图片的描述文字，命名格式为：desc_图片文字
+对话框的文字，命名格式为：dialog_文字
+menu的item文字，命名格式为：action_文字
+</code></pre>
+
+<h3 id="toc_10">10. colors的命名</h3>
+
+<p>前缀{_控件}{_范围}{_后缀}，控件、范围、后缀可选，但控件和范围至少要有一个。</p>
+
+<pre><code>背景颜色，添加bg前缀
+文本颜色，添加text前缀
+分割线颜色，添加div前缀
+区分状态时，默认状态的颜色，添加normal后缀
+区分状态时，按下时的颜色，添加pressed后缀
+区分状态时，选中时的颜色，添加selected后缀
+区分状态时，不可用时的颜色，添加disable后缀
+</code></pre>
+
+<h3 id="toc_11">11. drawable的命名</h3>
+
+<p>前缀{_控件}{_范围}{_后缀}，控件、范围、后缀可选，但控件和范围至少要有一个。</p>
+
+<pre><code>图标类，添加ic前缀
+背景类，添加bg前缀
+分隔类，添加div前缀
+默认类，添加def前缀
+区分状态时，默认状态，添加normal后缀
+区分状态时，按下时的状态，添加pressed后缀
+区分状态时，选中时的状态，添加selected后缀
+区分状态时，不可用时的状态，添加disable后缀
+多种状态的，添加selector后缀（一般为ListView的selector或按钮的selector）
+</code></pre>
+
+<h3 id="toc_12">12. 动画文件命名</h3>
+
+<p>动画类型_动画方向。</p>
+
+<pre><code>fade_in，淡入
+fade_out，淡出
+push_down_in，从下方推入
+push_down_out，从下方推出
+slide_in_from_top，从头部滑动进入
+zoom_enter，变形进入
+shrink_to_middle，中间缩小
+</code></pre>
+
+<h2 id="toc_13">二. 注释规范</h2>
+
+<h3 id="toc_14">1. 文件头注释</h3>
+
+<pre><code>文件顶部统一添加版权声明，声明的格式如下：
+
+/**
+ * Copyright (c) 2015. Keegan小钢 Inc. All rights reserved.
+ */
+</code></pre>
+
+<h3 id="toc_15">2. 类和接口注释</h3>
+
+<p>类和接口统一添加javadoc注释，格式如下：</p>
+
+<pre><code>/**
+ * 类或接口的描述信息
+ *
+ * @author ${USER}
+ * @date ${DATE}
+ */
+</code></pre>
+
+<h3 id="toc_16">3. 方法注释</h3>
+
+<p>下面几种方法，都必须添加javadoc注释，说明该方法的用途和参数说明，以及返回值的说明。</p>
+
+<p>(1).接口中定义的所有方法<br/>
+(2).抽象类中自定义的抽象方法<br/>
+(3).抽象父类的自定义公用方法<br/>
+(4).工具类的公用方法</p>
+
+<pre><code>/**
+  * 登录
+  *
+  * @param loginName 登录名
+  * @param password  密码
+  * @param listener  回调监听器
+  */
+public void login(String loginName, String password, ActionCallbackListener&lt;Void&gt; listener);
+</code></pre>
+
+<h3 id="toc_17">4. 变量和常量注释</h3>
+
+<p>下面几种情况下的常量和变量，都要添加注释说明，优先采用右侧//来注释，若注释说明太长则在上方添加注释。</p>
+
+<p>(1).接口中定义的所有常量<br/>
+ (2).公有类的公有常量<br/>
+ (3).枚举类定义的所有枚举常量<br/>
+ (4).实体类的所有属性变量</p>
+
+<pre><code>public static final int TYPE_CASH = 1; // 现金券
+public static final int TYPE_DEBIT = 2; // 抵扣券
+public static final int TYPE_DISCOUNT = 3; // 折扣券
+private int id;// 券id
+private String name;// 券名称
+private String introduce;// 券简介
+</code></pre>
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="14725209008931.html" 
+          title="Previous Post: Git 常用方法">&laquo; Git 常用方法</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="14708809297450.html" 
+          title="Next Post: 镇远旅行游记">镇远旅行游记 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+              <div class="ds-thread" data-thread-key="14725200443130.html" data-url="m78star.com/14725200443130.html" data-title="Android技术积累:开发规范"></div>
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+	<div class="hide-for-small">
+		<div id="sidebar" class="sidebar">
+			<div id="site-info" class="site-info">
+				
+				<div class="site-a-logo"><img src="asset/img/icon2.jpeg" /></div>
+				
+				<h1>M78Snail Blog</h1>
+				<div class="site-des">求知若饥，虚心若愚。</div>
+				<div class="social">
+					
+					
+					
+						
+					
+					
+					
+					<a target="_blank" class="weibo" href="http://weibo.com/2811618257/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">Weibo</a>
+					
+					<a target="_blank" class="github" target="_blank" href="https://github.com/M78Snail" title="GitHub">GitHub</a>
+					<a target="_blank" class="email" href="mailto:957708598@qq.com" title="Email">Email</a>
+					<a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+
+				</div>
+			</div>
+
+			
+
+			<div id="site-categories" class="side-item ">
+				<div class="side-header">
+					<h2>文章种类</h2>
+				</div>
+				<div class="side-content">
+
+					<p class="cat-list">
+						
+						<a href="%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html"><strong>心情日记</strong></a>
+						
+						<a href="index.html"><strong>Android</strong></a>
+						
+						<a href="%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html"><strong>工具使用</strong></a>
+						
+						<a href="Mac.html"><strong>Mac</strong></a>
+						
+						<a href="%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html"><strong>开源框架</strong></a>
+						 
+					</p>
+
+
+				</div>
+			</div>
+
+			<div id="site-categories" class="side-item">
+				<div class="side-header">
+					<h2>最近发表</h2>
+				</div>
+				<div class="side-content">
+					<ul class="posts-list">
+						
+						
+						<li class="post">
+							<a href="14738219571613.html">EasyAndroid (Android面试复习)</a>
+						</li>
+						
+						
+						
+						<li class="post">
+							<a href="14725242818263.html">otto 框架分析</a>
+						</li>
+						
+						
+						
+						<li class="post">
+							<a href="14725217717871.html">xUtils框架中HttpUtils模块源码剖析</a>
+						</li>
+						
+						
+						
+						<li class="post">
+							<a href="14725209008931.html">Git 常用方法</a>
+						</li>
+						
+						
+						
+						<li class="post">
+							<a href="14725200443130.html">Android技术积累:开发规范</a>
+						</li>
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						 
+					</ul>
+				</div>
+			</div>
+			<div id="site-categories" class="side-item">
+				<div class="side-header">
+					<h2>友情链接</h2>
+				</div>
+				<div class="side-content">
+					<ul class="posts-list">
+						<li class="post">
+							<a href="http://neras.github.io/">蒋正兴blog：neras.github.io/</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div><!-- sidebar -->
+</div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+	<div class="row">
+		<p class="copyright">Copyright &copy; 2015 Powered by
+			<a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; Theme used
+			<a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+	</div>
+</div>
+
+</section>
+</div>
+</div>
+
+ 
+
+<script type="text/javascript">
+	var duoshuoQuery = {
+		short_name: 'm78snail'
+	};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';
+		ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] ||
+			document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+
+
+<script src="asset/js/foundation.min.js"></script>
+<script>
+	$(document).foundation();
+
+	function fixSidebarHeight() {
+		var w1 = $('.markdown-body').height();
+		var w2 = $('#sidebar').height();
+		if(w1 > w2) {
+			$('#sidebar').height(w1);
+		};
+	}
+	$(function() {
+		fixSidebarHeight();
+	})
+	$(window).load(function() {
+		fixSidebarHeight();
+	});
+</script>
+
+  
+
+</body>
+
+</html>

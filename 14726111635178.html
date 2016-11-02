@@ -1,0 +1,564 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>
+			 HTML5之元素与标签结构 - M78Snail Blog 
+		</title>
+		 
+		<link href="atom.xml" rel="alternate" title="M78Snail Blog" type="application/atom+xml">
+		<link rel="stylesheet" href="asset/css/foundation.min.css" />
+		<link rel="stylesheet" href="asset/css/docs.css" />
+		<script src="asset/js/vendor/modernizr.js"></script>
+		<script src="asset/js/vendor/jquery.js"></script>
+		<script src="asset/highlightjs/highlight.pack.js"></script>
+		<link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+		<script>
+			hljs.initHighlightingOnLoad();
+		</script>
+		<script type="text/javascript">
+			function before_search() {
+				var searchVal = 'site:m78star.com ' + document.getElementById('search_input').value;
+				document.getElementById('search_q').value = searchVal;
+				return true;
+			}
+		</script>
+	</head>
+
+	<body class="antialiased hide-extras">
+
+		<div class="marketing off-canvas-wrap" data-offcanvas>
+			<div class="inner-wrap">
+
+				<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+					<section class="top-bar-section">
+						<div class="row">
+							<div style="position: relative;width:100%;">
+								<div style="position: absolute; width:100%;">
+									<ul id="main-menu" class="left">
+										<li id="menu_item_index">
+											<a href="index.html">主页</a>
+										</li>
+										<li id="menu_item_archives">
+											<a href="archives.html">文章</a>
+										</li>
+										<li id="menu_item_about">
+											<a href="about.html">关于</a>
+										</li>
+									</ul>
+
+									<ul class="right" id="search-wrap">
+										<li>
+											<form target="_blank" onsubmit="return before_search();" action="http://google.com/search" method="get">
+												<input type="hidden" id="search_q" name="q" value="" />
+												<input tabindex="1" type="search" id="search_input" placeholder="Search" />
+											</form>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</section>
+
+				</nav>
+
+				<nav class="tab-bar show-for-small">
+					<a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+						<span> &nbsp; M78Snail Blog</span>
+					</a>
+				</nav>
+
+				<aside class="left-off-canvas-menu">
+					<ul class="off-canvas-list">
+
+						<li>
+							<a href="index.html">主页</a>
+						</li>
+						<li>
+							<a href="archives.html">文章</a>
+						</li>
+						<li>
+							<a href="about.html">关于</a>
+						</li>
+
+						<li><label>文章分类</label></li>
+
+						
+						<li>
+							<a href="%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html">心情日记</a>
+						</li>
+						
+						<li>
+							<a href="index.html">Android</a>
+						</li>
+						
+						<li>
+							<a href="%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html">工具使用</a>
+						</li>
+						
+						<li>
+							<a href="Mac.html">Mac</a>
+						</li>
+						
+						<li>
+							<a href="%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html">开源框架</a>
+						</li>
+						
+						<li>
+							<a href="HTML5.html">HTML5</a>
+						</li>
+						
+
+					</ul>
+				</aside>
+
+				<a class="exit-off-canvas" href="#"></a>
+
+				<section id="main-content" role="main" class="scroll-container"> <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>HTML5之元素与标签结构</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2016/8/31</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='HTML5.html'>HTML5</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+              &nbsp;<a  class="ds-thread-count" data-thread-key="14726111635178.html" data-count-type="comments" href="14726111635178.html#ds-thread"></a>
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <h2 id="toc_0">一 . HTML5语法</h2>
+
+<h3 id="toc_1">1. DOCTYPE及字符编码</h3>
+
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;zh-CN&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;/head&gt;
+&lt;/html&gt;
+</code></pre>
+
+<span id="more"></span><!-- more -->
+
+<p>　　1⃣️ 字符集 简化为 &lt;!DOCTYPE html&gt;<br/>
+　　2⃣️ 给文档指定语言 &lt; html <strong>lang=&quot;zh-CN&quot;</strong>&gt;<br/>
+　　3⃣️ 字符编码 &lt; meta charset=&quot;utf-8&quot;&gt;</p>
+
+<p>　　定义性语言会变的简单。　　</p>
+
+<h3 id="toc_2">2. 大小写都可以</h3>
+
+<pre><code>&lt;Input tYpe=Radio/&gt;
+</code></pre>
+
+<p>　　这种大小写混用的方式是可以的，但是极其<strong>不推荐</strong>这样写，在 HTML4中也是可以，但是XHTML是不可以大小写混写的。</p>
+
+<h3 id="toc_3">3. 布尔值</h3>
+
+<pre><code>HTML4:需要重写一遍
+　　&lt;input type=&quot;checkbox&quot; checked=&quot;check&quot;/&gt;
+HTML5:不需要重写,默认不写时为false。
+　　&lt;input type=&quot;checkbox&quot; checked/&gt; 为true
+</code></pre>
+
+<h3 id="toc_4">4. 省略引号</h3>
+
+<p>　　属性的双引号可以写成单引号，也可以省略不写，但这两个都不推荐，推荐<strong>双引号</strong>。</p>
+
+<h3 id="toc_5">5. 可以进行省略的标签</h3>
+
+<p><img src="media/14726111635178/14726129455836.png" alt=""/></p>
+
+<p>　　&lt; input&gt; &lt; /input&gt;这一类标签不允许写结束标签，只能写&lt; input /&gt;<br/>
+　　<br/>
+　　可以省略结束符的和可以完全省略的都不建议使用。<br/>
+　</p>
+
+<h2 id="toc_6">二 . 新增及删除的标签</h2>
+
+<h3 id="toc_7">1 . 新增标签</h3>
+
+<h4 id="toc_8">1⃣️ 结构标签</h4>
+
+<p><strong>&lt; section&gt;标签</strong>    　<br/>
+　　&lt; section&gt; 标签定义文档中的节（section、区段）。比如章节、页眉、页脚或文档中的其他部分，可以和其他标签如h1,h2..进行组合。<br/>
+　　　　<br/>
+     <strong>&lt; article&gt;标签</strong><br/>
+　　表示页面中与上下文不相关的独立内容。比如一篇文章。<br/>
+　　<br/>
+<strong>&lt; aside&gt;标签</strong><br/>
+　　表示article内容之外，与article标签内容相辅的信息</p>
+
+<p><strong>&lt; header&gt;标签</strong><br/>
+　　表示页面一个区域快或整个页面的标题<br/>
+　　<br/>
+<strong>&lt; hgroup&gt;标签</strong><br/>
+　　表示对整个页面或一个内容块的标题进行组合。<br/>
+　　　<br/>
+<strong>&lt; footer&gt;标签</strong><br/>
+　　一个页面的脚注。<br/>
+　　<br/>
+<strong>&lt; nav&gt;标签</strong><br/>
+　  表示页面中的链接导航部分。</p>
+
+<p><strong>&lt; figure&gt;标签</strong><br/>
+　  标签规定独立的流内容（图像、图表、照片、代码等等）。</p>
+
+<h4 id="toc_9">2⃣️ 表单标签</h4>
+
+<ul>
+<li>email
+　  必须输入email</li>
+<li>url
+　  必须输入url地址</li>
+<li>number
+　  必须输入数值</li>
+<li>range
+　  必须输入一定范围内数值</li>
+<li>Data Pickers(日期选择器)</li>
+<li>search
+　  用于搜索域，域显示为常规的文本域</li>
+</ul>
+
+<h4 id="toc_10">3⃣️ 媒体标签</h4>
+
+<p><strong>&lt; video&gt;标签</strong> 定义视频。<br/>
+HTML4:</p>
+
+<pre><code>&lt;object type=&quot;video/ogg&quot; data=&quot;move.opv&quot;&gt;
+    &lt;param name=&quot;src&quot; value=&quot;movie.ogv&quot; /&gt;
+&lt;/object&gt;
+</code></pre>
+
+<p>HTML5:</p>
+
+<pre><code>&lt;video src=&quot;moive.ogg&quot; controls=&quot;controls&quot;&gt;video标签&lt;/controls&gt;
+</code></pre>
+
+<p><strong>&lt; audio&gt;标签</strong> 定义音频<br/>
+HTML4:</p>
+
+<pre><code>&lt;object type=&quot;application/ogg&quot; data=&quot;someaudio.wav&quot;&gt;
+        &lt;param name=&quot;src&quot; value=&quot;someaudio.wav&quot; /&gt;
+&lt;/object&gt;
+</code></pre>
+
+<p>HTML5:</p>
+
+<pre><code>&lt;audio src=&quot;someaudio.wav&quot;&gt;audio标签&lt;/audio&gt;
+</code></pre>
+
+<p><strong>&lt; embed&gt;标签</strong><br/>
+用来嵌入内容（各种媒体）。</p>
+
+<p>HTML4:</p>
+
+<pre><code>&lt;object data=&quot;flash.swf&quot; type=&quot;application/x-shockwave-flash&quot;&gt;&lt;/object&gt;
+</code></pre>
+
+<p>HTML5:</p>
+
+<pre><code>&lt;embed src=&quot;flash.swf&quot;&gt;
+</code></pre>
+
+<h4 id="toc_11">4⃣️. 其他功能标签</h4>
+
+<h2 id="toc_12"></h2>
+
+<p><strong>mark 标签</strong><br/>
+代码：</p>
+
+<pre><code>&lt;p&gt; I AM A &lt;mark&gt;BOY&lt;/mark&gt;
+</code></pre>
+
+<p>例子：</p>
+
+<h2 id="toc_13"><p> I AM A <mark>BOY</mark></h2>
+
+<p><strong>progress 标签</strong><br/>
+代码：</p>
+
+<pre><code>&lt;progress max=&quot;100&quot; value=&quot;85&quot;&gt;&lt;span&gt;85&lt;/span&gt;%&lt;/progress&gt;
+</code></pre>
+
+<p>例子：</p>
+
+<h2 id="toc_14"><progress max="100" value="85"><span>85</span>%</progress></h2>
+
+<p><strong>detail标签</strong></p>
+
+<p>代码：</p>
+
+<pre><code>&lt;details open&gt;
+   &lt;summary&gt;Macbook pro&lt;/summary&gt;
+   &lt;ul&gt;
+     &lt;li&gt;iphone1&lt;/li&gt;
+     &lt;li&gt;iphone2&lt;/li&gt;
+     &lt;li&gt;iphone3&lt;/li&gt;
+   &lt;/ul&gt;
+&lt;/details&gt;
+</code></pre>
+
+<p>例子：<br/>
+<details close><br/>
+   <summary>Macbook pro</summary><br/>
+   <ul><br/>
+     <li>iphone1</li><br/>
+     <li>iphone2</li><br/>
+     <li>iphone3</li></p>
+
+<p></ul></p>
+
+<h2 id="toc_15"></details></h2>
+
+<h3 id="toc_16">2 . 删除标签</h3>
+
+<h4 id="toc_17">1⃣️.可以用css代替的标签</h4>
+
+<h4 id="toc_18">2⃣️.不再使用frame</h4>
+
+<h4 id="toc_19">3⃣️.只有个别浏览器支持的标签</h4>
+
+<h4 id="toc_20">4⃣️.其他不常用的标签</h4>
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="14738219571613.html" 
+          title="Previous Post: EasyAndroid (Android面试复习)">&laquo; EasyAndroid (Android面试复习)</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="14725242818263.html" 
+          title="Next Post: otto 框架分析">otto 框架分析 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+              <div class="ds-thread" data-thread-key="14726111635178.html" data-url="m78star.com/14726111635178.html" data-title="HTML5之元素与标签结构"></div>
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+	<div class="hide-for-small">
+		<div id="sidebar" class="sidebar">
+			<div id="site-info" class="site-info">
+				
+				<div class="site-a-logo"><img src="asset/img/icon2.jpeg" /></div>
+				
+				<h1>M78Snail Blog</h1>
+				<div class="site-des">求知若饥，虚心若愚。</div>
+				<div class="social">
+					
+					
+					
+						
+					
+					
+					
+					<a target="_blank" class="weibo" href="http://weibo.com/2811618257/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">Weibo</a>
+					
+					<a target="_blank" class="github" target="_blank" href="https://github.com/M78Snail" title="GitHub">GitHub</a>
+					<a target="_blank" class="email" href="mailto:957708598@qq.com" title="Email">Email</a>
+					<a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+
+				</div>
+			</div>
+
+			
+
+			<div id="site-categories" class="side-item ">
+				<div class="side-header">
+					<h2>文章种类</h2>
+				</div>
+				<div class="side-content">
+
+					<p class="cat-list">
+						
+						<a href="%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html"><strong>心情日记</strong></a>
+						
+						<a href="index.html"><strong>Android</strong></a>
+						
+						<a href="%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html"><strong>工具使用</strong></a>
+						
+						<a href="Mac.html"><strong>Mac</strong></a>
+						
+						<a href="%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html"><strong>开源框架</strong></a>
+						
+						<a href="HTML5.html"><strong>HTML5</strong></a>
+						 
+					</p>
+
+
+				</div>
+			</div>
+
+			<div id="site-categories" class="side-item">
+				<div class="side-header">
+					<h2>最近发表</h2>
+				</div>
+				<div class="side-content">
+					<ul class="posts-list">
+						
+						
+						<li class="post">
+							<a href="14738219571613.html">EasyAndroid (Android面试复习)</a>
+						</li>
+						
+						
+						
+						<li class="post">
+							<a href="14726111635178.html">HTML5之元素与标签结构</a>
+						</li>
+						
+						
+						
+						<li class="post">
+							<a href="14725242818263.html">otto 框架分析</a>
+						</li>
+						
+						
+						
+						<li class="post">
+							<a href="14725217717871.html">xUtils框架中HttpUtils模块源码剖析</a>
+						</li>
+						
+						
+						
+						<li class="post">
+							<a href="14725209008931.html">Git 常用方法</a>
+						</li>
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						 
+					</ul>
+				</div>
+			</div>
+			<div id="site-categories" class="side-item">
+				<div class="side-header">
+					<h2>友情链接</h2>
+				</div>
+				<div class="side-content">
+					<ul class="posts-list">
+						<li class="post">
+							<a href="http://neras.github.io/">蒋正兴blog：neras.github.io/</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div><!-- sidebar -->
+</div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+	<div class="row">
+		<p class="copyright">Copyright &copy; 2015 Powered by
+			<a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; Theme used
+			<a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+	</div>
+</div>
+
+</section>
+</div>
+</div>
+
+ 
+
+<script type="text/javascript">
+	var duoshuoQuery = {
+		short_name: 'm78snail'
+	};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';
+		ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] ||
+			document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+
+
+<script src="asset/js/foundation.min.js"></script>
+<script>
+	$(document).foundation();
+
+	function fixSidebarHeight() {
+		var w1 = $('.markdown-body').height();
+		var w2 = $('#sidebar').height();
+		if(w1 > w2) {
+			$('#sidebar').height(w1);
+		};
+	}
+	$(function() {
+		fixSidebarHeight();
+	})
+	$(window).load(function() {
+		fixSidebarHeight();
+	});
+</script>
+
+  
+
+</body>
+
+</html>
