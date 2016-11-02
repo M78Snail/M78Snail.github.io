@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-<<<<<<< HEAD
   <title><![CDATA[m78star.com]]></title>
   <link href="m78star.com/atom.xml" rel="self"/>
   <link href="m78star.com/"/>
-  <updated>2016-11-02T17:22:25+08:00</updated>
-=======
-  <title><![CDATA[M78Snail Blog]]></title>
-  <link href="m78star.com/atom.xml" rel="self"/>
-  <link href="m78star.com/"/>
-  <updated>2016-09-14T17:11:21+08:00</updated>
->>>>>>> origin/master
+  <updated>2016-11-02T17:30:09+08:00</updated>
   <id>m78star.com/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -21,15 +14,9 @@
   
   <entry>
     <title type="html"><![CDATA[EasyAndroid (Android面试复习)]]></title>
-<<<<<<< HEAD
     <link href="m78star.com/14779863113216.html"/>
     <updated>2016-11-01T15:45:11+08:00</updated>
     <id>m78star.com/14779863113216.html</id>
-=======
-    <link href="m78star.com/14738219571613.html"/>
-    <updated>2016-09-14T10:59:17+08:00</updated>
-    <id>m78star.com/14738219571613.html</id>
->>>>>>> origin/master
     <content type="html"><![CDATA[
 <h2 id="toc_0">一、项目简介</h2>
 
@@ -66,108 +53,10 @@
   </entry>
   
   <entry>
-<<<<<<< HEAD
     <title type="html"><![CDATA[xUtils框架中HttpUtils模块源码剖析]]></title>
     <link href="m78star.com/14779864962440.html"/>
     <updated>2016-11-01T15:48:16+08:00</updated>
     <id>m78star.com/14779864962440.html</id>
-=======
-    <title type="html"><![CDATA[otto 框架分析]]></title>
-    <link href="m78star.com/14725242818263.html"/>
-    <updated>2016-08-30T10:31:21+08:00</updated>
-    <id>m78star.com/14725242818263.html</id>
-    <content type="html"><![CDATA[
-<p>　　最近项目上经常会用到otto框架，它跟EventBus很像，这里希望总结一下：<br/>
-　　</p>
-
-<blockquote>
-<ul>
-<li>运行时动态处理（注解）</li>
-<li>IOC 控制反转</li>
-<li>观察者模式 EventBus模式</li>
-</ul>
-</blockquote>
-
-<p>　　大体上要学习otto框架就是上面三个方面，看着名词很高端？没事，让我一一解释一下。</p>
-
-<span id="more"></span><!-- more -->
-
-<h2 id="toc_0">一 . 运行时动态处理（注解）</h2>
-
-<p>　　我们最初学习安卓的时候最先接触的类恐怕就是Activity了吧，在里面onCreate()这些方法会要求我们重写，在上面会有一个注解@Override,难道仅仅起到注释的作用吗？其实注解分为两种<br/>
-　　① 运行时动态处理：在运行时拿到类的Class对象，然后遍历其方法、变量，判断有无注解声明，然后做一些事情<br/>
-　　② 编译时动态处理：这类注解会在编译的时候，根据注解标识，动态生成一些类或者生成一些xml都可以，在运行时期，这类注解是没有的~~会依靠动态生成的类做一些操作，因为没有反射，效率和直接调用方法没什么区别<br/>
-　　今天我们只研究运行时动态处理。<br/>
-　　有句话说得好，叫<strong>无反射没框架</strong>。<br/>
-　　任何框架都离不开反射，反射以前只在书本上了解过就是运行时获取对象的类方法，变量吗.现在反射在速度上已经有了很大的提高，我们完全不必担心性能方面会变差很多。<br/>
-　　说了半天，你只要记住注解，作为一种标志，可以帮你在你的类加载时替你记住那些你希望以后用来调用的方法和对象。<br/>
-　　在otto中最重要的两个注解就是@Subscribe和@Produce，这两个是什么作用等下再说。</p>
-
-<h2 id="toc_1">二 . IOC 控制反转</h2>
-
-<p>　　什么事IOC控制反转？<br/>
-　　当A类想使用B类的一个方法时，我们传统的做法是new一个B类实例出来，再去调用方法，但是这就使得A,B两个类纠缠在一起。当我们改变了B类时，所有调用了B类的文件我们都需要去改，这样是不是太麻烦，好的做法是写一个主线类，它会自动帮我们去注入（new）,当我们需要改动时，只要改这个主线类就可以了。这个主线类也就是我要提到的otto框架中的Bus类，这是otto最重要的类，它有什么作用？这玩意就是在类加载时调用register，扫描类中复合命名规范的方法，存到一个map，然后post的时候，查找到匹配的方法，反射调用。不理解？等下我们举个例子你就明白了，现在我们先解释完名词。</p>
-
-<h2 id="toc_2">三 . 观察者模式 EventBus模式</h2>
-
-<p>　　otto框架是基于EventBus框架，这是一个是一个发布 / 订阅的事件总线，大家可以看下鸿洋大神的这篇<a href="http://blog.csdn.net/lmj623565791/article/details/40794879">Android EventBus实战 没听过你就out了</a>讲的特别好</p>
-
-<h2 id="toc_3">四 . 应用实战</h2>
-
-<p>　　任何一个App都一定会提供软件更新功能，当我们在更新过程中突然不想更新了，点击了取消，让我们的代码去调用SplashActivity里面的DoCancelUpdate方法。由于我们的下载更新类是写在UpdateManager类里面，那我们怎么做呢，没学会otto框架之前我们可能会在新建UpdateManager时传进去一个Context，这会不会导致Context引发的内存泄漏，我们需要很小心的检查，现在我们使用otto框架就不需要担心这个问题，因为他们两人几乎没有交集，他们都是通过Bus类来沟通。废话不多说上代码：</p>
-
-<h3 id="toc_4">1 . SplashActivity中让bus注册，并订阅事件</h3>
-
-<pre><code class="language-python">   @Override
-    protected void onCreate(Bundle arg0) {
-        super.onCreate(arg0);
-        BusProvider.getInstance().register(this);
-        setContentView(getLayoutResource());
-    }
-    
-    @Subscribe
-    public void DoCancelUpdate(CancelUpdateEvent event){
-        continueRun();
-    } 
-</code></pre>
-
-<h3 id="toc_5">2 . BusProvider为一个单例模式类，Bus最好只有一个</h3>
-
-<pre><code class="language-python">public class BusProvider {
-
-    public static Bus bus;
-
-    public static Bus getInstance() {
-        if (bus == null) {
-            bus = new Bus(ThreadEnforcer.ANY);
-        }
-        return bus;
-    }
-
-    private BusProvider() {
-    
-    }
-}
-</code></pre>
-
-<h3 id="toc_6">3 . UpdateManager类中使用post发出事件，凡是订阅了的都会调用</h3>
-
-<pre><code class="language-python">BusProvider.bus.post(new CancelUpdateEvent());
-</code></pre>
-
-<p>　　至此算是完成了otto框架的总结，分享一些自己在找资料时遇到的大神博客文章：<br/>
-　　<a href="http://blog.csdn.net/lmj623565791/article/details/40794879">Android EventBus实战 没听过你就out了</a><br/>
-　　<a href="http://blog.csdn.net/lmj623565791/article/details/39269193">Android 进阶 教你打造 Android 中的 IOC 框架</a></p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[xUtils框架中HttpUtils模块源码剖析]]></title>
-    <link href="m78star.com/14725217717871.html"/>
-    <updated>2016-08-30T09:49:31+08:00</updated>
-    <id>m78star.com/14725217717871.html</id>
->>>>>>> origin/master
     <content type="html"><![CDATA[
 <p>　　xUtils是github上的一个Android开源工具项目，xUtils包含了很多实用的android工具，其中HttpUtils模块是处理网络连接部分。在我上一个项目《数据铁笼》中经常用到，作为与服务器连接的工具，所以想要深入学习一下。<br/>
 　　项目最近更新到了3.0，我项目中用到的还是2.6有些方面可能和最新的有出入，请以作者最新的代码为准。<br/>
@@ -457,7 +346,6 @@ case UPDATE_SUCCESS:
   </entry>
   
   <entry>
-<<<<<<< HEAD
     <title type="html"><![CDATA[xUtils框架中HttpUtils模块源码剖析]]></title>
     <link href="m78star.com/14779862326092.html"/>
     <updated>2016-11-01T15:43:52+08:00</updated>
@@ -746,137 +634,15 @@ case UPDATE_SUCCESS:
 </code></pre>
 
 <p>　　xUtils里面还有很多细节我没有说到，大家可以自己去研究下。</p>
-=======
-    <title type="html"><![CDATA[Git 常用方法]]></title>
-    <link href="m78star.com/14725209008931.html"/>
-    <updated>2016-08-30T09:35:00+08:00</updated>
-    <id>m78star.com/14725209008931.html</id>
-    <content type="html"><![CDATA[
-<p>下面总结一下自己在学习Git时用到的一些语法<br/>
-更多详细内容请浏览：<a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000">Git教程 - 廖雪峰的官方网站</a></p>
-
-<h2 id="toc_0">一 . 修改文件</h2>
-
-<pre><code>git init：创建git
-git add readme.txt ：将readme.txt变化提交到库
-git status ：获取修改的状态
-git diff readme.txt：获取我们与库中哪里不同
-git commit :将修改提交到库中
-</code></pre>
-
-<span id="more"></span><!-- more -->
-
-<h2 id="toc_1">二 . 回溯版本</h2>
-
-<pre><code>git log：显示从最近到最远的提交日志
-git log --pretty=oneline ：简化日志
-git reset --hard HEAD^ ：HEAD代表当前版本，一个代表上一版
-git reflog：获取记录的commit id
-git reset --hard (commit id) :回溯到指定id的版本
-</code></pre>
-
-<h2 id="toc_2">三 . 撤销修改</h2>
-
-<pre><code>git checkout -- file :撤销回到最近一次git commit或git add时的状态
-git reset HEAD file : 把暂存区的修改撤销掉
-</code></pre>
-
-<h2 id="toc_3">四 . 删除文件</h2>
-
-<pre><code>rm test.txt :删除test.txt
-git rm test.txt：将删除操作提交到暂存区，commit之后版本里的删除
-git checkout -- test.txt :用版本库里的版本替换工作区的版本
-</code></pre>
-
-<h2 id="toc_4">五 . 远程库</h2>
-
-<pre><code>git remote add origin git@github.com:username/name.git :添加远程库
-git push -u origin master :第一次将本地库传送到远程库
-git push origin master :将本地库传送到远程库 #### 2.从远程库克隆
-git clone git@github.com:username/name.git :克隆一个本地库
-</code></pre>
-
-<h2 id="toc_5">六 . 分支管理</h2>
-
-<h3 id="toc_6">1. 创建与合并分支</h3>
-
-<pre><code>git checkout -b dev :git checkout 命令加上-b参数表示创建分支并切换
-git branch : 查看当前分支,列出所有分支
-git checkout master :切换回主分支
-git merge dev ：合并指定分支dev到当前分支
-git branch -d dev ：删除分支dev
-</code></pre>
-
-<h3 id="toc_7">2. 解决冲突</h3>
-
-<pre><code>git log ：看到分支的合并情况
-git merge --no-ff -m &quot;merge with no-ff&quot; dev :加上--no-ff参数就可以用普通模式合并，合并后的历史有分支
-</code></pre>
-
-<h3 id="toc_8">3. Bug分支</h3>
-
-<pre><code>git stash :把当前工作现场“储藏”起来，以后恢复现场后继续工作
-git stash list :查看stash
-git stash apply :恢复工作，但是恢复后，stash内容并不删除
-git stash drop :删除stash
-git stash pop ：恢复的同时把stash内容也删了
-</code></pre>
-
-<h3 id="toc_9">4. Feature分支</h3>
-
-<h4 id="toc_10">(1). 多人协作</h4>
-
-<p>先用git pull把最新的提交从origin/dev抓下来,遇到错误的话<br/>
-git branch --set-upstream dev origin/dev :指定本地dev分支与远程origin/dev分支的链接，再pull<br/>
-合并冲突，需要手动解决<br/>
-解决后，提交，再push : git push origin dev。<br/>
-git clone只能clone远程库的master分支，无法clone所有分支，解决办法如下：</p>
-
-<pre><code>1. 找一个干净目录，假设是git_work
-2. cd git_work
-3. git clone http://myrepo.xxx.com/project/.git ,这样在git_work目录下得到一个project子目录
-4. cd project
-5. git branch -a，列出所有分支名称如下： remotes/origin/dev remotes/origin/release
-6. git checkout -b dev origin/dev，作用是checkout远程的dev分支，在本地起名为dev分支，并切换到本地的dev分支
-7. git checkout -b release origin/release，作用参见上一步解释
-8. git checkout dev，切换回dev分支，并开始开发。
-</code></pre>
-
-<h4 id="toc_11">(2). 多人协作的工作模式通常是这样：</h4>
-
-<p>　　首先，可以试图用git push origin branch-name推送自己的修改；</p>
-
-<p>　　如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；</p>
-
-<p>　　如果合并有冲突，则解决冲突，并在本地提交；没有冲突或者解决掉冲突后，再用git push origin branch-name推送就能成功！如果git pull提示“no tracking information”，则说明本地分支和远程分支的链接关系没有创建，用命令git branch --set-upstream branch-name origin/branch-name。</p>
-
-<p>　　这就是多人协作的工作模式，一旦熟悉了，就非常简单。</p>
-
-<h2 id="toc_12">七. Github 的使用</h2>
-
-<p>　　如何参与一个开源项目呢？比如人气极高的bootstrap项目，这是一个非常强大的CSS框架，你可以访问它的项目主页<a href="https://github.com/twbs/bootstrap">https://github.com/twbs/bootstrap</a><br/>
-点“Fork”就在自己的账号下克隆了一个bootstrap仓库，然后，从自己的账号下clone：</p>
-
-<p>git clone <a href="mailto:git@github.com">git@github.com</a>:michaelliao/bootstrap.git<br/>
-　　一定要从自己的账号下clone仓库，这样你才能推送修改。如果从bootstrap的作者的仓库地址<a href="mailto:git@github.com">git@github.com</a>:twbs/bootstrap.git克隆，因为没有权限，你将不能推送修改。<br/>
-　　如果你想修复bootstrap的一个bug，或者新增一个功能，立刻就可以开始干活，干完后，往自己的仓库推送。<br/>
-　　如果你希望bootstrap的官方库能接受你的修改，你就可以在GitHub上发起一个pull request。当然，对方是否接受你的pull request就不一定了。</p>
->>>>>>> origin/master
 
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Android技术积累:开发规范]]></title>
-<<<<<<< HEAD
     <link href="m78star.com/14779857522261.html"/>
     <updated>2016-11-01T15:35:52+08:00</updated>
     <id>m78star.com/14779857522261.html</id>
-=======
-    <link href="m78star.com/14725200443130.html"/>
-    <updated>2016-08-30T09:20:44+08:00</updated>
-    <id>m78star.com/14725200443130.html</id>
->>>>>>> origin/master
     <content type="html"><![CDATA[
 <h2 id="toc_0">一. 命名规范</h2>
 
@@ -1158,7 +924,6 @@ private String introduce;// 券简介
   </entry>
   
   <entry>
-<<<<<<< HEAD
     <title type="html"><![CDATA[otto 框架分析]]></title>
     <link href="m78star.com/14779857522449.html"/>
     <updated>2016-11-01T15:35:52+08:00</updated>
@@ -1254,12 +1019,6 @@ private String introduce;// 券简介
     <link href="m78star.com/14779858228537.html"/>
     <updated>2016-11-01T15:37:02+08:00</updated>
     <id>m78star.com/14779858228537.html</id>
-=======
-    <title type="html"><![CDATA[镇远旅行游记]]></title>
-    <link href="m78star.com/14708809297450.html"/>
-    <updated>2016-08-11T10:02:09+08:00</updated>
-    <id>m78star.com/14708809297450.html</id>
->>>>>>> origin/master
     <content type="html"><![CDATA[
 <p>2016.8.5镇远旅游小记。</p>
 
@@ -1334,7 +1093,6 @@ private String introduce;// 券简介
   </entry>
   
   <entry>
-<<<<<<< HEAD
     <title type="html"><![CDATA[Git 常用方法]]></title>
     <link href="m78star.com/14779861870049.html"/>
     <updated>2016-11-01T15:43:07+08:00</updated>
@@ -1458,12 +1216,6 @@ git clone只能clone远程库的master分支，无法clone所有分支，解决�
     <link href="m78star.com/14779857522080.html"/>
     <updated>2016-11-01T15:35:52+08:00</updated>
     <id>m78star.com/14779857522080.html</id>
-=======
-    <title type="html"><![CDATA[实用笔记－WebView大讲堂（二）～性能优化]]></title>
-    <link href="m78star.com/14694992191842.html"/>
-    <updated>2016-07-26T10:13:39+08:00</updated>
-    <id>m78star.com/14694992191842.html</id>
->>>>>>> origin/master
     <content type="html"><![CDATA[
 <p>上一节我总结了下WebView的实用用法：<a href="http://m78star.com/14693271804281.html">实用笔记－WebView大讲堂</a>。这一节我想总结下针对WebView的优化。</p>
 
@@ -1587,15 +1339,9 @@ if(appCacheDir.exists()){
   
   <entry>
     <title type="html"><![CDATA[实用笔记－WebView大讲堂（一）]]></title>
-<<<<<<< HEAD
     <link href="m78star.com/14779857521960.html"/>
     <updated>2016-11-01T15:35:52+08:00</updated>
     <id>m78star.com/14779857521960.html</id>
-=======
-    <link href="m78star.com/14693271804281.html"/>
-    <updated>2016-07-24T10:26:20+08:00</updated>
-    <id>m78star.com/14693271804281.html</id>
->>>>>>> origin/master
     <content type="html"><![CDATA[
 <p>最近手头的项目界面要改成HTML5的，以前自己对于WebView仅仅只是一知半解，这次想好好总结下，我的博客不喜欢讲太多没用的东西，我追求实用主义，所以我的技术博客，永远只有两个主题：怎么用和怎么优化。典型的拿来主义。</p>
 
@@ -1766,15 +1512,9 @@ class JsInteration {
   
   <entry>
     <title type="html"><![CDATA[用力的人跑不远]]></title>
-<<<<<<< HEAD
     <link href="m78star.com/14779864279806.html"/>
     <updated>2016-11-01T15:47:07+08:00</updated>
     <id>m78star.com/14779864279806.html</id>
-=======
-    <link href="m78star.com/14691773229465.html"/>
-    <updated>2016-07-22T16:48:42+08:00</updated>
-    <id>m78star.com/14691773229465.html</id>
->>>>>>> origin/master
     <content type="html"><![CDATA[
 <p>写在前面：有阶段的自己，会用蛮力去学习一些东西，就是这东西不管是否适合目前自己的知识体系， 觉得学了之后会更牛逼就去学，但是这样的东西往往学了记不住。 学习的过程越用力反而显得越吃力， 太吃力的事情，自然就无法有恒心， 这就是很多人会觉得自己做事总是无法持之以恒的原因。</p>
 
@@ -1845,15 +1585,9 @@ class JsInteration {
   
   <entry>
     <title type="html"><![CDATA[Android Studio快捷键－Mac版]]></title>
-<<<<<<< HEAD
     <link href="m78star.com/14779858991590.html"/>
     <updated>2016-11-01T15:38:19+08:00</updated>
     <id>m78star.com/14779858991590.html</id>
-=======
-    <link href="m78star.com/14691586966343.html"/>
-    <updated>2016-07-22T11:38:16+08:00</updated>
-    <id>m78star.com/14691586966343.html</id>
->>>>>>> origin/master
     <content type="html"><![CDATA[
 <p>从windows转到mac需要改变很多，以前在Android Studio培养的操作习惯也要跟着改变。为了以后工作方便打算总结一下Mac下的Android Studio的一些快捷键。</p>
 
@@ -1933,15 +1667,9 @@ class JsInteration {
   
   <entry>
     <title type="html"><![CDATA[谈谈新买的Mac和最近的生活]]></title>
-<<<<<<< HEAD
     <link href="m78star.com/14779858228757.html"/>
     <updated>2016-11-01T15:37:02+08:00</updated>
     <id>m78star.com/14779858228757.html</id>
-=======
-    <link href="m78star.com/14690075075215.html"/>
-    <updated>2016-07-20T17:38:27+08:00</updated>
-    <id>m78star.com/14690075075215.html</id>
->>>>>>> origin/master
     <content type="html"><![CDATA[
 <p>大学毕业也快一个月了，脱离了学生的身份，我也正式进入了社会为了生计而打拼。从学生变成打工仔，对于我来说其实影响不是多么大，也许是因为自己本来就不是什么循规蹈矩的好学生吧。<br/>
     在公司实习的时候我就知道公司给每个人办公配的电脑是笔记本，说实话我挺失望的，不过公司有另外一个福利就是自己买电脑公司可以报销4000，前提是3年不能离开公司，这一点倒是挺爽的，因为我所属于的部门出差比较多，所以我打算入手一台MacBook Pro。下面是我用了3天的使用体验。</p>
