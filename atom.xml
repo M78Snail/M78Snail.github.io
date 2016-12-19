@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[m78star.com]]></title>
-  <link href="m78star.com/atom.xml" rel="self"/>
-  <link href="m78star.com/"/>
-  <updated>2016-12-14T10:57:05+08:00</updated>
-  <id>m78star.com/</id>
+  <title><![CDATA[m78snail]]></title>
+  <link href="m78snail.com/atom.xml" rel="self"/>
+  <link href="m78snail.com/"/>
+  <updated>2016-12-19T15:27:29+08:00</updated>
+  <id>m78snail.com/</id>
   <author>
     <name><![CDATA[]]></name>
     
@@ -14,9 +14,9 @@
   
   <entry>
     <title type="html"><![CDATA[EasyAndroid (Android面试复习)]]></title>
-    <link href="m78star.com/14779863113216.html"/>
+    <link href="m78snail.com/14779863113216.html"/>
     <updated>2016-11-01T15:45:11+08:00</updated>
-    <id>m78star.com/14779863113216.html</id>
+    <id>m78snail.com/14779863113216.html</id>
     <content type="html"><![CDATA[
 <h2 id="toc_0">一、项目简介</h2>
 
@@ -54,9 +54,9 @@
   
   <entry>
     <title type="html"><![CDATA[xUtils框架中HttpUtils模块源码剖析]]></title>
-    <link href="m78star.com/14779864962440.html"/>
+    <link href="m78snail.com/14779864962440.html"/>
     <updated>2016-11-01T15:48:16+08:00</updated>
-    <id>m78star.com/14779864962440.html</id>
+    <id>m78snail.com/14779864962440.html</id>
     <content type="html"><![CDATA[
 <p>　　xUtils是github上的一个Android开源工具项目，xUtils包含了很多实用的android工具，其中HttpUtils模块是处理网络连接部分。在我上一个项目《数据铁笼》中经常用到，作为与服务器连接的工具，所以想要深入学习一下。<br/>
 　　项目最近更新到了3.0，我项目中用到的还是2.6有些方面可能和最新的有出入，请以作者最新的代码为准。<br/>
@@ -347,9 +347,9 @@ case UPDATE_SUCCESS:
   
   <entry>
     <title type="html"><![CDATA[Android技术积累:开发规范]]></title>
-    <link href="m78star.com/14779857522261.html"/>
+    <link href="m78snail.com/14779857522261.html"/>
     <updated>2016-11-01T15:35:52+08:00</updated>
-    <id>m78star.com/14779857522261.html</id>
+    <id>m78snail.com/14779857522261.html</id>
     <content type="html"><![CDATA[
 <h2 id="toc_0">一. 命名规范</h2>
 
@@ -632,9 +632,9 @@ private String introduce;// 券简介
   
   <entry>
     <title type="html"><![CDATA[otto 框架分析]]></title>
-    <link href="m78star.com/14779857522449.html"/>
+    <link href="m78snail.com/14779857522449.html"/>
     <updated>2016-11-01T15:35:52+08:00</updated>
-    <id>m78star.com/14779857522449.html</id>
+    <id>m78snail.com/14779857522449.html</id>
     <content type="html"><![CDATA[
 <p>　　最近项目上经常会用到otto框架，它跟EventBus很像，这里希望总结一下：<br/>
 　　</p>
@@ -723,9 +723,9 @@ private String introduce;// 券简介
   
   <entry>
     <title type="html"><![CDATA[镇远旅行游记]]></title>
-    <link href="m78star.com/14779858228537.html"/>
+    <link href="m78snail.com/14779858228537.html"/>
     <updated>2016-11-01T15:37:02+08:00</updated>
-    <id>m78star.com/14779858228537.html</id>
+    <id>m78snail.com/14779858228537.html</id>
     <content type="html"><![CDATA[
 <p>2016.8.5镇远旅游小记。</p>
 
@@ -801,9 +801,9 @@ private String introduce;// 券简介
   
   <entry>
     <title type="html"><![CDATA[Git 常用方法]]></title>
-    <link href="m78star.com/14779861870049.html"/>
+    <link href="m78snail.com/14779861870049.html"/>
     <updated>2016-11-01T15:43:07+08:00</updated>
-    <id>m78star.com/14779861870049.html</id>
+    <id>m78snail.com/14779861870049.html</id>
     <content type="html"><![CDATA[
 <p>下面总结一下自己在学习Git时用到的一些语法<br/>
 更多详细内容请浏览：<a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000">Git教程 - 廖雪峰的官方网站</a></p>
@@ -920,9 +920,9 @@ git clone只能clone远程库的master分支，无法clone所有分支，解决�
   
   <entry>
     <title type="html"><![CDATA[实用笔记－WebView大讲堂（二）～性能优化]]></title>
-    <link href="m78star.com/14779857522080.html"/>
+    <link href="m78snail.com/14779857522080.html"/>
     <updated>2016-11-01T15:35:52+08:00</updated>
-    <id>m78star.com/14779857522080.html</id>
+    <id>m78snail.com/14779857522080.html</id>
     <content type="html"><![CDATA[
 <p>上一节我总结了下WebView的实用用法：<a href="http://m78star.com/14693271804281.html">实用笔记－WebView大讲堂</a>。这一节我想总结下针对WebView的优化。</p>
 
@@ -1046,9 +1046,9 @@ if(appCacheDir.exists()){
   
   <entry>
     <title type="html"><![CDATA[实用笔记－WebView大讲堂（一）]]></title>
-    <link href="m78star.com/14779857521960.html"/>
+    <link href="m78snail.com/14779857521960.html"/>
     <updated>2016-11-01T15:35:52+08:00</updated>
-    <id>m78star.com/14779857521960.html</id>
+    <id>m78snail.com/14779857521960.html</id>
     <content type="html"><![CDATA[
 <p>最近手头的项目界面要改成HTML5的，以前自己对于WebView仅仅只是一知半解，这次想好好总结下，我的博客不喜欢讲太多没用的东西，我追求实用主义，所以我的技术博客，永远只有两个主题：怎么用和怎么优化。典型的拿来主义。</p>
 
@@ -1219,9 +1219,9 @@ class JsInteration {
   
   <entry>
     <title type="html"><![CDATA[用力的人跑不远]]></title>
-    <link href="m78star.com/14779864279806.html"/>
+    <link href="m78snail.com/14779864279806.html"/>
     <updated>2016-11-01T15:47:07+08:00</updated>
-    <id>m78star.com/14779864279806.html</id>
+    <id>m78snail.com/14779864279806.html</id>
     <content type="html"><![CDATA[
 <p>写在前面：有阶段的自己，会用蛮力去学习一些东西，就是这东西不管是否适合目前自己的知识体系， 觉得学了之后会更牛逼就去学，但是这样的东西往往学了记不住。 学习的过程越用力反而显得越吃力， 太吃力的事情，自然就无法有恒心， 这就是很多人会觉得自己做事总是无法持之以恒的原因。</p>
 
@@ -1292,9 +1292,9 @@ class JsInteration {
   
   <entry>
     <title type="html"><![CDATA[Android Studio快捷键－Mac版]]></title>
-    <link href="m78star.com/14779858991590.html"/>
+    <link href="m78snail.com/14779858991590.html"/>
     <updated>2016-11-01T15:38:19+08:00</updated>
-    <id>m78star.com/14779858991590.html</id>
+    <id>m78snail.com/14779858991590.html</id>
     <content type="html"><![CDATA[
 <p>从windows转到mac需要改变很多，以前在Android Studio培养的操作习惯也要跟着改变。为了以后工作方便打算总结一下Mac下的Android Studio的一些快捷键。</p>
 
@@ -1374,9 +1374,9 @@ class JsInteration {
   
   <entry>
     <title type="html"><![CDATA[谈谈新买的Mac和最近的生活]]></title>
-    <link href="m78star.com/14779858228757.html"/>
+    <link href="m78snail.com/14779858228757.html"/>
     <updated>2016-11-01T15:37:02+08:00</updated>
-    <id>m78star.com/14779858228757.html</id>
+    <id>m78snail.com/14779858228757.html</id>
     <content type="html"><![CDATA[
 <p>大学毕业也快一个月了，脱离了学生的身份，我也正式进入了社会为了生计而打拼。从学生变成打工仔，对于我来说其实影响不是多么大，也许是因为自己本来就不是什么循规蹈矩的好学生吧。<br/>
     在公司实习的时候我就知道公司给每个人办公配的电脑是笔记本，说实话我挺失望的，不过公司有另外一个福利就是自己买电脑公司可以报销4000，前提是3年不能离开公司，这一点倒是挺爽的，因为我所属于的部门出差比较多，所以我打算入手一台MacBook Pro。下面是我用了3天的使用体验。</p>
