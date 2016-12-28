@@ -4,7 +4,7 @@
   <title><![CDATA[m78snail]]></title>
   <link href="m78snail.com/atom.xml" rel="self"/>
   <link href="m78snail.com/"/>
-  <updated>2016-12-26T17:43:01+08:00</updated>
+  <updated>2016-12-26T17:43:29+08:00</updated>
   <id>m78snail.com/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -23,8 +23,7 @@
 <p>　　<a href="https://github.com/M78Snail/EasyAndroid">项目源码：EasyAndroid</a><br/>
 　　EasyAndroid是一款专门面向Android开发者的面试复习与关注业内动态的手机App，里面包含知识体系，业内动态，开发技术周报三大模块。<br/>
 　　<br/>
-<strong>特点：</strong><br/>
-<img src="media/14737385475257/14738207920248.jpg" alt="" class="mw_img_center" style="width:300px;display: block; clear:both; margin: 0 auto;"/></p>
+<strong>特点：</strong></p>
 
 <ul>
 <li><p>知识点归类明细，每一个知识点采用的博文都是经过精心的挑选和改进，确保一个知识点只保留一篇博文。</p></li>
@@ -34,6 +33,8 @@
 </ul>
 
 <span id="more"></span><!-- more -->
+
+<p><img src="media/14737385475257/14738207920248.jpg" alt="" class="mw_img_center" style="width:300px;display: block; clear:both; margin: 0 auto;"/></p>
 
 <h2 id="toc_1">二、第三方引用</h2>
 
