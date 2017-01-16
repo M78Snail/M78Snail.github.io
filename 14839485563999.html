@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  otto 框架分析 - m78snail
+  Dagger2 使用详解(2)--注解 - m78snail
   
   </title>
   
@@ -122,23 +122,21 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>otto 框架分析</h1>
+          <h1>Dagger2 使用详解(2)--注解</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2016/8/31</span>
+          <span class="date">2017/1/9</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html'>开源框架</a></span>
-          
-              <span class="posted-in"><a href='Android.html'>Android</a></span>
+              <span class="posted-in"><a href='Dagger2.html'>Dagger2</a></span>
            
          
           <span class="comments">
             
 
             
-              &nbsp;<a  class="ds-thread-count" data-thread-key="14779857522449.html" data-count-type="comments" href="14779857522449.html#ds-thread"></a>
+              &nbsp;<a  class="ds-thread-count" data-thread-key="14839485563999.html" data-count-type="comments" href="14839485563999.html#ds-thread"></a>
             
           </span>
 
@@ -146,87 +144,42 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>　　最近项目上经常会用到otto框架，它跟EventBus很像，这里希望总结一下：<br/>
-　　</p>
-
-<blockquote>
-<ul>
-<li>运行时动态处理（注解）</li>
-<li>IOC 控制反转</li>
-<li>观察者模式 EventBus模式</li>
-</ul>
-</blockquote>
-
-<p>　　大体上要学习otto框架就是上面三个方面，看着名词很高端？没事，让我一一解释一下。</p>
+      <p>　　无论是构造函数注入还是接口注入，都避免不了要编写大量的模板代码。机智的猿猿们当然不开心做这些重复性的工作，于是各种依赖注入框架应用而生。但是这么多的依赖注入框架为什么我们却偏爱Dagger2呢？我们先从Spring中的控制反转（IOC）说起。</p>
 
 <span id="more"></span><!-- more -->
 
-<h2 id="toc_0">一 . 运行时动态处理（注解）</h2>
+<p>　<br/>
+　　谈起依赖注入，做过J2EE开发的同学一定会想起Spring IOC，那通过迷之XML来配置依赖的方式真的很让人讨厌；而且XML与Java代码分离也导致代码链难以追踪。之后更加先进的Guice（Android端也有个RoboGuice）出现了，我们不再需要通过XML来配置依赖，但其运行时实现注入的方式让我们在追踪和定位错误的时候却又万分痛苦。开篇提到过Dagger就是受Guice的启发而开发出来的；Dagger继承了前辈的思想，在性能又碾压了它的前辈Guice，可谓是长江后浪推前浪，前浪死在沙滩上。</p>
 
-<p>　　我们最初学习安卓的时候最先接触的类恐怕就是Activity了吧，在里面onCreate()这些方法会要求我们重写，在上面会有一个注解@Override,难道仅仅起到注释的作用吗？其实注解分为两种<br/>
-　　① 运行时动态处理：在运行时拿到类的Class对象，然后遍历其方法、变量，判断有无注解声明，然后做一些事情<br/>
-　　② 编译时动态处理：这类注解会在编译的时候，根据注解标识，动态生成一些类或者生成一些xml都可以，在运行时期，这类注解是没有的~~会依靠动态生成的类做一些操作，因为没有反射，效率和直接调用方法没什么区别<br/>
-　　今天我们只研究运行时动态处理。<br/>
-　　有句话说得好，叫<strong>无反射没框架</strong>。<br/>
-　　任何框架都离不开反射，反射以前只在书本上了解过就是运行时获取对象的类方法，变量吗.现在反射在速度上已经有了很大的提高，我们完全不必担心性能方面会变差很多。<br/>
-　　说了半天，你只要记住注解，作为一种标志，可以帮你在你的类加载时替你记住那些你希望以后用来调用的方法和对象。<br/>
-　　在otto中最重要的两个注解就是@Subscribe和@Produce，这两个是什么作用等下再说。</p>
+<p>　　又如开篇我在简介中说到的，Dagger是一种半静态半运行时的DI框架，虽说依赖注入是完全静态的，但是生成有向无环图(DAG)还是基于反射来实现，这无论在大型的服务端应用还是在Android应用上都不是最优方案。升级版的Dagger2解决了这一问题，从半静态变为完全静态，从Map式的API变成申明式API（@Module），生成的代码更优雅高效；而且一旦出错我们在编译期间就能发现。所以Dagger2对开发者的更加友好了，当然Dagger2也因此丧失了一些灵活性，但总体来说利还是远远大于弊的。</p>
 
-<h2 id="toc_1">二 . IOC 控制反转</h2>
+<p>　　前面提到这种A B C D E连续依赖的问题，一旦E的创建方式发生了改变就会引发连锁反应，可能会导致A B C D都需要做针对性的修改；但是骚年，你以为为这仅仅是工作量的问题吗？更可怕的是我们创建A时需要按顺序先创建E D C B四个对象，而且必须保证顺序上是正确的。Dagger2就很好的解决了这一问题（不只是Dagger2，在其他DI框架中开发者同样不需要关注这些问题）。</p>
 
-<p>　　什么事IOC控制反转？<br/>
-　　当A类想使用B类的一个方法时，我们传统的做法是new一个B类实例出来，再去调用方法，但是这就使得A,B两个类纠缠在一起。当我们改变了B类时，所有调用了B类的文件我们都需要去改，这样是不是太麻烦，好的做法是写一个主线类，它会自动帮我们去注入（new）,当我们需要改动时，只要改这个主线类就可以了。这个主线类也就是我要提到的otto框架中的Bus类，这是otto最重要的类，它有什么作用？这玩意就是在类加载时调用register，扫描类中复合命名规范的方法，存到一个map，然后post的时候，查找到匹配的方法，反射调用。不理解？等下我们举个例子你就明白了，现在我们先解释完名词。</p>
+<h2 id="toc_0">Dagger2注解</h2>
 
-<h2 id="toc_2">三 . 观察者模式 EventBus模式</h2>
+<p>　　开篇我们就提到Dagger2是基于Java注解来实现依赖注入的，那么在正式使用之前我们需要先了解下Dagger2中的注解。Dagger2使用过程中我们通常接触到的注解主要包括：@Inject, @Module, @Provides, @Component, @Qulifier, @Scope, @Singleten。</p>
 
-<p>　　otto框架是基于EventBus框架，这是一个是一个发布 / 订阅的事件总线，大家可以看下鸿洋大神的这篇<a href="http://blog.csdn.net/lmj623565791/article/details/40794879">Android EventBus实战 没听过你就out了</a>讲的特别好</p>
+<ul>
+<li><p>@Inject：@Inject有两个作用，一是用来标记需要依赖的变量，以此告诉Dagger2为它提供依赖；二是用来标记构造函数，Dagger2通过@Inject注解可以在需要这个类实例的时候来找到这个构造函数并把相关实例构造出来，以此来为被@Inject标记了的变量提供依赖；</p></li>
+<li><p>@Module：@Module用于标注提供依赖的类。你可能会有点困惑，上面不是提到用@Inject标记构造函数就可以提供依赖了么，为什么还需要@Module？很多时候我们需要提供依赖的构造函数是第三方库的，我们没法给它加上@Inject注解，又比如说提供以来的构造函数是带参数的，如果我们之所简单的使用@Inject标记它，那么他的参数又怎么来呢？@Module正是帮我们解决这些问题的。</p></li>
+<li><p>@Provides：@Provides用于标注Module所标注的类中的方法，该方法在需要提供依赖时被调用，从而把预先提供好的对象当做依赖给标注了@Inject的变量赋值；</p></li>
+<li><p>@Component：@Component用于标注接口，是依赖需求方和依赖提供方之间的桥梁。被Component标注的接口在编译时会生成该接口的实现类（如果@Component标注的接口为CarComponent，则编译期生成的实现类为DaggerCarComponent）,我们通过调用这个实现类的方法完成注入；</p></li>
+<li><p>@Qulifier：@Qulifier用于自定义注解，也就是说@Qulifier就如同Java提供的几种基本元注解一样用来标记注解类。我们在使用@Module来标注提供依赖的方法时，方法名我们是可以随便定义的（虽然我们定义方法名一般以provide开头，但这并不是强制的，只是为了增加可读性而已）。那么Dagger2怎么知道这个方法是为谁提供依赖呢？答案就是返回值的类型，Dagger2根据返回值的类型来决定为哪个被@Inject标记了的变量赋值。但是问题来了，一旦有多个一样的返回类型Dagger2就懵逼了。@Qulifier的存在正式为了解决这个问题，我们使用@Qulifier来定义自己的注解，然后通过自定义的注解去标注提供依赖的方法和依赖需求方（也就是被@Inject标注的变量），这样Dagger2就知道为谁提供依赖了。----一个更为精简的定义：当类型不足以鉴别一个依赖的时候，我们就可以使用这个注解标示；</p></li>
+<li><p>@Scope：@Scope同样用于自定义注解，我能可以通过@Scope自定义的注解来限定注解作用域，实现局部的单例；</p></li>
+<li><p>@Singleton：@Singleton其实就是一个通过@Scope定义的注解，我们一般通过它来实现全局单例。但实际上它并不能提前全局单例，是否能提供全局单例还要取决于对应的Component是否为一个全局对象。</p></li>
+</ul>
 
-<h2 id="toc_3">四 . 应用实战</h2>
+<p>　　我们提到@Inject和@Module都可以提供依赖，那如果我们即在构造函数上通过标记@Inject提供依赖，有通过@Module提供依赖Dagger2会如何选择呢？具体规则如下：</p>
 
-<p>　　任何一个App都一定会提供软件更新功能，当我们在更新过程中突然不想更新了，点击了取消，让我们的代码去调用SplashActivity里面的DoCancelUpdate方法。由于我们的下载更新类是写在UpdateManager类里面，那我们怎么做呢，没学会otto框架之前我们可能会在新建UpdateManager时传进去一个Context，这会不会导致Context引发的内存泄漏，我们需要很小心的检查，现在我们使用otto框架就不需要担心这个问题，因为他们两人几乎没有交集，他们都是通过Bus类来沟通。废话不多说上代码：</p>
-
-<h3 id="toc_4">1 . SplashActivity中让bus注册，并订阅事件</h3>
-
-<pre><code class="language-python">   @Override
-    protected void onCreate(Bundle arg0) {
-        super.onCreate(arg0);
-        BusProvider.getInstance().register(this);
-        setContentView(getLayoutResource());
-    }
-    
-    @Subscribe
-    public void DoCancelUpdate(CancelUpdateEvent event){
-        continueRun();
-    } 
-</code></pre>
-
-<h3 id="toc_5">2 . BusProvider为一个单例模式类，Bus最好只有一个</h3>
-
-<pre><code class="language-python">public class BusProvider {
-
-    public static Bus bus;
-
-    public static Bus getInstance() {
-        if (bus == null) {
-            bus = new Bus(ThreadEnforcer.ANY);
-        }
-        return bus;
-    }
-
-    private BusProvider() {
-    
-    }
-}
-</code></pre>
-
-<h3 id="toc_6">3 . UpdateManager类中使用post发出事件，凡是订阅了的都会调用</h3>
-
-<pre><code class="language-python">BusProvider.bus.post(new CancelUpdateEvent());
-</code></pre>
-
-<p>　　至此算是完成了otto框架的总结，分享一些自己在找资料时遇到的大神博客文章：<br/>
-　　<a href="http://blog.csdn.net/lmj623565791/article/details/40794879">Android EventBus实战 没听过你就out了</a><br/>
-　　<a href="http://blog.csdn.net/lmj623565791/article/details/39269193">Android 进阶 教你打造 Android 中的 IOC 框架</a></p>
+<ul>
+<li>步骤1：首先查找@Module标注的类中是否存在提供依赖的方法。</li>
+<li>步骤2：若存在提供依赖的方法，查看该方法是否存在参数。
+a：若存在参数，则按从步骤1开始依次初始化每个参数；
+b：若不存在，则直接初始化该类实例，完成一次依赖注入。</li>
+<li>步骤3：若不存在提供依赖的方法，则查找@Inject标注的构造函数，看构造函数是否存在参数。
+a：若存在参数，则从步骤1开始依次初始化每一个参数
+b：若不存在，则直接初始化该类实例，完成一次依赖注入。</li>
+</ul>
 
 
     
@@ -237,16 +190,16 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14779857522261.html" 
-          title="Previous Post: Android技术积累:开发规范">&laquo; Android技术积累:开发规范</a>
+          <a href="14839485560967.html" 
+          title="Previous Post: Dagger2 使用详解(3)--使用入门">&laquo; Dagger2 使用详解(3)--使用入门</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14779858228537.html" 
-          title="Next Post: 镇远旅行游记">镇远旅行游记 &raquo;</a>
+          <a  href="14839485567053.html" 
+          title="Next Post: Dagger2 使用详解(1)--依赖注入">Dagger2 使用详解(1)--依赖注入 &raquo;</a>
       
       </p>
         </div>
@@ -258,7 +211,7 @@
           
 
           
-              <div class="ds-thread" data-thread-key="14779857522449.html" data-url="m78snail.com/14779857522449.html" data-title="otto 框架分析"></div>
+              <div class="ds-thread" data-thread-key="14839485563999.html" data-url="m78snail.com/14839485563999.html" data-title="Dagger2 使用详解(2)--注解"></div>
           
         </div>
       </div>

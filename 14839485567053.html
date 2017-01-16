@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  otto 框架分析 - m78snail
+  Dagger2 使用详解(1)--依赖注入 - m78snail
   
   </title>
   
@@ -122,23 +122,21 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>otto 框架分析</h1>
+          <h1>Dagger2 使用详解(1)--依赖注入</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2016/8/31</span>
+          <span class="date">2017/1/9</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html'>开源框架</a></span>
-          
-              <span class="posted-in"><a href='Android.html'>Android</a></span>
+              <span class="posted-in"><a href='Dagger2.html'>Dagger2</a></span>
            
          
           <span class="comments">
             
 
             
-              &nbsp;<a  class="ds-thread-count" data-thread-key="14779857522449.html" data-count-type="comments" href="14779857522449.html#ds-thread"></a>
+              &nbsp;<a  class="ds-thread-count" data-thread-key="14839485567053.html" data-count-type="comments" href="14839485567053.html#ds-thread"></a>
             
           </span>
 
@@ -146,87 +144,147 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>　　最近项目上经常会用到otto框架，它跟EventBus很像，这里希望总结一下：<br/>
-　　</p>
+      <p>　　Dagger-匕首，鼎鼎大名的Square公司旗下又一把利刃（没错！还有一把黄油刀，唤作ButterKnife）；故此给本篇取名神兵利器Dagger2。</p>
 
-<blockquote>
-<ul>
-<li>运行时动态处理（注解）</li>
-<li>IOC 控制反转</li>
-<li>观察者模式 EventBus模式</li>
-</ul>
-</blockquote>
-
-<p>　　大体上要学习otto框架就是上面三个方面，看着名词很高端？没事，让我一一解释一下。</p>
+<p>　　Dagger2起源于Dagger，是一款基于Java注解来实现的完全在编译阶段完成依赖注入的开源库，主要用于模块间解耦、提高代码的健壮性和可维护性。Dagger2在编译阶段通过apt利用Java注解自动生成Java代码，然后结合手写的代码来自动帮我们完成依赖注入的工作。</p>
 
 <span id="more"></span><!-- more -->
 
-<h2 id="toc_0">一 . 运行时动态处理（注解）</h2>
+<p>　　<br/>
+　　起初Square公司受到Guice的启发而开发了Dagger，但是Dagger这种半静态半运行时的框架还是有些性能问题（虽说依赖注入是完全静态的，但是其有向无环图(Directed Acyclic Graph)还是基于反射来生成的，这无论在大型的服务端应用还是在Android应用上都不是最优方案）。因此Google工程师Fork了Dagger项目，对它进行了改造。于是变演变出了今天我们要讨论的Dagger2，所以说Dagger2其实就是高配版的Dagger。</p>
 
-<p>　　我们最初学习安卓的时候最先接触的类恐怕就是Activity了吧，在里面onCreate()这些方法会要求我们重写，在上面会有一个注解@Override,难道仅仅起到注释的作用吗？其实注解分为两种<br/>
-　　① 运行时动态处理：在运行时拿到类的Class对象，然后遍历其方法、变量，判断有无注解声明，然后做一些事情<br/>
-　　② 编译时动态处理：这类注解会在编译的时候，根据注解标识，动态生成一些类或者生成一些xml都可以，在运行时期，这类注解是没有的~~会依靠动态生成的类做一些操作，因为没有反射，效率和直接调用方法没什么区别<br/>
-　　今天我们只研究运行时动态处理。<br/>
-　　有句话说得好，叫<strong>无反射没框架</strong>。<br/>
-　　任何框架都离不开反射，反射以前只在书本上了解过就是运行时获取对象的类方法，变量吗.现在反射在速度上已经有了很大的提高，我们完全不必担心性能方面会变差很多。<br/>
-　　说了半天，你只要记住注解，作为一种标志，可以帮你在你的类加载时替你记住那些你希望以后用来调用的方法和对象。<br/>
-　　在otto中最重要的两个注解就是@Subscribe和@Produce，这两个是什么作用等下再说。</p>
+<h2 id="toc_0">依赖注入（Dependency Injection）</h2>
 
-<h2 id="toc_1">二 . IOC 控制反转</h2>
+<p>那么什么是依赖注入呢？在解释这个概念前我们先看一小段代码：</p>
 
-<p>　　什么事IOC控制反转？<br/>
-　　当A类想使用B类的一个方法时，我们传统的做法是new一个B类实例出来，再去调用方法，但是这就使得A,B两个类纠缠在一起。当我们改变了B类时，所有调用了B类的文件我们都需要去改，这样是不是太麻烦，好的做法是写一个主线类，它会自动帮我们去注入（new）,当我们需要改动时，只要改这个主线类就可以了。这个主线类也就是我要提到的otto框架中的Bus类，这是otto最重要的类，它有什么作用？这玩意就是在类加载时调用register，扫描类中复合命名规范的方法，存到一个map，然后post的时候，查找到匹配的方法，反射调用。不理解？等下我们举个例子你就明白了，现在我们先解释完名词。</p>
+<pre><code>public class Car{
 
-<h2 id="toc_2">三 . 观察者模式 EventBus模式</h2>
+    private Engine engine;
 
-<p>　　otto框架是基于EventBus框架，这是一个是一个发布 / 订阅的事件总线，大家可以看下鸿洋大神的这篇<a href="http://blog.csdn.net/lmj623565791/article/details/40794879">Android EventBus实战 没听过你就out了</a>讲的特别好</p>
-
-<h2 id="toc_3">四 . 应用实战</h2>
-
-<p>　　任何一个App都一定会提供软件更新功能，当我们在更新过程中突然不想更新了，点击了取消，让我们的代码去调用SplashActivity里面的DoCancelUpdate方法。由于我们的下载更新类是写在UpdateManager类里面，那我们怎么做呢，没学会otto框架之前我们可能会在新建UpdateManager时传进去一个Context，这会不会导致Context引发的内存泄漏，我们需要很小心的检查，现在我们使用otto框架就不需要担心这个问题，因为他们两人几乎没有交集，他们都是通过Bus类来沟通。废话不多说上代码：</p>
-
-<h3 id="toc_4">1 . SplashActivity中让bus注册，并订阅事件</h3>
-
-<pre><code class="language-python">   @Override
-    protected void onCreate(Bundle arg0) {
-        super.onCreate(arg0);
-        BusProvider.getInstance().register(this);
-        setContentView(getLayoutResource());
-    }
-    
-    @Subscribe
-    public void DoCancelUpdate(CancelUpdateEvent event){
-        continueRun();
-    } 
-</code></pre>
-
-<h3 id="toc_5">2 . BusProvider为一个单例模式类，Bus最好只有一个</h3>
-
-<pre><code class="language-python">public class BusProvider {
-
-    public static Bus bus;
-
-    public static Bus getInstance() {
-        if (bus == null) {
-            bus = new Bus(ThreadEnforcer.ANY);
-        }
-        return bus;
-    }
-
-    private BusProvider() {
-    
+    public Car(){
+        engine = new Engine();
     }
 }
 </code></pre>
 
-<h3 id="toc_6">3 . UpdateManager类中使用post发出事件，凡是订阅了的都会调用</h3>
+<p>　　这段Java代码中Car类持有了对Engine实例的引用，我们称之为Car类对Engine类有一个依赖。而依赖注入则是指通过注入的方式实现类与类之间的依赖，下面是常见的三种依赖注入的方式：</p>
 
-<pre><code class="language-python">BusProvider.bus.post(new CancelUpdateEvent());
+<p><strong>1、构造注入：通过构造函数传参给依赖的成员变量赋值，从而实现注入。</strong></p>
+
+<pre><code>public class Car{
+
+    private Engine engine;
+
+    public Car(Engine engine){
+        this.engine = engine;
+    }
+}
 </code></pre>
 
-<p>　　至此算是完成了otto框架的总结，分享一些自己在找资料时遇到的大神博客文章：<br/>
-　　<a href="http://blog.csdn.net/lmj623565791/article/details/40794879">Android EventBus实战 没听过你就out了</a><br/>
-　　<a href="http://blog.csdn.net/lmj623565791/article/details/39269193">Android 进阶 教你打造 Android 中的 IOC 框架</a></p>
+<p><strong>2、接口注入：实现接口方法，同样以传参的方式实现注入。</strong></p>
+
+<pre><code>public interface Injection&lt;T&gt;{
+
+    void inject(T t);
+}
+
+public class Car implements Injection&lt;Engine&gt;{
+
+    private Engine engine;
+
+    public Car(){}
+
+    public void inject(Engine engine){
+        this.engine = engine;
+    }
+}
+</code></pre>
+
+<p><strong>3、注解注入：使用Java注解在编译阶段生成代码实现注入或者是在运行阶段通过反射实现注入。</strong></p>
+
+<pre><code>public class Car{
+
+    @Inject
+    Engine engine;
+
+    public Car(){}
+}
+</code></pre>
+
+<p>　　前两种注入方式需要我们编写大量的模板代码，而机智的Dagger2则是通过Java注解在编译期来实现依赖注入的。</p>
+
+<h2 id="toc_1">为什么需要依赖注入</h2>
+
+<p>　　我们之所是要依赖注入，最重要的就是为了解耦，达到高内聚低耦合的目的，保证代码的健壮性、灵活性和可维护性。</p>
+
+<p>下面我们看看同一个业务的两种实现方案：</p>
+
+<p><strong>1、方案A</strong></p>
+
+<pre><code>public class Car{
+
+    private Engine engine;
+    private List&lt;Wheel&gt; wheels;
+
+    public Car(){
+        engine = new Engine();
+        wheels = new ArrayList&lt;&gt;();
+        for(int i = 0; i &lt; 4; i++){
+            wheels.add(new Wheel());
+        }
+    }
+
+    public void start{
+        System.out.println(&quot;启动汽车&quot;);
+    }
+}
+
+public class CarTest{
+
+    public static void main(String[] args){
+        Car car = new Car();
+        car.start();
+    }
+} 
+</code></pre>
+
+<p><strong>2、方案B</strong></p>
+
+<pre><code>public class Car{
+
+    private Engine engine;
+    private List&lt;Wheel&gt; wheels;
+
+    public Car(Engine engine, List&lt;Wheel&gt; wheels){
+        this.engine = engine;
+        this.wheels = wheels;
+    }
+
+    public void start{
+        System.out.println(&quot;启动汽车&quot;);
+    }
+}
+
+public class CarTest{
+
+    public static void main(String[] args){
+
+        Engine engine = new Engine();
+        List&lt;Wheel&gt; wheels = new ArrayList&lt;&gt;();
+        for(int i = 0; i &lt; 4; i++){
+            wheels.add(new Wheel());
+        }
+        Car car = new Car(engine, wheels);
+        car.start();
+    }
+}
+</code></pre>
+
+<p>　　方案A：由于没有依赖注入，因此需要我们自己是在Car的构造函数中创建Engine和Wheel对象。</p>
+
+<p>　　方案B：我们手动以构造函数的方式注入依赖，将engine和wheels作为参数传入而不是在Car的构造函数中去显示的创建。</p>
+
+<p>　　方案A明显丧失了灵活性，一切依赖都是在Car类的内部创建，Car与Engine和Wheel严重耦合。一旦Engine或者Wheel的创建方式发生了改变，我们就必须要去修改Car类的构造函数（比如说现在创建Wheel实例的构造函数改变了，需要传入Rubber（橡胶）了）；另外我们也没办法替换动态的替换依赖实例（比如我们想把Car的Wheel（轮胎）从邓禄普（轮胎品牌）换成米其林（轮胎品牌）的）。这类问题在大型的商业项目中则更加严重，往往A依赖B、B依赖C、C依赖D、D依赖E；一旦稍有改动便牵一发而动全身，想想都可怕！而依赖注入则很好的帮我们解决了这一问题。</p>
 
 
     
@@ -237,16 +295,16 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14779857522261.html" 
-          title="Previous Post: Android技术积累:开发规范">&laquo; Android技术积累:开发规范</a>
+          <a href="14839485563999.html" 
+          title="Previous Post: Dagger2 使用详解(2)--注解">&laquo; Dagger2 使用详解(2)--注解</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14779858228537.html" 
-          title="Next Post: 镇远旅行游记">镇远旅行游记 &raquo;</a>
+          <a  href="14829068226408.html" 
+          title="Next Post: RxJava 你好！">RxJava 你好！ &raquo;</a>
       
       </p>
         </div>
@@ -258,7 +316,7 @@
           
 
           
-              <div class="ds-thread" data-thread-key="14779857522449.html" data-url="m78snail.com/14779857522449.html" data-title="otto 框架分析"></div>
+              <div class="ds-thread" data-thread-key="14839485567053.html" data-url="m78snail.com/14839485567053.html" data-title="Dagger2 使用详解(1)--依赖注入"></div>
           
         </div>
       </div>

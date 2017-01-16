@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  otto 框架分析 - m78snail
+  Dagger2 使用详解(4)--原理分析 - m78snail
   
   </title>
   
@@ -122,23 +122,21 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>otto 框架分析</h1>
+          <h1>Dagger2 使用详解(4)--原理分析</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2016/8/31</span>
+          <span class="date">2017/1/9</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html'>开源框架</a></span>
-          
-              <span class="posted-in"><a href='Android.html'>Android</a></span>
+              <span class="posted-in"><a href='Dagger2.html'>Dagger2</a></span>
            
          
           <span class="comments">
             
 
             
-              &nbsp;<a  class="ds-thread-count" data-thread-key="14779857522449.html" data-count-type="comments" href="14779857522449.html#ds-thread"></a>
+              &nbsp;<a  class="ds-thread-count" data-thread-key="14839485571061.html" data-count-type="comments" href="14839485571061.html#ds-thread"></a>
             
           </span>
 
@@ -146,87 +144,161 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>　　最近项目上经常会用到otto框架，它跟EventBus很像，这里希望总结一下：<br/>
-　　</p>
-
-<blockquote>
-<ul>
-<li>运行时动态处理（注解）</li>
-<li>IOC 控制反转</li>
-<li>观察者模式 EventBus模式</li>
-</ul>
-</blockquote>
-
-<p>　　大体上要学习otto框架就是上面三个方面，看着名词很高端？没事，让我一一解释一下。</p>
+      <p>　　前面啰里啰嗦的介绍了Dagger2的基本使用，接下来我们再分析分析实现原理。这里不会分析Dagger2根据注解生成各种代码的原理，关于Java注解以后有机会再写一篇文章来介绍。后面主要分析的是Dagger2生成的各种类如何帮我们实现依赖注入，为了便于理解我这里选了前面相对简单的案例B来做分析。</p>
 
 <span id="more"></span><!-- more -->
 
-<h2 id="toc_0">一 . 运行时动态处理（注解）</h2>
+<p>　　Dagger2编译期生成的代码位于build/generated/source/apt/debug/your package name/下面:<br/>
+<img src="media/14839485571061/14839503268924.jpg" alt="" class="mw_img_center" style="width:300px;display: block; clear:both; margin: 0 auto;"/></p>
 
-<p>　　我们最初学习安卓的时候最先接触的类恐怕就是Activity了吧，在里面onCreate()这些方法会要求我们重写，在上面会有一个注解@Override,难道仅仅起到注释的作用吗？其实注解分为两种<br/>
-　　① 运行时动态处理：在运行时拿到类的Class对象，然后遍历其方法、变量，判断有无注解声明，然后做一些事情<br/>
-　　② 编译时动态处理：这类注解会在编译的时候，根据注解标识，动态生成一些类或者生成一些xml都可以，在运行时期，这类注解是没有的~~会依靠动态生成的类做一些操作，因为没有反射，效率和直接调用方法没什么区别<br/>
-　　今天我们只研究运行时动态处理。<br/>
-　　有句话说得好，叫<strong>无反射没框架</strong>。<br/>
-　　任何框架都离不开反射，反射以前只在书本上了解过就是运行时获取对象的类方法，变量吗.现在反射在速度上已经有了很大的提高，我们完全不必担心性能方面会变差很多。<br/>
-　　说了半天，你只要记住注解，作为一种标志，可以帮你在你的类加载时替你记住那些你希望以后用来调用的方法和对象。<br/>
-　　在otto中最重要的两个注解就是@Subscribe和@Produce，这两个是什么作用等下再说。</p>
+<p>　　首先我们看看Dagger2依据依赖提供方MarkCarModule生成的对应工厂类MarkCarModule_ProvideEngineFactory。为了方便大家理解对比，后面我一律会把自己写的类和Dagger2生成的类一并放出来。</p>
 
-<h2 id="toc_1">二 . IOC 控制反转</h2>
+<pre><code>/**
+* 我们自己的类
+*/
+@Module
+public class MarkCarModule {
 
-<p>　　什么事IOC控制反转？<br/>
-　　当A类想使用B类的一个方法时，我们传统的做法是new一个B类实例出来，再去调用方法，但是这就使得A,B两个类纠缠在一起。当我们改变了B类时，所有调用了B类的文件我们都需要去改，这样是不是太麻烦，好的做法是写一个主线类，它会自动帮我们去注入（new）,当我们需要改动时，只要改这个主线类就可以了。这个主线类也就是我要提到的otto框架中的Bus类，这是otto最重要的类，它有什么作用？这玩意就是在类加载时调用register，扫描类中复合命名规范的方法，存到一个map，然后post的时候，查找到匹配的方法，反射调用。不理解？等下我们举个例子你就明白了，现在我们先解释完名词。</p>
+    public MarkCarModule(){ }
 
-<h2 id="toc_2">三 . 观察者模式 EventBus模式</h2>
-
-<p>　　otto框架是基于EventBus框架，这是一个是一个发布 / 订阅的事件总线，大家可以看下鸿洋大神的这篇<a href="http://blog.csdn.net/lmj623565791/article/details/40794879">Android EventBus实战 没听过你就out了</a>讲的特别好</p>
-
-<h2 id="toc_3">四 . 应用实战</h2>
-
-<p>　　任何一个App都一定会提供软件更新功能，当我们在更新过程中突然不想更新了，点击了取消，让我们的代码去调用SplashActivity里面的DoCancelUpdate方法。由于我们的下载更新类是写在UpdateManager类里面，那我们怎么做呢，没学会otto框架之前我们可能会在新建UpdateManager时传进去一个Context，这会不会导致Context引发的内存泄漏，我们需要很小心的检查，现在我们使用otto框架就不需要担心这个问题，因为他们两人几乎没有交集，他们都是通过Bus类来沟通。废话不多说上代码：</p>
-
-<h3 id="toc_4">1 . SplashActivity中让bus注册，并订阅事件</h3>
-
-<pre><code class="language-python">   @Override
-    protected void onCreate(Bundle arg0) {
-        super.onCreate(arg0);
-        BusProvider.getInstance().register(this);
-        setContentView(getLayoutResource());
-    }
-    
-    @Subscribe
-    public void DoCancelUpdate(CancelUpdateEvent event){
-        continueRun();
-    } 
-</code></pre>
-
-<h3 id="toc_5">2 . BusProvider为一个单例模式类，Bus最好只有一个</h3>
-
-<pre><code class="language-python">public class BusProvider {
-
-    public static Bus bus;
-
-    public static Bus getInstance() {
-        if (bus == null) {
-            bus = new Bus(ThreadEnforcer.ANY);
-        }
-        return bus;
-    }
-
-    private BusProvider() {
-    
+    @Provides Engine provideEngine(){
+        return new Engine(&quot;gear&quot;);
     }
 }
 </code></pre>
 
-<h3 id="toc_6">3 . UpdateManager类中使用post发出事件，凡是订阅了的都会调用</h3>
+<pre><code>/**
+* Dagger2生成的工厂类
+*/
+public final class MarkCarModule_ProvideEngineFactory implements Factory&lt;Engine&gt; {
+  private final MarkCarModule module;
 
-<pre><code class="language-python">BusProvider.bus.post(new CancelUpdateEvent());
+  public MarkCarModule_ProvideEngineFactory(MarkCarModule module) {
+    assert module != null;
+    this.module = module;
+  }
+
+  @Override
+  public Engine get() {
+    return Preconditions.checkNotNull(
+        module.provideEngine(), &quot;Cannot return null from a non-@Nullable @Provides method&quot;);
+  }
+
+  public static Factory&lt;Engine&gt; create(MarkCarModule module) {
+    return new MarkCarModule_ProvideEngineFactory(module);
+  }
+
+  /** Proxies {@link MarkCarModule#provideEngine()}. */
+  public static Engine proxyProvideEngine(MarkCarModule instance) {
+    return instance.provideEngine();
+  }
+}
 </code></pre>
 
-<p>　　至此算是完成了otto框架的总结，分享一些自己在找资料时遇到的大神博客文章：<br/>
-　　<a href="http://blog.csdn.net/lmj623565791/article/details/40794879">Android EventBus实战 没听过你就out了</a><br/>
-　　<a href="http://blog.csdn.net/lmj623565791/article/details/39269193">Android 进阶 教你打造 Android 中的 IOC 框架</a></p>
+<p>　　我们可以看到MarkCarModule_ProvideEngineFactory中的get()调用了MarkCarModule的provideEngine()方法来获取我们需要的依赖Engine，MarkCarModule_ProvideEngineFactory的实例化有crate()创建，并且MarkCarModule的实例也是通过create()方法传进来的。那么这个create()一定会在哪里调用的，我们接着往下看。</p>
+
+<p>　　前面提到@Component是依赖提供方(MarkCarModule)和依赖需求方(Car)之前的桥梁，那我看看Dagger2是如何通过CarComponent将两者联系起来的。</p>
+
+<pre><code>/**
+* 我们自己的类
+*/
+@Component(modules = {MarkCarModule.class})
+public interface CarComponent {
+
+    void inject(Car car);
+}
+</code></pre>
+
+<pre><code>/**
+* Dagger2生成的CarComponent实现类
+*/
+public final class DaggerCarComponent implements CarComponent {
+  private Provider&lt;Engine&gt; provideEngineProvider;
+
+  private MembersInjector&lt;Car&gt; carMembersInjector;
+
+  private DaggerCarComponent(Builder builder) {
+    assert builder != null;
+    initialize(builder);
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static CarComponent create() {
+    return builder().build();
+  }
+
+  @SuppressWarnings(&quot;unchecked&quot;)
+  private void initialize(final Builder builder) {
+
+    this.provideEngineProvider = MarkCarModule_ProvideEngineFactory.create(builder.markCarModule);
+
+    this.carMembersInjector = Car_MembersInjector.create(provideEngineProvider);
+  }
+
+  @Override
+  public void inject(Car car) {
+    carMembersInjector.injectMembers(car);
+  }
+
+  public static final class Builder {
+    private MarkCarModule markCarModule;
+
+    private Builder() {}
+
+    public CarComponent build() {
+      if (markCarModule == null) {
+        this.markCarModule = new MarkCarModule();
+      }
+      return new DaggerCarComponent(this);
+    }
+
+    public Builder markCarModule(MarkCarModule markCarModule) {
+      this.markCarModule = Preconditions.checkNotNull(markCarModule);
+      return this;
+    }
+  }
+}
+</code></pre>
+
+<p>　　通过上面的代码我们看到Dagger2依据CarComponent接口生成了实现类DaggerCarComponent（没错这正是我们在Car的构造函数中使用DaggerCarComponent）。DaggerCarComponent在build的时候实例化了DaggerCarComponent对象，并首先调用MarkCarModule_ProvideEngineFactory.create(builder.markCarModule)始化了provideEngineProvider变量，接着调用Car_MembersInjector.create(provideEngineProvider)初始化了carMembersInjector变量。当我们手动在Car类的构造函数中调用inject(Car car)方法时会执行carMembersInjector.injectMembers(car)。所以接下来我们要看看Car_MembersInjector的实现。</p>
+
+<pre><code>public final class Car_MembersInjector implements MembersInjector&lt;Car&gt; {
+  private final Provider&lt;Engine&gt; engineProvider;
+
+  public Car_MembersInjector(Provider&lt;Engine&gt; engineProvider) {
+    assert engineProvider != null;
+    this.engineProvider = engineProvider;
+  }
+
+  public static MembersInjector&lt;Car&gt; create(Provider&lt;Engine&gt; engineProvider) {
+    return new Car_MembersInjector(engineProvider);
+  }
+
+  @Override
+  public void injectMembers(Car instance) {
+    if (instance == null) {
+      throw new NullPointerException(&quot;Cannot inject members into a null reference&quot;);
+    }
+    instance.engine = engineProvider.get();
+  }
+
+  public static void injectEngine(Car instance, Provider&lt;Engine&gt; engineProvider) {
+    instance.engine = engineProvider.get();
+  }
+}
+</code></pre>
+
+<p>Car_MembersInjector中的create()用于实例化自己，这个方法前面我们看到是在DaggerCarComponent中调用的。injectMembers(Car instance)将engineProvider.get()的返回值赋给了依赖需求方Car的engine变量，而engineProvider.get()正是本节一开始我们提到的MarkCarModule_ProvideEngineFactory中的get()方法。至此整个依赖注入的流程就完成了。更复杂的应用场景会生成更加复杂的代码，但原理都和前面分析的大同小异。</p>
+
+<p>总结</p>
+
+<p>这篇文章只是通过一些简单的例子介绍了Dagger2的相关概念及使用，实际项目中的应用远比这里的例子要复杂。关于Dagger2在实际项目中的应用可以参照这个开源项目 <br/>
+<a href="https://github.com/BaronZ88/MinimalistWeather">BaronZ88/MinimalistWeather</a>（项目采用MVP架构，其中View层和Presenter层的解耦就是通过Dagger2来实现的）。</p>
+
+<p>MinimalistWeather是一款开源天气App，开发此项目主要是为展示各种开源库的使用方式以及Android项目的架构方案，并作为团队开发规范的一部分。项目中每一个字母、每一个命名、每一行代码都是经过仔细考究的；但是由于时间精力有限，项目UI未做严格要求。本着精益求精、提供更好开源项目和更美天气应用的原则，因此期望有兴趣的开发和UED同学可以一起来完成这个项目。</p>
 
 
     
@@ -237,16 +309,13 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14779857522261.html" 
-          title="Previous Post: Android技术积累:开发规范">&laquo; Android技术积累:开发规范</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14779858228537.html" 
-          title="Next Post: 镇远旅行游记">镇远旅行游记 &raquo;</a>
+          <a  href="14839485560967.html" 
+          title="Next Post: Dagger2 使用详解(3)--使用入门">Dagger2 使用详解(3)--使用入门 &raquo;</a>
       
       </p>
         </div>
@@ -258,7 +327,7 @@
           
 
           
-              <div class="ds-thread" data-thread-key="14779857522449.html" data-url="m78snail.com/14779857522449.html" data-title="otto 框架分析"></div>
+              <div class="ds-thread" data-thread-key="14839485571061.html" data-url="m78snail.com/14839485571061.html" data-title="Dagger2 使用详解(4)--原理分析"></div>
           
         </div>
       </div>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  otto 框架分析 - m78snail
+  Dagger2 使用详解(3)--使用入门 - m78snail
   
   </title>
   
@@ -122,23 +122,21 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>otto 框架分析</h1>
+          <h1>Dagger2 使用详解(3)--使用入门</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2016/8/31</span>
+          <span class="date">2017/1/9</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html'>开源框架</a></span>
-          
-              <span class="posted-in"><a href='Android.html'>Android</a></span>
+              <span class="posted-in"><a href='Dagger2.html'>Dagger2</a></span>
            
          
           <span class="comments">
             
 
             
-              &nbsp;<a  class="ds-thread-count" data-thread-key="14779857522449.html" data-count-type="comments" href="14779857522449.html#ds-thread"></a>
+              &nbsp;<a  class="ds-thread-count" data-thread-key="14839485560967.html" data-count-type="comments" href="14839485560967.html#ds-thread"></a>
             
           </span>
 
@@ -146,87 +144,280 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>　　最近项目上经常会用到otto框架，它跟EventBus很像，这里希望总结一下：<br/>
-　　</p>
-
-<blockquote>
-<ul>
-<li>运行时动态处理（注解）</li>
-<li>IOC 控制反转</li>
-<li>观察者模式 EventBus模式</li>
-</ul>
-</blockquote>
-
-<p>　　大体上要学习otto框架就是上面三个方面，看着名词很高端？没事，让我一一解释一下。</p>
+      <p>　　前面长篇大论的基本都在介绍概念，下面我们看看Dagger2的基本应用。关于Dagger2的依赖配置就不在这里占用篇幅去描述了，大家可以到它的github主页下去查看官方教程<a href="https://github.com/google/dagger">https://github.com/google/dagger</a>。接下来我们还是拿前面的Car和Engine来举例。</p>
 
 <span id="more"></span><!-- more -->
 
-<h2 id="toc_0">一 . 运行时动态处理（注解）</h2>
+<p>　<br/>
+<strong>1、案例A</strong></p>
 
-<p>　　我们最初学习安卓的时候最先接触的类恐怕就是Activity了吧，在里面onCreate()这些方法会要求我们重写，在上面会有一个注解@Override,难道仅仅起到注释的作用吗？其实注解分为两种<br/>
-　　① 运行时动态处理：在运行时拿到类的Class对象，然后遍历其方法、变量，判断有无注解声明，然后做一些事情<br/>
-　　② 编译时动态处理：这类注解会在编译的时候，根据注解标识，动态生成一些类或者生成一些xml都可以，在运行时期，这类注解是没有的~~会依靠动态生成的类做一些操作，因为没有反射，效率和直接调用方法没什么区别<br/>
-　　今天我们只研究运行时动态处理。<br/>
-　　有句话说得好，叫<strong>无反射没框架</strong>。<br/>
-　　任何框架都离不开反射，反射以前只在书本上了解过就是运行时获取对象的类方法，变量吗.现在反射在速度上已经有了很大的提高，我们完全不必担心性能方面会变差很多。<br/>
-　　说了半天，你只要记住注解，作为一种标志，可以帮你在你的类加载时替你记住那些你希望以后用来调用的方法和对象。<br/>
-　　在otto中最重要的两个注解就是@Subscribe和@Produce，这两个是什么作用等下再说。</p>
+<p>　　Car类是需求依赖方，依赖了Engine类；因此我们需要在类变量Engine上添加@Inject来告诉Dagger2来为自己提供依赖。</p>
 
-<h2 id="toc_1">二 . IOC 控制反转</h2>
+<pre><code>public class Car {
 
-<p>　　什么事IOC控制反转？<br/>
-　　当A类想使用B类的一个方法时，我们传统的做法是new一个B类实例出来，再去调用方法，但是这就使得A,B两个类纠缠在一起。当我们改变了B类时，所有调用了B类的文件我们都需要去改，这样是不是太麻烦，好的做法是写一个主线类，它会自动帮我们去注入（new）,当我们需要改动时，只要改这个主线类就可以了。这个主线类也就是我要提到的otto框架中的Bus类，这是otto最重要的类，它有什么作用？这玩意就是在类加载时调用register，扫描类中复合命名规范的方法，存到一个map，然后post的时候，查找到匹配的方法，反射调用。不理解？等下我们举个例子你就明白了，现在我们先解释完名词。</p>
+    @Inject
+    Engine engine;
 
-<h2 id="toc_2">三 . 观察者模式 EventBus模式</h2>
-
-<p>　　otto框架是基于EventBus框架，这是一个是一个发布 / 订阅的事件总线，大家可以看下鸿洋大神的这篇<a href="http://blog.csdn.net/lmj623565791/article/details/40794879">Android EventBus实战 没听过你就out了</a>讲的特别好</p>
-
-<h2 id="toc_3">四 . 应用实战</h2>
-
-<p>　　任何一个App都一定会提供软件更新功能，当我们在更新过程中突然不想更新了，点击了取消，让我们的代码去调用SplashActivity里面的DoCancelUpdate方法。由于我们的下载更新类是写在UpdateManager类里面，那我们怎么做呢，没学会otto框架之前我们可能会在新建UpdateManager时传进去一个Context，这会不会导致Context引发的内存泄漏，我们需要很小心的检查，现在我们使用otto框架就不需要担心这个问题，因为他们两人几乎没有交集，他们都是通过Bus类来沟通。废话不多说上代码：</p>
-
-<h3 id="toc_4">1 . SplashActivity中让bus注册，并订阅事件</h3>
-
-<pre><code class="language-python">   @Override
-    protected void onCreate(Bundle arg0) {
-        super.onCreate(arg0);
-        BusProvider.getInstance().register(this);
-        setContentView(getLayoutResource());
-    }
-    
-    @Subscribe
-    public void DoCancelUpdate(CancelUpdateEvent event){
-        continueRun();
-    } 
-</code></pre>
-
-<h3 id="toc_5">2 . BusProvider为一个单例模式类，Bus最好只有一个</h3>
-
-<pre><code class="language-python">public class BusProvider {
-
-    public static Bus bus;
-
-    public static Bus getInstance() {
-        if (bus == null) {
-            bus = new Bus(ThreadEnforcer.ANY);
-        }
-        return bus;
+    public Car() {
+        DaggerCarComponent.builder().build().inject(this);
     }
 
-    private BusProvider() {
-    
+    public Engine getEngine() {
+        return this.engine;
     }
 }
 </code></pre>
 
-<h3 id="toc_6">3 . UpdateManager类中使用post发出事件，凡是订阅了的都会调用</h3>
+<p>　　Engine类是依赖提供方，因此我们需要在它的构造函数上添加@Inject</p>
 
-<pre><code class="language-python">BusProvider.bus.post(new CancelUpdateEvent());
+<pre><code>public class Engine {
+
+    @Inject
+    Engine(){}
+
+    public void run(){
+        System.out.println(&quot;引擎转起来了~~~&quot;);
+    }
+}
 </code></pre>
 
-<p>　　至此算是完成了otto框架的总结，分享一些自己在找资料时遇到的大神博客文章：<br/>
-　　<a href="http://blog.csdn.net/lmj623565791/article/details/40794879">Android EventBus实战 没听过你就out了</a><br/>
-　　<a href="http://blog.csdn.net/lmj623565791/article/details/39269193">Android 进阶 教你打造 Android 中的 IOC 框架</a></p>
+<p>　　接下来我们需要创建一个用@Component标注的接口CarComponent，这个CarComponent其实就是一个注入器，这里用来将Engine注入到Car中。</p>
+
+<pre><code>@Component
+public interface CarComponent {
+    void inject(Car car);
+}
+</code></pre>
+
+<p>完成这些之后我们需要Build下项目，让Dagger2帮我们生成相关的Java类。接着我们就可以在Car的构造函数中调用Dagger2生成的DaggerCarComponent来实现注入（这其实在前面Car类的代码中已经有了体现）</p>
+
+<pre><code>public Car() {
+    DaggerCarComponent.builder().build().inject(this);
+}
+</code></pre>
+
+<p><strong>2、案例B</strong></p>
+
+<p>　　如果创建Engine的构造函数是带参数的呢？比如说制造一台引擎是需要齿轮(Gear)的。或者Eggine类是我们无法修改的呢？这时候就需要@Module和@Provide上场了。</p>
+
+<p>　　同样我们需要在Car类的成员变量Engine上加上@Inject表示自己需要Dagger2为自己提供依赖；Engine类的构造函数上的@Inject也需要去掉，应为现在不需要通过构造函数上的@Inject来提供依赖了。</p>
+
+<pre><code>public class Car {
+
+    @Inject
+    Engine engine;
+
+    public Car() {
+        DaggerCarComponent.builder().markCarModule(new MarkCarModule())
+                .build().inject(this);
+    }
+
+    public Engine getEngine() {
+        return this.engine;
+    }
+}
+</code></pre>
+
+<p>接着我们需要一个Module类来生成依赖对象。前面介绍的@Module就是用来标准这个类的，而@Provide则是用来标注具体提供依赖对象的方法（这里有个不成文的规定，被@Provide标注的方法命名我们一般以provide开头，这并不是强制的但有益于提升代码的可读性）。</p>
+
+<pre><code>@Module
+public class MarkCarModule {
+
+    public MarkCarModule(){ }
+
+    @Provides Engine provideEngine(){
+        return new Engine(&quot;gear&quot;);
+    }
+}
+</code></pre>
+
+<p>　　接下来我们还需要对CarComponent进行一点点修改，之前的@Component注解是不带参数的，现在我们需要加上modules = {MarkCarModule.class}，用来告诉Dagger2提供依赖的是MarkCarModule这个类。</p>
+
+<pre><code>@Component(modules = {MarkCarModule.class})
+public interface CarComponent {
+    void inject(Car car);
+}
+</code></pre>
+
+<p>　　Car类的构造函数我们也需要修改，相比之前多了个markCarModule(new MarkCarModule())方法，这就相当于告诉了注入器DaggerCarComponent把MarkCarModule提供的依赖注入到了Car类中。</p>
+
+<pre><code>public Car() {
+   DaggerCarComponent.builder()
+           .markCarModule(new MarkCarModule())
+           .build().inject(this);
+}
+</code></pre>
+
+<p>这样一个最最基本的依赖注入就完成了，接下来我们测试下我们的代码。</p>
+
+<pre><code>public static void main(String[] args){
+    Car car = new Car();
+    car.getEngine().run();
+}
+</code></pre>
+
+<p>输出</p>
+
+<p>引擎转起来了~~~<br/>
+<strong>3、案例C</strong></p>
+
+<p>　　那么如果一台汽车有两个引擎（也就是说Car类中有两个Engine变量）怎么办呢？没关系，我们还有@Qulifier！首先我们需要使用Qulifier定义两个注解：</p>
+
+<pre><code>@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+public @interface QualifierA { }
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+public @interface QualifierB { }
+</code></pre>
+
+<p>同时我们需要对依赖提供方做出修改</p>
+
+<pre><code>@Module
+public class MarkCarModule {
+
+    public MarkCarModule(){ }
+
+    @QualifierA
+    @Provides
+    Engine provideEngineA(){
+        return new Engine(&quot;gearA&quot;);
+    }
+
+    @QualifierB
+    @Provides
+    Engine provideEngineB(){
+        return new Engine(&quot;gearB&quot;);
+    }
+}
+</code></pre>
+
+<p>接下来依赖需求方Car类同样需要修改</p>
+
+<p>public class Car {</p>
+
+<pre><code>@QualifierA @Inject Engine engineA;
+@QualifierB @Inject Engine engineB;
+
+public Car() {
+    DaggerCarComponent.builder().markCarModule(new MarkCarModule())
+            .build().inject(this);
+}
+
+public Engine getEngineA() {
+    return this.engineA;
+}
+
+public Engine getEngineB() {
+    return this.engineB;
+}
+</code></pre>
+
+<p>}<br/>
+最后我们再对Engine类做些调整方便测试</p>
+
+<pre><code>public class Engine {
+
+    private String gear;
+
+    public Engine(String gear){
+        this.gear = gear;
+    }
+
+    public void printGearName(){
+        System.out.println(&quot;GearName:&quot; + gear);
+    }
+}
+</code></pre>
+
+<p>测试代码</p>
+
+<pre><code>public static void main(String[] args) {
+    Car car = new Car();
+    car.getEngineA().printGearName();
+    car.getEngineB().printGearName();
+}
+</code></pre>
+
+<p>执行结果：</p>
+
+<p>GearName:gearA<br/>
+GearName:gearB<br/>
+<strong>4、案例D</strong></p>
+
+<p>　　接下来我们看看@Scope是如何限定作用域，实现局部单例的。</p>
+
+<p>　　首先我们需要通过@Scope定义一个CarScope注解：</p>
+
+<pre><code>@Scope
+@Retention(RetentionPolicy.RUNTIME)
+public @interface CarScope {
+}
+</code></pre>
+
+<p>　　接着我们需要用这个@CarScope去标记依赖提供方MarkCarModule。</p>
+
+<pre><code>@Module
+public class MarkCarModule {
+
+    public MarkCarModule() {
+    }
+
+    @Provides
+    @CarScope
+    Engine provideEngine() {
+        return new Engine(&quot;gear&quot;);
+    }
+}
+</code></pre>
+
+<p>同时还需要使用@Scope去标注注入器Compoent</p>
+
+<pre><code>@CarScope
+@Component(modules = {MarkCarModule.class})
+public interface CarComponent {
+    void inject(Car car);
+}
+</code></pre>
+
+<p>为了便于测试我们对Car和Engine类做了一些改造：</p>
+
+<pre><code>public class Car {
+
+    @Inject Engine engineA;
+    @Inject Engine engineB;
+
+    public Car() {
+        DaggerCarComponent.builder()
+                .markCarModule(new MarkCarModule())
+                .build().inject(this);
+    }
+}
+public class Engine {
+
+    private String gear;
+
+    public Engine(String gear){
+        System.out.println(&quot;Create Engine&quot;);
+        this.gear = gear;
+    }
+}
+</code></pre>
+
+<p>如果我们不适用@Scope,上面的代码会实例化两次Engine类，因此会有两次&quot;Create Engine&quot;输出。现在我们在有@Scope的情况测试下劳动成果：</p>
+
+<p>public static void main(String[] args) {<br/>
+    Car car = new Car();</p>
+
+<pre><code>System.out.println(car.engineA.hashCode());
+System.out.println(car.engineB.hashCode());
+</code></pre>
+
+<p>}<br/>
+输出</p>
+
+<p>Create Engine<br/>
+bingo！我们确实通过@Scope实现了局部的单例。</p>
 
 
     
@@ -237,16 +428,16 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14779857522261.html" 
-          title="Previous Post: Android技术积累:开发规范">&laquo; Android技术积累:开发规范</a>
+          <a href="14839485571061.html" 
+          title="Previous Post: Dagger2 使用详解(4)--原理分析">&laquo; Dagger2 使用详解(4)--原理分析</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14779858228537.html" 
-          title="Next Post: 镇远旅行游记">镇远旅行游记 &raquo;</a>
+          <a  href="14839485563999.html" 
+          title="Next Post: Dagger2 使用详解(2)--注解">Dagger2 使用详解(2)--注解 &raquo;</a>
       
       </p>
         </div>
@@ -258,7 +449,7 @@
           
 
           
-              <div class="ds-thread" data-thread-key="14779857522449.html" data-url="m78snail.com/14779857522449.html" data-title="otto 框架分析"></div>
+              <div class="ds-thread" data-thread-key="14839485560967.html" data-url="m78snail.com/14839485560967.html" data-title="Dagger2 使用详解(3)--使用入门"></div>
           
         </div>
       </div>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  otto 框架分析 - m78snail
+  m78snail
   
   </title>
   
@@ -113,160 +113,110 @@
        
 
  <script type="text/javascript">
-  $(function(){
-    $('#menu_item_index').addClass('is_active');
-  });
+	$(function(){
+		$('#menu_item_index').addClass('is_active');
+	});
 </script>
 <div class="row">
-  <div class="large-8 medium-8 columns">
-      <div class="markdown-body article-wrap">
-       <div class="article">
-          
-          <h1>otto 框架分析</h1>
-     
-        <div class="read-more clearfix">
-          <span class="date">2016/8/31</span>
-
-          <span>posted in&nbsp;</span> 
-          
-              <span class="posted-in"><a href='%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html'>开源框架</a></span>
-          
-              <span class="posted-in"><a href='Android.html'>Android</a></span>
-           
-         
-          <span class="comments">
-            
-
-            
-              &nbsp;<a  class="ds-thread-count" data-thread-key="14779857522449.html" data-count-type="comments" href="14779857522449.html#ds-thread"></a>
-            
-          </span>
-
-        </div>
-      </div><!-- article -->
-
-      <div class="article-content">
-      <p>　　最近项目上经常会用到otto框架，它跟EventBus很像，这里希望总结一下：<br/>
-　　</p>
-
-<blockquote>
-<ul>
-<li>运行时动态处理（注解）</li>
-<li>IOC 控制反转</li>
-<li>观察者模式 EventBus模式</li>
-</ul>
-</blockquote>
-
-<p>　　大体上要学习otto框架就是上面三个方面，看着名词很高端？没事，让我一一解释一下。</p>
-
-<span id="more"></span><!-- more -->
-
-<h2 id="toc_0">一 . 运行时动态处理（注解）</h2>
-
-<p>　　我们最初学习安卓的时候最先接触的类恐怕就是Activity了吧，在里面onCreate()这些方法会要求我们重写，在上面会有一个注解@Override,难道仅仅起到注释的作用吗？其实注解分为两种<br/>
-　　① 运行时动态处理：在运行时拿到类的Class对象，然后遍历其方法、变量，判断有无注解声明，然后做一些事情<br/>
-　　② 编译时动态处理：这类注解会在编译的时候，根据注解标识，动态生成一些类或者生成一些xml都可以，在运行时期，这类注解是没有的~~会依靠动态生成的类做一些操作，因为没有反射，效率和直接调用方法没什么区别<br/>
-　　今天我们只研究运行时动态处理。<br/>
-　　有句话说得好，叫<strong>无反射没框架</strong>。<br/>
-　　任何框架都离不开反射，反射以前只在书本上了解过就是运行时获取对象的类方法，变量吗.现在反射在速度上已经有了很大的提高，我们完全不必担心性能方面会变差很多。<br/>
-　　说了半天，你只要记住注解，作为一种标志，可以帮你在你的类加载时替你记住那些你希望以后用来调用的方法和对象。<br/>
-　　在otto中最重要的两个注解就是@Subscribe和@Produce，这两个是什么作用等下再说。</p>
-
-<h2 id="toc_1">二 . IOC 控制反转</h2>
-
-<p>　　什么事IOC控制反转？<br/>
-　　当A类想使用B类的一个方法时，我们传统的做法是new一个B类实例出来，再去调用方法，但是这就使得A,B两个类纠缠在一起。当我们改变了B类时，所有调用了B类的文件我们都需要去改，这样是不是太麻烦，好的做法是写一个主线类，它会自动帮我们去注入（new）,当我们需要改动时，只要改这个主线类就可以了。这个主线类也就是我要提到的otto框架中的Bus类，这是otto最重要的类，它有什么作用？这玩意就是在类加载时调用register，扫描类中复合命名规范的方法，存到一个map，然后post的时候，查找到匹配的方法，反射调用。不理解？等下我们举个例子你就明白了，现在我们先解释完名词。</p>
-
-<h2 id="toc_2">三 . 观察者模式 EventBus模式</h2>
-
-<p>　　otto框架是基于EventBus框架，这是一个是一个发布 / 订阅的事件总线，大家可以看下鸿洋大神的这篇<a href="http://blog.csdn.net/lmj623565791/article/details/40794879">Android EventBus实战 没听过你就out了</a>讲的特别好</p>
-
-<h2 id="toc_3">四 . 应用实战</h2>
-
-<p>　　任何一个App都一定会提供软件更新功能，当我们在更新过程中突然不想更新了，点击了取消，让我们的代码去调用SplashActivity里面的DoCancelUpdate方法。由于我们的下载更新类是写在UpdateManager类里面，那我们怎么做呢，没学会otto框架之前我们可能会在新建UpdateManager时传进去一个Context，这会不会导致Context引发的内存泄漏，我们需要很小心的检查，现在我们使用otto框架就不需要担心这个问题，因为他们两人几乎没有交集，他们都是通过Bus类来沟通。废话不多说上代码：</p>
-
-<h3 id="toc_4">1 . SplashActivity中让bus注册，并订阅事件</h3>
-
-<pre><code class="language-python">   @Override
-    protected void onCreate(Bundle arg0) {
-        super.onCreate(arg0);
-        BusProvider.getInstance().register(this);
-        setContentView(getLayoutResource());
-    }
-    
-    @Subscribe
-    public void DoCancelUpdate(CancelUpdateEvent event){
-        continueRun();
-    } 
-</code></pre>
-
-<h3 id="toc_5">2 . BusProvider为一个单例模式类，Bus最好只有一个</h3>
-
-<pre><code class="language-python">public class BusProvider {
-
-    public static Bus bus;
-
-    public static Bus getInstance() {
-        if (bus == null) {
-            bus = new Bus(ThreadEnforcer.ANY);
-        }
-        return bus;
-    }
-
-    private BusProvider() {
-    
-    }
-}
-</code></pre>
-
-<h3 id="toc_6">3 . UpdateManager类中使用post发出事件，凡是订阅了的都会调用</h3>
-
-<pre><code class="language-python">BusProvider.bus.post(new CancelUpdateEvent());
-</code></pre>
-
-<p>　　至此算是完成了otto框架的总结，分享一些自己在找资料时遇到的大神博客文章：<br/>
-　　<a href="http://blog.csdn.net/lmj623565791/article/details/40794879">Android EventBus实战 没听过你就out了</a><br/>
-　　<a href="http://blog.csdn.net/lmj623565791/article/details/39269193">Android 进阶 教你打造 Android 中的 IOC 框架</a></p>
+	<div class="large-8 medium-8 columns">
+		<div class="markdown-body home-categories">
+		
+			<div class="article">
+                <a class="clearlink" href="14779858991590.html">
+                
+                  <h1>Android Studio快捷键－Mac版</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>从windows转到mac需要改变很多，以前在Android Studio培养的操作习惯也要跟着改变。为了以后工作方便打算总结一下Mac下的Android Studio的一些快捷键。</p>
 
 
-    
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                   <a href="14779858991590.html">Read more</a>&nbsp;&nbsp; 
+                    <span class="date">2016/7/21</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Android.html'>Android</a></span>
+          				  
+          					    <span class="posted-in"><a href='%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html'>工具使用</a></span>
+          				  
+          					    <span class="posted-in"><a href='Mac.html'>Mac</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
 
-      </div>
-
-      <div class="row">
-        <div class="large-6 columns">
-        <p class="text-left" style="padding:15px 0px;">
-      
-          <a href="14779857522261.html" 
-          title="Previous Post: Android技术积累:开发规范">&laquo; Android技术积累:开发规范</a>
-      
-        </p>
-        </div>
-        <div class="large-6 columns">
-      <p class="text-right" style="padding:15px 0px;">
-      
-          <a  href="14779858228537.html" 
-          title="Next Post: 镇远旅行游记">镇远旅行游记 &raquo;</a>
-      
-      </p>
-        </div>
-      </div>
-      <div class="comments-wrap">
-        <div class="share-comments">
-          
-
-          
-
-          
-              <div class="ds-thread" data-thread-key="14779857522449.html" data-url="m78snail.com/14779857522449.html" data-title="otto 框架分析"></div>
-          
-        </div>
-      </div>
-    </div><!-- article-wrap -->
-  </div><!-- large 8 -->
+                      
+                        &nbsp;<a  class="ds-thread-count" data-thread-key="14779858991590.html" data-count-type="comments" href="14779858991590.html#ds-thread"></a>
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14779858228757.html">
+                
+                  <h1>谈谈新买的Mac和最近的生活</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>大学毕业也快一个月了，脱离了学生的身份，我也正式进入了社会为了生计而打拼。从学生变成打工仔，对于我来说其实影响不是多么大，也许是因为自己本来就不是什么循规蹈矩的好学生吧。<br/>
+    在公司实习的时候我就知道公司给每个人办公配的电脑是笔记本，说实话我挺失望的，不过公司有另外一个福利就是自己买电脑公司可以报销4000，前提是3年不能离开公司，这一点倒是挺爽的，因为我所属于的部门出差比较多，所以我打算入手一台MacBook Pro。下面是我用了3天的使用体验。</p>
 
 
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                   <a href="14779858228757.html">Read more</a>&nbsp;&nbsp; 
+                    <span class="date">2016/7/20</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html'>心情日记</a></span>
+          				  
+          					    <span class="posted-in"><a href='Mac.html'>Mac</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
 
+                      
+                        &nbsp;<a  class="ds-thread-count" data-thread-key="14779858228757.html" data-count-type="comments" href="14779858228757.html#ds-thread"></a>
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+              
+
+
+			<div class="row">
+			  <div class="large-6 columns">
+			  <p class="text-left" style="padding-top:25px;">
+			   <a href="all_2.html">&laquo; Prev Page</a>  
+			  </p>
+			  </div>
+			  <div class="large-6 columns">
+			<p class="text-right" style="padding-top:25px;">
+			
+			</p>
+			  </div>
+			</div>
+		</div>
+	</div><!-- large 8 -->
 
  <div class="large-4 medium-4 columns">
   <div class="hide-for-small">

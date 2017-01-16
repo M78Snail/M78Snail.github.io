@@ -98,6 +98,8 @@
             <li><a href="Rx%E5%AE%B6%E6%97%8F.html">Rx家族</a></li>
         
             <li><a href="%E7%BD%91%E7%BB%9C.html">网络</a></li>
+        
+            <li><a href="Dagger2.html">Dagger2</a></li>
          
 
       </ul>
@@ -119,6 +121,201 @@
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="14829144540758.html">
+                
+                  <h1>Https完全解析 与 okHttp的结合</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">一、概述</h2>
+
+<p>　　首先要了解的事，okhttp默认情况下是支持https协议的网站的，比如<br/>
+<a href="https://www.baidu.com">https://www.baidu.com</a> <a href="https://github.com/hongyangAndroid/okhttp-utils">https://github.com/hongyangAndroid/okhttp-utils</a> 等， 你可以直接通过okhttp请求试试。不过要注意的是，支持的https的网站基本都是CA机构颁发的证书，默认情况下是可以信任的。</p>
+
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                   <a href="14829144540758.html">Read more</a>&nbsp;&nbsp; 
+                    <span class="date">2016/12/27</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C.html'>网络</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                      
+                        &nbsp;<a  class="ds-thread-count" data-thread-key="14829144540758.html" data-count-type="comments" href="14829144540758.html#ds-thread"></a>
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14779863113216.html">
+                
+                  <h1>EasyAndroid (Android面试复习)</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">一、项目简介</h2>
+
+<p>　　<a href="https://github.com/M78Snail/EasyAndroid">项目源码：EasyAndroid</a><br/>
+　　EasyAndroid是一款专门面向Android开发者的面试复习与关注业内动态的手机App，里面包含知识体系，业内动态，开发技术周报三大模块。<br/>
+　　<br/>
+<strong>特点：</strong></p>
+
+<ul>
+<li><p>知识点归类明细，每一个知识点采用的博文都是经过精心的挑选和改进，确保一个知识点只保留一篇博文。</p></li>
+<li><p>博文采用了缓存机制，会根据不同网络环境调整缓存存活时间，给使用者一个良好的体验。</p></li>
+<li><p>提供业内动态新闻查看功能，数据爬取自CSDN，提供新闻缓存，方便随时查看。</p></li>
+<li><p>每周会提供安卓开发周报，提供给用户最新的开发技术。</p></li>
+</ul>
+
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                   <a href="14779863113216.html">Read more</a>&nbsp;&nbsp; 
+                    <span class="date">2016/9/15</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Android.html'>Android</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                      
+                        &nbsp;<a  class="ds-thread-count" data-thread-key="14779863113216.html" data-count-type="comments" href="14779863113216.html#ds-thread"></a>
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14779864962440.html">
+                
+                  <h1>xUtils框架中HttpUtils模块源码剖析</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>　　xUtils是github上的一个Android开源工具项目，xUtils包含了很多实用的android工具，其中HttpUtils模块是处理网络连接部分。在我上一个项目《数据铁笼》中经常用到，作为与服务器连接的工具，所以想要深入学习一下。<br/>
+　　项目最近更新到了3.0，我项目中用到的还是2.6有些方面可能和最新的有出入，请以作者最新的代码为准。<br/>
+　　<a href="https://github.com/wyouflf/xUtils3">https://github.com/wyouflf/xUtils3</a><br/>
+　　惯例是例举出我在学习中借鉴的一些大神的博客，以此来表示对他们的尊重</p>
+
+<blockquote>
+<ol>
+<li><a href="http://kb.cnblogs.com/page/130970/#threeconcept">HTTP 协议详解</a></li>
+<li><a href="http://www.tuicool.com/articles/nMFb2q">Android开源项目xUtils HttpUtils模块分析</a></li>
+<li><a href="http://uule.iteye.com/blog/1539084">Future和FutureTask</a></li>
+<li><a href="http://blog.csdn.net/cjj198561/article/details/40475771">xUtils异步HTTP源码分析</a></li>
+</ol>
+</blockquote>
+
+<p>　　上面这些文章讲的都特别好，大家如果有时间可以都看看。</p>
+
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                   <a href="14779864962440.html">Read more</a>&nbsp;&nbsp; 
+                    <span class="date">2016/8/31</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html'>开源框架</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                      
+                        &nbsp;<a  class="ds-thread-count" data-thread-key="14779864962440.html" data-count-type="comments" href="14779864962440.html#ds-thread"></a>
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14779857522261.html">
+                
+                  <h1>Android技术积累:开发规范</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">一. 命名规范</h2>
+
+<h3 id="toc_1">1. 包命名</h3>
+
+<p>域名反写+项目名称+模块名称，全部单词用小写字母。<br/>
+例如，我的KAndroid项目的Model模块包名如下：</p>
+
+<pre><code>me.keeganlee.kandroid.model
+</code></pre>
+
+<h3 id="toc_2">2. 类和接口命名</h3>
+
+<p>使用大驼峰规则，用名词或名词词组命名，每个单词的首字母大写。<br/>
+以下为几种常用类的命名：</p>
+
+<pre><code>activity类，命名以Activity为后缀，如：LoginActivity
+fragment类，命名以Fragment为后缀，如：ShareDialogFragment
+service类，命名以Service为后缀，如：DownloadService
+adapter类，命名以Adapter为后缀，如：CouponListAdapter
+工具类，命名以Util为后缀，如：EncryptUtil
+模型类，命名以BO为后缀，如：CouponBO
+接口实现类，命名以Impl为后缀，如：ApiImpl
+</code></pre>
+
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                   <a href="14779857522261.html">Read more</a>&nbsp;&nbsp; 
+                    <span class="date">2016/8/31</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Android.html'>Android</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                      
+                        &nbsp;<a  class="ds-thread-count" data-thread-key="14779857522261.html" data-count-type="comments" href="14779857522261.html#ds-thread"></a>
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="14779857522449.html">
                 
@@ -162,165 +359,6 @@
 
                       
                         &nbsp;<a  class="ds-thread-count" data-thread-key="14779857522449.html" data-count-type="comments" href="14779857522449.html#ds-thread"></a>
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14779858228537.html">
-                
-                  <h1>镇远旅行游记</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>2016.8.5镇远旅游小记。</p>
-
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                   <a href="14779858228537.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2016/8/10</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html'>心情日记</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                      
-                        &nbsp;<a  class="ds-thread-count" data-thread-key="14779858228537.html" data-count-type="comments" href="14779858228537.html#ds-thread"></a>
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14779861870049.html">
-                
-                  <h1>Git 常用方法</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>下面总结一下自己在学习Git时用到的一些语法<br/>
-更多详细内容请浏览：<a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000">Git教程 - 廖雪峰的官方网站</a></p>
-
-<h2 id="toc_0">一 . 修改文件</h2>
-
-<pre><code>git init：创建git
-git add readme.txt ：将readme.txt变化提交到库
-git status ：获取修改的状态
-git diff readme.txt：获取我们与库中哪里不同
-git commit :将修改提交到库中
-</code></pre>
-
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                   <a href="14779861870049.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2016/8/1</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html'>工具使用</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                      
-                        &nbsp;<a  class="ds-thread-count" data-thread-key="14779861870049.html" data-count-type="comments" href="14779861870049.html#ds-thread"></a>
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14779857522080.html">
-                
-                  <h1>实用笔记－WebView大讲堂（二）～性能优化</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>上一节我总结了下WebView的实用用法：<a href="http://m78star.com/14693271804281.html">实用笔记－WebView大讲堂</a>。这一节我想总结下针对WebView的优化。</p>
-
-<pre><code>1. WebView缓存机制
-2. 几种缓存方式的实现
-3. 其他的缓存策略
-</code></pre>
-
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                   <a href="14779857522080.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2016/7/27</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Android.html'>Android</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                      
-                        &nbsp;<a  class="ds-thread-count" data-thread-key="14779857522080.html" data-count-type="comments" href="14779857522080.html#ds-thread"></a>
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14779857521960.html">
-                
-                  <h1>实用笔记－WebView大讲堂（一）</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>最近手头的项目界面要改成HTML5的，以前自己对于WebView仅仅只是一知半解，这次想好好总结下，我的博客不喜欢讲太多没用的东西，我追求实用主义，所以我的技术博客，永远只有两个主题：怎么用和怎么优化。典型的拿来主义。</p>
-
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                   <a href="14779857521960.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2016/7/25</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Android.html'>Android</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                      
-                        &nbsp;<a  class="ds-thread-count" data-thread-key="14779857521960.html" data-count-type="comments" href="14779857521960.html#ds-thread"></a>
                        
                   </span>
                   </div>
@@ -394,6 +432,8 @@ git commit :将修改提交到库中
             <a href="Rx%E5%AE%B6%E6%97%8F.html"><strong>Rx家族</strong></a>
         
             <a href="%E7%BD%91%E7%BB%9C.html"><strong>网络</strong></a>
+        
+            <a href="Dagger2.html"><strong>Dagger2</strong></a>
          
         </p>
 
@@ -410,33 +450,41 @@ git commit :将修改提交到库中
 	      
 		      
 			      <li class="post">
+			        <a href="14839485571061.html">Dagger2 使用详解(4)--原理分析</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14839485560967.html">Dagger2 使用详解(3)--使用入门</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14839485563999.html">Dagger2 使用详解(2)--注解</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14839485567053.html">Dagger2 使用详解(1)--依赖注入</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14829068226408.html">RxJava 你好！</a>
 			      </li>
 		     
 		  
 		      
-			      <li class="post">
-			        <a href="14829144540758.html">Https完全解析 与 okHttp的结合</a>
-			      </li>
-		     
 		  
 		      
-			      <li class="post">
-			        <a href="14779863113216.html">EasyAndroid (Android面试复习)</a>
-			      </li>
-		     
 		  
 		      
-			      <li class="post">
-			        <a href="14779864962440.html">xUtils框架中HttpUtils模块源码剖析</a>
-			      </li>
-		     
 		  
 		      
-			      <li class="post">
-			        <a href="14779857522261.html">Android技术积累:开发规范</a>
-			      </li>
-		     
 		  
 		      
 		  
