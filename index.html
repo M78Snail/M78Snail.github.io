@@ -122,14 +122,17 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14839485571061.html">
+                <a class="clearlink" href="14829144540758.html">
                 
-                  <h1>Dagger2 使用详解(4)--原理分析</h1>
+                  <h1>Https完全解析 与 okHttp的结合</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>　　前面啰里啰嗦的介绍了Dagger2的基本使用，接下来我们再分析分析实现原理。这里不会分析Dagger2根据注解生成各种代码的原理，关于Java注解以后有机会再写一篇文章来介绍。后面主要分析的是Dagger2生成的各种类如何帮我们实现依赖注入，为了便于理解我这里选了前面相对简单的案例B来做分析。</p>
+                        	<h2 id="toc_0">一、概述</h2>
+
+<p>　　首先要了解的事，okhttp默认情况下是支持https协议的网站的，比如<br/>
+<a href="https://www.baidu.com">https://www.baidu.com</a> <a href="https://github.com/hongyangAndroid/okhttp-utils">https://github.com/hongyangAndroid/okhttp-utils</a> 等， 你可以直接通过okhttp请求试试。不过要注意的是，支持的https的网站基本都是CA机构颁发的证书，默认情况下是可以信任的。</p>
 
 
                         
@@ -138,11 +141,11 @@
                 </a>
                 <div class="read-more clearfix">
                   <div class="more-left left">
-                   <a href="14839485571061.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2017/1/9</span>
+                   <a href="14829144540758.html">Read more</a>&nbsp;&nbsp; 
+                    <span class="date">2017/2/3</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Dagger2.html'>Dagger2</a></span>
+          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C.html'>网络</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -150,7 +153,7 @@
                       
 
                       
-                        &nbsp;<a  class="ds-thread-count" data-thread-key="14839485571061.html" data-count-type="comments" href="14839485571061.html#ds-thread"></a>
+                        &nbsp;<a  class="ds-thread-count" data-thread-key="14829144540758.html" data-count-type="comments" href="14829144540758.html#ds-thread"></a>
                        
                   </span>
                   </div>
@@ -158,14 +161,14 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14839485560967.html">
+                <a class="clearlink" href="14779864279806.html">
                 
-                  <h1>Dagger2 使用详解(3)--使用入门</h1>
+                  <h1>用力的人跑不远</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>　　前面长篇大论的基本都在介绍概念，下面我们看看Dagger2的基本应用。关于Dagger2的依赖配置就不在这里占用篇幅去描述了，大家可以到它的github主页下去查看官方教程<a href="https://github.com/google/dagger">https://github.com/google/dagger</a>。接下来我们还是拿前面的Car和Engine来举例。</p>
+                        	<p>写在前面：有阶段的自己，会用蛮力去学习一些东西，就是这东西不管是否适合目前自己的知识体系， 觉得学了之后会更牛逼就去学，但是这样的东西往往学了记不住。 学习的过程越用力反而显得越吃力， 太吃力的事情，自然就无法有恒心， 这就是很多人会觉得自己做事总是无法持之以恒的原因。</p>
 
 
                         
@@ -174,11 +177,11 @@
                 </a>
                 <div class="read-more clearfix">
                   <div class="more-left left">
-                   <a href="14839485560967.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2017/1/9</span>
+                   <a href="14779864279806.html">Read more</a>&nbsp;&nbsp; 
+                    <span class="date">2017/2/2</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Dagger2.html'>Dagger2</a></span>
+          					    <span class="posted-in"><a href='%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html'>心情日记</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -186,7 +189,7 @@
                       
 
                       
-                        &nbsp;<a  class="ds-thread-count" data-thread-key="14839485560967.html" data-count-type="comments" href="14839485560967.html#ds-thread"></a>
+                        &nbsp;<a  class="ds-thread-count" data-thread-key="14779864279806.html" data-count-type="comments" href="14779864279806.html#ds-thread"></a>
                        
                   </span>
                   </div>
@@ -194,14 +197,24 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14839485563999.html">
+                <a class="clearlink" href="14779861870049.html">
                 
-                  <h1>Dagger2 使用详解(2)--注解</h1>
+                  <h1>Git 常用方法</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>　　无论是构造函数注入还是接口注入，都避免不了要编写大量的模板代码。机智的猿猿们当然不开心做这些重复性的工作，于是各种依赖注入框架应用而生。但是这么多的依赖注入框架为什么我们却偏爱Dagger2呢？我们先从Spring中的控制反转（IOC）说起。</p>
+                        	<p>下面总结一下自己在学习Git时用到的一些语法<br/>
+更多详细内容请浏览：<a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000">Git教程 - 廖雪峰的官方网站</a></p>
+
+<h2 id="toc_0">一 . 修改文件</h2>
+
+<pre><code>git init：创建git
+git add readme.txt ：将readme.txt变化提交到库
+git status ：获取修改的状态
+git diff readme.txt：获取我们与库中哪里不同
+git commit :将修改提交到库中
+</code></pre>
 
 
                         
@@ -210,11 +223,11 @@
                 </a>
                 <div class="read-more clearfix">
                   <div class="more-left left">
-                   <a href="14839485563999.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2017/1/9</span>
+                   <a href="14779861870049.html">Read more</a>&nbsp;&nbsp; 
+                    <span class="date">2017/1/23</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Dagger2.html'>Dagger2</a></span>
+          					    <span class="posted-in"><a href='%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html'>工具使用</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -222,7 +235,7 @@
                       
 
                       
-                        &nbsp;<a  class="ds-thread-count" data-thread-key="14839485563999.html" data-count-type="comments" href="14839485563999.html#ds-thread"></a>
+                        &nbsp;<a  class="ds-thread-count" data-thread-key="14779861870049.html" data-count-type="comments" href="14779861870049.html#ds-thread"></a>
                        
                   </span>
                   </div>
@@ -230,16 +243,28 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14839485567053.html">
+                <a class="clearlink" href="14779864962440.html">
                 
-                  <h1>Dagger2 使用详解(1)--依赖注入</h1>
+                  <h1>xUtils框架中HttpUtils模块源码剖析</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>　　Dagger-匕首，鼎鼎大名的Square公司旗下又一把利刃（没错！还有一把黄油刀，唤作ButterKnife）；故此给本篇取名神兵利器Dagger2。</p>
+                        	<p>　　xUtils是github上的一个Android开源工具项目，xUtils包含了很多实用的android工具，其中HttpUtils模块是处理网络连接部分。在我上一个项目《数据铁笼》中经常用到，作为与服务器连接的工具，所以想要深入学习一下。<br/>
+　　项目最近更新到了3.0，我项目中用到的还是2.6有些方面可能和最新的有出入，请以作者最新的代码为准。<br/>
+　　<a href="https://github.com/wyouflf/xUtils3">https://github.com/wyouflf/xUtils3</a><br/>
+　　惯例是例举出我在学习中借鉴的一些大神的博客，以此来表示对他们的尊重</p>
 
-<p>　　Dagger2起源于Dagger，是一款基于Java注解来实现的完全在编译阶段完成依赖注入的开源库，主要用于模块间解耦、提高代码的健壮性和可维护性。Dagger2在编译阶段通过apt利用Java注解自动生成Java代码，然后结合手写的代码来自动帮我们完成依赖注入的工作。</p>
+<blockquote>
+<ol>
+<li><a href="http://kb.cnblogs.com/page/130970/#threeconcept">HTTP 协议详解</a></li>
+<li><a href="http://www.tuicool.com/articles/nMFb2q">Android开源项目xUtils HttpUtils模块分析</a></li>
+<li><a href="http://uule.iteye.com/blog/1539084">Future和FutureTask</a></li>
+<li><a href="http://blog.csdn.net/cjj198561/article/details/40475771">xUtils异步HTTP源码分析</a></li>
+</ol>
+</blockquote>
+
+<p>　　上面这些文章讲的都特别好，大家如果有时间可以都看看。</p>
 
 
                         
@@ -248,11 +273,11 @@
                 </a>
                 <div class="read-more clearfix">
                   <div class="more-left left">
-                   <a href="14839485567053.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2017/1/9</span>
+                   <a href="14779864962440.html">Read more</a>&nbsp;&nbsp; 
+                    <span class="date">2017/1/20</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Dagger2.html'>Dagger2</a></span>
+          					    <span class="posted-in"><a href='%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html'>开源框架</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -260,7 +285,7 @@
                       
 
                       
-                        &nbsp;<a  class="ds-thread-count" data-thread-key="14839485567053.html" data-count-type="comments" href="14839485567053.html#ds-thread"></a>
+                        &nbsp;<a  class="ds-thread-count" data-thread-key="14779864962440.html" data-count-type="comments" href="14779864962440.html#ds-thread"></a>
                        
                   </span>
                   </div>
@@ -268,14 +293,25 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14829068226408.html">
+                <a class="clearlink" href="14779857522449.html">
                 
-                  <h1>RxJava 你好！</h1>
+                  <h1>otto 框架分析</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>　　前段时间为 gank.io（干货集中营）网站开发的一款App,采用最流行的Rx全家桶（RxJava+RxAndroid+Retroift）。从开始尝试Rx到现在写出第一个程序，我查阅了很多资料，也踩了很多坑，希望在此记录一下，如果能帮到别人就更好了。</p>
+                        	<p>　　最近项目上经常会用到otto框架，它跟EventBus很像，这里希望总结一下：<br/>
+　　</p>
+
+<blockquote>
+<ul>
+<li>运行时动态处理（注解）</li>
+<li>IOC 控制反转</li>
+<li>观察者模式 EventBus模式</li>
+</ul>
+</blockquote>
+
+<p>　　大体上要学习otto框架就是上面三个方面，看着名词很高端？没事，让我一一解释一下。</p>
 
 
                         
@@ -284,11 +320,13 @@
                 </a>
                 <div class="read-more clearfix">
                   <div class="more-left left">
-                   <a href="14829068226408.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2016/12/28</span>
+                   <a href="14779857522449.html">Read more</a>&nbsp;&nbsp; 
+                    <span class="date">2017/1/15</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Rx%E5%AE%B6%E6%97%8F.html'>Rx家族</a></span>
+          					    <span class="posted-in"><a href='%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html'>开源框架</a></span>
+          				  
+          					    <span class="posted-in"><a href='Android.html'>Android</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -296,7 +334,7 @@
                       
 
                       
-                        &nbsp;<a  class="ds-thread-count" data-thread-key="14829068226408.html" data-count-type="comments" href="14829068226408.html#ds-thread"></a>
+                        &nbsp;<a  class="ds-thread-count" data-thread-key="14779857522449.html" data-count-type="comments" href="14779857522449.html#ds-thread"></a>
                        
                   </span>
                   </div>
@@ -388,31 +426,31 @@
 	      
 		      
 			      <li class="post">
-			        <a href="14839485571061.html">Dagger2 使用详解(4)--原理分析</a>
+			        <a href="14829144540758.html">Https完全解析 与 okHttp的结合</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14839485560967.html">Dagger2 使用详解(3)--使用入门</a>
+			        <a href="14779864279806.html">用力的人跑不远</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14839485563999.html">Dagger2 使用详解(2)--注解</a>
+			        <a href="14779861870049.html">Git 常用方法</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14839485567053.html">Dagger2 使用详解(1)--依赖注入</a>
+			        <a href="14779864962440.html">xUtils框架中HttpUtils模块源码剖析</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14829068226408.html">RxJava 你好！</a>
+			        <a href="14779857522449.html">otto 框架分析</a>
 			      </li>
 		     
 		  

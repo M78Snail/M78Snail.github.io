@@ -148,8 +148,7 @@
 
 <span id="more"></span><!-- more -->
 
-<p>　<br/>
-　　谈起依赖注入，做过J2EE开发的同学一定会想起Spring IOC，那通过迷之XML来配置依赖的方式真的很让人讨厌；而且XML与Java代码分离也导致代码链难以追踪。之后更加先进的Guice（Android端也有个RoboGuice）出现了，我们不再需要通过XML来配置依赖，但其运行时实现注入的方式让我们在追踪和定位错误的时候却又万分痛苦。开篇提到过Dagger就是受Guice的启发而开发出来的；Dagger继承了前辈的思想，在性能又碾压了它的前辈Guice，可谓是长江后浪推前浪，前浪死在沙滩上。</p>
+<p>　　谈起依赖注入，做过J2EE开发的同学一定会想起Spring IOC，那通过迷之XML来配置依赖的方式真的很让人讨厌；而且XML与Java代码分离也导致代码链难以追踪。之后更加先进的Guice（Android端也有个RoboGuice）出现了，我们不再需要通过XML来配置依赖，但其运行时实现注入的方式让我们在追踪和定位错误的时候却又万分痛苦。开篇提到过Dagger就是受Guice的启发而开发出来的；Dagger继承了前辈的思想，在性能又碾压了它的前辈Guice，可谓是长江后浪推前浪，前浪死在沙滩上。</p>
 
 <p>　　又如开篇我在简介中说到的，Dagger是一种半静态半运行时的DI框架，虽说依赖注入是完全静态的，但是生成有向无环图(DAG)还是基于反射来实现，这无论在大型的服务端应用还是在Android应用上都不是最优方案。升级版的Dagger2解决了这一问题，从半静态变为完全静态，从Map式的API变成申明式API（@Module），生成的代码更优雅高效；而且一旦出错我们在编译期间就能发现。所以Dagger2对开发者的更加友好了，当然Dagger2也因此丧失了一些灵活性，但总体来说利还是远远大于弊的。</p>
 
@@ -288,31 +287,31 @@ b：若不存在，则直接初始化该类实例，完成一次依赖注入。<
 	      
 		      
 			      <li class="post">
-			        <a href="14839485571061.html">Dagger2 使用详解(4)--原理分析</a>
+			        <a href="14829144540758.html">Https完全解析 与 okHttp的结合</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14839485560967.html">Dagger2 使用详解(3)--使用入门</a>
+			        <a href="14779864279806.html">用力的人跑不远</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14839485563999.html">Dagger2 使用详解(2)--注解</a>
+			        <a href="14779861870049.html">Git 常用方法</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14839485567053.html">Dagger2 使用详解(1)--依赖注入</a>
+			        <a href="14779864962440.html">xUtils框架中HttpUtils模块源码剖析</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14829068226408.html">RxJava 你好！</a>
+			        <a href="14779857522449.html">otto 框架分析</a>
 			      </li>
 		     
 		  
