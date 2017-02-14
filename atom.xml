@@ -4,7 +4,7 @@
   <title><![CDATA[m78snail]]></title>
   <link href="m78snail.com/atom.xml" rel="self"/>
   <link href="m78snail.com/"/>
-  <updated>2017-02-14T17:06:48+08:00</updated>
+  <updated>2017-02-14T17:59:01+08:00</updated>
   <id>m78snail.com/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -2551,6 +2551,304 @@ class JsInteration {
   </entry>
   
   <entry>
+    <title type="html"><![CDATA[JVM]]></title>
+    <link href="m78snail.com/14870642938148.html"/>
+    <updated>2017-02-14T17:24:53+08:00</updated>
+    <id>m78snail.com/14870642938148.html</id>
+    <content type="html"><![CDATA[
+<p>　　JVM过去过来就问了这么些问题，没怎么变，内存模型和GC算法这块问得比较多，可以在网上多找几篇博客来看看。<br/>
+　　推荐书籍：《深入理解java虚拟机》</p>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">1. 内存模型以及分区，需要详细到每个区放什么。</h2>
+
+<p>JVM内存模型如下图所示:<br/>
+<img src="media/14870642938148/14870644399593.jpg" alt="C400"/></p>
+
+<p>此处我们集中注意中间绿色的部分，该部分为JVM的运行时内存，该部分包含了：<br/>
+线程私有的（灰色）：<br/>
+　　1. 程序计数器：记录执行到第几条指令<br/>
+　　2. 虚拟机方法栈：执行Java方法所用，每执行一个方法便加入一个栈帧，里面含有局部变量表、操作栈、动态链接和方法出口等<br/>
+　　3. 本地方法栈：与虚拟机方法栈相似，用于执行native方法</p>
+
+<p>线程共享的（蓝色）：<br/>
+　　1. 堆：对象实例存放地，，分为年轻代和老年代。年轻代又细分为伊甸园区和两个相对的Survival区<br/>
+　　2. 方法区：也叫永久代，存放了类的信息、常量、类静态变量等元素，含有一个运行时常量池</p>
+
+<h2 id="toc_1">2. 堆里面的分区：Eden，survival from to，老年代，各自的特点</h2>
+
+<p><strong>1.Eden区</strong><br/>
+Eden区位于Java堆的年轻代，是新对象分配内存的地方，由于堆是所有线程共享的，因此在堆上分配内存需要加锁。而Sun JDK为提升效率，会为每个新建的线程在Eden上分配一块独立的空间由该线程独享，这块空间称为TLAB（Thread Local Allocation Buffer）。在TLAB上分配内存不需要加锁，因此JVM在给线程中的对象分配内存时会尽量在TLAB上分配。如果对象过大或TLAB用完，则仍然在堆上进行分配。如果Eden区内存也用完了，则会进行一次Minor GC（young GC）。</p>
+
+<p><strong>2.Survival from to</strong><br/>
+Survival区与Eden区相同都在Java堆的年轻代。Survival区有两块，一块称为from区，另一块为to区，这两个区是相对的，在发生一次Minor GC后，from区就会和to区互换。在发生Minor GC时，Eden区和Survival from区会把一些仍然存活的对象复制进Survival to区，并清除内存。Survival to区会把一些存活得足够旧的对象移至年老代。</p>
+
+<p><strong>3.年老代</strong><br/>
+年老代里存放的都是存活时间较久的，大小较大的对象，因此年老代使用标记整理算法。当年老代容量满的时候，会触发一次Major GC（full GC），回收年老代和年轻代中不再被使用的对象资源。</p>
+
+<h2 id="toc_2">3. 对象创建方法，对象的内存分配，对象的访问定位</h2>
+
+<p><strong>对象的创建</strong><br/>
+Java对象的创建大致上有以下几个步骤：</p>
+
+<p>　　1. <strong>类加载检查</strong>：检查这个指令的参数是否能在常量池中定位到一个类的符号引用，并且检查这个符号引用代表的类是否已被加载、解析和初始化过。如果没有，那必须先执行相应的类的加载过程<br/>
+　　2. <strong>为对象分配内存</strong>：对象所需内存的大小在类加载完成后便完全确定，为对象分配空间的任务等同于把一块确定大小的内存从Java堆中划分出来。由于堆被线程共享，因此此过程需要进行同步处理（分配在TLAB上不需要同步）<br/>
+　　3. <strong>内存空间初始化</strong>：虚拟机将分配到的内存空间都初始化为零值（不包括对象头），内存空间初始化保证了对象的实例字段在Java代码中可以不赋初始值就直接使用，程序能访问到这些字段的数据类型所对应的零值。<br/>
+　　4. <strong>对象设置</strong>：JVM对对象头进行必要的设置，保存一些对象的信息（指明是哪个类的实例，哈希码，GC年龄等）<br/>
+　　5. <strong>init</strong>：执行完上面的4个步骤后，对JVM来说对象已经创建完毕了，但对于Java程序来说，我们还需要对对象进行一些必要的初始化。</p>
+
+<p><strong>对象的内存分配</strong><br/>
+Java对象的内存分配有两种情况，由Java堆是否规整来决定（Java堆是否规整由所采用的垃圾收集器是否带有压缩整理功能决定）：<br/>
+　　1. 指针碰撞(Bump the pointer)：如果Java堆中的内存是规整的，所有用过的内存都放在一边，空闲的内存放在另一边，中间放着一个指针作为分界点的指示器，分配内存也就是把指针向空闲空间那边移动一段与内存大小相等的距离<br/>
+　　2. 空闲列表(Free List)：如果Java堆中的内存不是规整的，已使用的内存和空闲的内存相互交错，就没有办法简单的进行指针碰撞了。虚拟机必须维护一张列表，记录哪些内存块是可用的，在分配的时候从列表中找到一块足够大的空间划分给对象实例，并更新列表上的记录</p>
+
+<p><strong>对象的访问定位</strong><br/>
+对象的访问形式取决于虚拟机的实现，目前主流的访问方式有使用句柄和直接指针两种：<br/>
+<strong>使用句柄：</strong><br/>
+如果使用句柄访问，Java堆中将会划分出一块内存来作为句柄池，引用中存储的就是对象的句柄地址，而句柄中包含了对象实例数据与类型数据各自的具体地址信息：<br/>
+<img src="media/14870642938148/14870648573054.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>优势：引用中存储的是稳定的句柄地址，在对象被移动(垃圾收集时移动对象是非常普遍的行为)时只会改变句柄中的实例数据指针，而引用本身不需要修改。<br/>
+<strong>直接指针：</strong><br/>
+如果使用直接指针访问对象，那么对象的实例数据中就包含一个指向对象类型数据的指针，引用中存的直接就是对象的地址：<br/>
+<img src="media/14870642938148/14870648872588.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+优势：速度更快，节省了一次指针定位的时间开销，积少成多的效应非常可观。</p>
+
+<h2 id="toc_3">4. GC的两种判定方法：引用计数与引用链</h2>
+
+<p>基于引用计数与基于引用链这两大类别的自动内存管理方式最大的不同之处在于：前者只需要局部信息，而后者需要全局信息</p>
+
+<p><strong>引用计数</strong><br/>
+引用计数顾名思义，就是记录下一个对象被引用指向的次数。引用计数方式最基本的形态就是让每个被管理的对象与一个引用计数器关联在一起，该计数器记录着该对象当前被引用的次数，每当创建一个新的引用指向该对象时其计数器就加1，每当指向该对象的引用失效时计数器就减1。当该计数器的值降到0就认为对象死亡。每个计数器只记录了其对应对象的局部信息——被引用的次数，而没有（也不需要）一份全局的对象图的生死信息。由于只维护局部信息，所以不需要扫描全局对象图就可以识别并释放死对象；但也因为缺乏全局对象图信息，所以无法处理循环引用的状况。</p>
+
+<p><strong>引用链</strong><br/>
+引用链需要内存的全局信息，当使用引用链进行GC时，从对象图的“根”（GC Root，必然是活的引用，包括栈中的引用，类静态属性的引用，常量的引用，JNI的引用等）出发扫描出去，基于引用的可到达性算法来判断对象的生死。这使得对象的生死状态能批量的被识别出来，然后批量释放死对象。引用链不需要显式维护对象的引用计数，只在GC使用可达性算法遍历全局信息的时候判断对象是否被引用，是否存活。</p>
+
+<h2 id="toc_4">5. GC的三种收集方法：标记清除、标记整理、复制算法的原理与特点，分别用在什么地方</h2>
+
+<p><strong>标记清除</strong><br/>
+标记清除算法分两步执行：<br/>
+　　1. 暂停用户线程，通过GC Root使用可达性算法标记存活对象<br/>
+　　2. 清除未被标记的垃圾对象<br/>
+标记清除算法缺点如下：<br/>
+　　1. 效率较低，需要暂停用户线程<br/>
+　　2 . 清除垃圾对象后内存空间不连续，存在较多内存碎片<br/>
+标记算法如今使用的较少了</p>
+
+<p><strong>复制算法</strong><br/>
+复制算法也分两步执行，在复制算法中一般会有至少两片的内存空间（一片是活动空间，里面含有各种对象，另一片是空闲空间，里面是空的）：<br/>
+　　1. 暂停用户线程，标记活动空间的存活对象<br/>
+　　2. 把活动空间的存活对象复制到空闲空间去，清除活动空间<br/>
+复制算法相比标记清除算法，优势在于其垃圾回收后的内存是连续的。<br/>
+但是复制算法的缺点也很明显：<br/>
+　　1. 需要浪费一定的内存作为空闲空间<br/>
+　　2. 如果对象的存活率很高，则需要复制大量存活对象，导致效率低下<br/>
+复制算法一般用于年轻代的Minor GC，主要是因为年轻代的大部分对象存活率都较低</p>
+
+<p><strong>标记整理</strong><br/>
+标记整理算法是标记清除算法的改进，分为标记、整理两步：<br/>
+　　1. 暂停用户线程，标记所有存活对象<br/>
+　　2. 移动所有存活对象，按内存地址次序一次排列，回收末端对象以后的内存空间<br/>
+标记整理算法与标记清除算法相比，整理出的内存是连续的；而与复制算法相比，不需要多片内存空间。<br/>
+然而标记整理算法的第二步整理过程较为麻烦，需要整理存活对象的引用地址，理论上来说效率要低于复制算法。<br/>
+因此标记整理算法一般引用于老年代的Major GC</p>
+
+<h2 id="toc_5">6. GC收集器有哪些？它们的特点是？</h2>
+
+<p>常见的GC收集器如下图所示，连线代表可搭配使用：<br/>
+<img src="media/14870642938148/14870654689780.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+<strong>1.Serial收集器（串行收集器）</strong><br/>
+用于新生代的单线程收集器，收集时需要暂停所有工作线程（Stop the world）。优点在于：简单高效，单个CPU时没有线程交互的开销，堆较小时停顿时间不长。常与Serial Old 收集器一起使用，示意图如下所示：<br/>
+<img src="media/14870642938148/14870655013486.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p><strong>2.ParNew收集器（parallel new 收集器，新生代并行收集器）</strong><br/>
+Serial收集器多线程版本，除了使用多线程外和Serial收集器一模一样。常与Serial Old 收集器一起使用，示意图如下：<br/>
+<img src="media/14870642938148/14870655245086.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p><strong>3.Parallel Scavenge收集器</strong><br/>
+与ParNew收集器一样是一款多线程收集器，其特点在于关注点与别的GC收集器不同：一般的GC收集器关注于缩短工作线程暂停的时间，而该收集器关注于吞吐量，因此也被称为吞吐量优先收集器。（吞吐量 = 用户运行代码时间 /  (用户运行代码时间 + 垃圾回收时间)）高吞吐量与停顿时间短相比主要强调任务快完成，因此常和Parallel Old 收集器一起使用（没有Parallel Old之前与Serial Old一起使用），示意图如下：<br/>
+<img src="media/14870642938148/14870655572103.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p><strong>4.Serial Old收集器</strong><br/>
+Serial收集器的年老代版本，不在赘述。</p>
+
+<p><strong>5.Parallel Old收集器</strong><br/>
+年老代的并行收集器，在JDK1.6开始使用。</p>
+
+<p><strong>6.CMS收集器（Concurrent Mark Sweep，并发标记清除收集器）</strong><br/>
+CMS收集器是一个年老代的收集器，是以最短回收停顿时间为目标的收集器，其示意图如下所示：<br/>
+<img src="media/14870642938148/14870655936116.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>CMS收集器基于标记清除算法实现，主要分为4个步骤：<br/>
+　　1. 初始标记，需要stop the world，标记GC Root能关联到的对象，速度快<br/>
+　　2. 并发标记，对GC Root执行可达性算法<br/>
+　　3. 重新标记，需要stop the world，修复并发标记时因用户线程运行而产生的标记变化，所需时间比初始标记长，但远比并发标记短<br/>
+　　4. 并发清理<br/>
+CMS收集器的缺点在于：<br/>
+　　1. 其对于CPU资源很敏感。在并发阶段，虽然CMS收集器不会暂停用户线程，但是会因为占用了一部分CPU资源而导致应用程序变慢，总吞吐量降低。其默认启动的回收线程数是（cpu数量+3）/4，当cpu数较少的时候，会分掉大部分的cpu去执行收集器线程<br/>
+　　2. 无法处理浮动垃圾，浮动垃圾即在并发清除阶段因为是并发执行，还会产生垃圾，这一部分垃圾即为浮动垃圾，要等下次收集<br/>
+　　3. CMS收集器使用的是标记清除算法，GC后会产生碎片<br/>
+<strong>7.G1收集器（Garbage First收集器）</strong><br/>
+相比CMS收集器，G1收集器主要有两处改进：</p>
+
+<p>　　1. 使用标记整理算法，确保GC后不会产生内存碎片<br/>
+　　2. 可以精确控制停顿，允许指定消耗在垃圾回收上的时间</p>
+
+<p>G1收集器可以实现在基本不牺牲吞吐量的前提下完成低停顿的内存回收，这是由于它能够极力地避免全区域的垃圾收集，之前的收集器进行收集的范围都是整个新生代或老年代，而G1将整个Java堆（包括新生代、老年代）划分为多个大小固定的独立区域（Region），并且跟踪这些区域里面的垃圾堆积程度，在后台维护一个优先列表，每次根据允许的收集时间，优先回收垃圾最多的区域（这就是Garbage First名称的来由）。区域划分及有优先级的区域回收，保证了G1收集器在有限的时间内可以获得最高的收集效率。</p>
+
+<h2 id="toc_6">7. Minor GC与Full GC分别在什么时候发生？</h2>
+
+<p>Minor GC也叫Young GC，当年轻代内存满的时候会触发，会对年轻代进行GC<br/>
+Full GC也叫Major GC，当年老代满的时候会触发，当我们调用System.gc时也可能会触发，会对年轻代和年老代进行GC</p>
+
+<h2 id="toc_7">8. 类加载的五个过程：加载、验证、准备、解析、初始化</h2>
+
+<p>JVM把class文件加载的内存，并对数据进行校验、转换解析和初始化，最终形成JVM可以直接使用的Java类型的过程就是加载机制。<br/>
+类从被加载到虚拟机内存中开始，到卸载出内存为止，它的生命周期包括了：加载(Loading)、验证(Verification)、准备(Preparation)、解析(Resolution)、初始化(Initialization)、使用(Using)、卸载(Unloading)七个阶段，其中验证、准备、解析三个部分统称链接。<br/>
+<strong>1.加载</strong><br/>
+在加载阶段，虚拟机需要完成以下事情：<br/>
+　　1. 通过一个类的权限定名来获取定义此类的二进制字节流<br/>
+　　2. 将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构<br/>
+　　3. 在java堆中生成一个代表这个类的java.lang.Class对象，作为方法去这些数据的访问入口<br/>
+<strong>2.验证</strong><br/>
+在验证阶段，虚拟机主要完成：<br/>
+　　1. 文件格式验证：验证class文件格式规范<br/>
+　　2. 元数据验证：这个阶段是对字节码描述的信息进行语义分析，以保证起描述的信息符合java语言规范要求<br/>
+　　3. 字节码验证：进行数据流和控制流分析，这个阶段对类的方法体进行校验分析，这个阶段的任务是保证被校验类的方法在运行时不会做出危害虚拟机安全的行为<br/>
+　　4. 符号引用验证：符号引用中通过字符串描述的全限定名是否能找到对应的类、符号引用类中的类，字段和方法的访问性(private、protected、public、default)是否可被当前类访问<br/>
+<strong>3.准备</strong><br/>
+准备阶段是正式为类变量（被static修饰的变量）分配内存并设置变量初始值（0值）的阶段，这些内存都将在方法区中进行分配</p>
+
+<p><strong>4.解析</strong><br/>
+解析阶段是虚拟机将常量池内的符号引用替换为直接引用的过程<br/>
+常见的解析有四种：<br/>
+　　1. 类或接口的解析<br/>
+　　2. 字段解析<br/>
+　　3. 类方法解析<br/>
+　　4. 接口方法解析</p>
+
+<p><strong>5.初始化</strong><br/>
+初始化阶段才真正开始执行类中定义的java程序代码，初始化阶段是执行类构造器<clinit>()方法的过程</p>
+
+<h2 id="toc_8">9. 双亲委派模型：Bootstrap ClassLoader、Extension ClassLoader、ApplicationClassLoader</h2>
+
+<p>JVM的类加载是通过类加载器实现的， Java中的类加载器体系结构如下：<br/>
+<img src="media/14870642938148/14870660696688.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<ul>
+<li>启动类加载器（Bootstrap ClassLoader）：是用本地代码实现的类装入器，它负责将 <Java_Runtime_Home>/lib下面的类库加载到内存中（比如rt.jar）。由于引导类加载器涉及到虚拟机本地实现细节，开发者无法直接获取到启动类加载器的引用，所以不允许直接通过引用进行操作</li>
+<li>标准扩展类加载器：是由 Sun 的 ExtClassLoader（sun.misc.Launcher$ExtClassLoader）实现的。它负责将&lt; Java_Runtime_Home &gt;/lib/ext或者由系统变量 java.ext.dir指定位置中的类库加载到内存中。开发者可以直接使用标准扩展类加载器</li>
+<li>应用程序类加载器：由sun.misc.Launcher$AppClassLoader实现，负责加载用户类路径classpath上所指定的类库，是类加载器ClassLoader中的getSystemClassLoader()方法的返回值，开发者可以直接使用应用程序类加载器，如果程序中没有自定义过类加载器，该加载器就是程序中默认的类加载器
+值得注意的是：上述三个JDK提供的类加载器虽然是父子类加载器关系，但是没有使用继承，而是使用了组合关系。</li>
+</ul>
+
+<p>从JDK1.2开始，JVM规范推荐开发者使用双亲委派模式(ParentsDelegation Model)进行类加载，其加载过程如下：<br/>
+　　1. 如果一个类加载器收到了类加载请求，它首先不会自己去尝试加载这个类，而是把类加载请求委派给父类加载器去完成<br/>
+　　2. 每一层的类加载器都把类加载请求委派给父类加载器，直到所有的类加载请求都传递给顶层的启动类加载器<br/>
+　　3. 如果顶层的启动类加载器无法完成加载请求，则子类加载器会尝试去加载，如果连最初发起类加载请求的类加载器也无法完成加载请求时，将会抛出ClassNotFoundException，而不再调用其子类加载器去进行类加载<br/>
+采用双亲委派模型的好处在于：使得java类随着它的类加载器一起具备了一种带有优先级的层次关系，越是基础的类，越是被上层的类加载器进行加载，保证了java程序的稳定运行。</p>
+
+<h2 id="toc_9">10. 分派：静态分派与动态分派</h2>
+
+<p>要理解分派，我们先来理解Java中的两种类型：</p>
+
+<ul>
+<li>静态类型：变量声明时的类型</li>
+<li>实际类型：变量实例化时采用的类型
+举例的Java代码如下：</li>
+</ul>
+
+<pre><code>class Car {}  
+class Bus extends Car {}  
+public class Main {  
+    public static void main(String[] args) throws Exception {  
+        // Car 为静态类型，Bus 为实际类型  
+        Car car = new Bus();  
+    }  
+}  
+</code></pre>
+
+<p><strong>静态分派</strong><br/>
+所有依赖静态类型来定位方法执行版本的分派动作称为静态分派，其典型应用是方法重载（重载是通过参数的静态类型而不是实际类型来选择重载的版本的）。<br/>
+举例Java代码如下：</p>
+
+<pre><code>class Car {}  
+class Bus extends Car {}  
+class Jeep extends Car {}  
+public class Main {  
+    public static void main(String[] args) throws Exception {  
+        // Car 为静态类型，Car 为实际类型  
+        Car car1 = new Car();  
+        // Car 为静态类型，Bus 为实际类型  
+        Car car2 = new Bus();  
+        // Car 为静态类型，Jeep 为实际类型  
+        Car car3 = new Jeep();  
+          
+        showCar(car1);  
+        showCar(car2);  
+        showCar(car3);  
+    }  
+    private static void showCar(Car car) {  
+        System.out.println(&quot;I have a Car !&quot;);  
+    }  
+    private static void showCar(Bus bus) {  
+        System.out.println(&quot;I have a Bus !&quot;);  
+    }  
+    private static void showCar(Jeep jeep) {  
+        System.out.println(&quot;I have a Jeep !&quot;);  
+    }  
+}  
+</code></pre>
+
+<p>代码输出如下：<br/>
+<img src="media/14870642938148/14870662267498.jpg" alt="" class="mw_img_left" style="width:200px;display: block; float: left; margin: 0px 8px 8px 0px;"/></p>
+
+<p>从上面的例子我们可以看出重载调用的具体方法版本是由静态类型来决定的。</p>
+
+<p><strong>动态分派</strong><br/>
+与静态分派类似，动态分派指在在运行期根据实际类型确定方法执行版本，其典型应用是方法重写（即多态）。<br/>
+举例Java代码如下：</p>
+
+<pre><code>class Car {  
+    public void showCar() {  
+        System.out.println(&quot;I have a Car !&quot;);  
+    }  
+}  
+class Bus extends Car {  
+    public void showCar() {  
+        System.out.println(&quot;I have a Bus !&quot;);  
+    }  
+}  
+class Jeep extends Car {  
+    public void showCar() {  
+        System.out.println(&quot;I have a Jeep !&quot;);  
+    }  
+}  
+public class Main {  
+    public static void main(String[] args) throws Exception {  
+        // Car 为静态类型，Car 为实际类型  
+        Car car1 = new Car();  
+        // Car 为静态类型，Bus 为实际类型  
+        Car car2 = new Bus();  
+        // Car 为静态类型，Jeep 为实际类型  
+        Car car3 = new Jeep();  
+          
+        car1.showCar();  
+        car2.showCar();  
+        car3.showCar();  
+    }  
+}  
+</code></pre>
+
+<p>运行结果如下：<br/>
+<img src="media/14870642938148/14870662737711.jpg" alt="" class="mw_img_left" style="width:200px;display: block; float: left; margin: 0px 8px 8px 0px;"/><br/>
+可以看出来重写是一个根据实际类型决定方法版本的动态分派过程。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Android 常见面试题（四）]]></title>
     <link href="m78snail.com/14870550376223.html"/>
     <updated>2017-02-14T14:50:37+08:00</updated>
@@ -2971,236 +3269,6 @@ am.killBackgroundProcesses(this.getPackageName())：测试无效<br/>
 　　2. Activity对应的界面的inflate时间<br/>
 对于第一点，我们应该尽量减少在这些回调方法中执行耗时操作（涉及数据库，图片等），如果一定要执行耗时操作，可以考虑新开子线程处理。<br/>
 对于第二点，我们应该合理使用各种xml的优化标签，并界面上减少View的嵌套层数与绘制时间。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Android 常见面试题（二）]]></title>
-    <link href="m78snail.com/14870442740078.html"/>
-    <updated>2017-02-14T11:51:14+08:00</updated>
-    <id>m78snail.com/14870442740078.html</id>
-    <content type="html"><![CDATA[
-<span id="more"></span><!-- more -->
-
-<h2 id="toc_0">9. Thread、AsycTask、IntentService的使用场景与特点</h2>
-
-<p>Thread、AsyncTask和IntentService都与多线程有关，当我们在Android中涉及并发编程时（进行网络请求、加载较大的文件等操作）就需要使用。<br/>
-<strong>Thread</strong><br/>
-Java中的子线程，可以通过传入Runnable接口或继承Thread重写run方法新建。</p>
-
-<p><strong>AsyncTask</strong><br/>
-由Java线程池改造的异步任务工具</p>
-
-<p><strong>IntentService</strong><br/>
-Android四大组件之一的Service默认是在主线程中运行的，IntentService是Service的子类，有如下特点：<br/>
-1. IntentService会创建单独的worker线程来处理所有的Intent请求<br/>
-2. 当所有请求处理完成后，IntentService会自动停止<br/>
-3. 为Service的onBind方法提供了默认实现，返回null<br/>
-4. 为Service的onStartCommand方法提供了默认实现，把请求Intent添加到队列中<br/>
-实现IntentService的例子如下：</p>
-
-<pre><code>public class MyIntentService extends IntentService {  
-      
-    public MyIntentService(String name) {  
-        super(name);  
-    }  
-  
-    @Override  
-    protected void onHandleIntent(Intent intent) {  
-        // IntentService会创建单独的worker线程来处理此处的代码  
-  
-    }  
-  
-}  
-</code></pre>
-
-<p>我们只需重写onHandleIntent方法即可，该方法的代码会在一个子线程中运行。</p>
-
-<h2 id="toc_1">10. 五种布局： FrameLayout 、 LinearLayout 、 AbsoluteLayout 、 RelativeLayout 、TableLayout 各自特点</h2>
-
-<p><strong>FrameLayout</strong><br/>
-FrameLayout即单帧布局，在该布局中的所有空间都会被置于布局的左上角。</p>
-
-<p><strong>LinearLayout</strong><br/>
-LinearLayout即线性布局，使用该布局必须为其指定orientation属性（排列方向属性，可以设置为水平或垂直的），其中的空间就会根据设置的属性呈水平或垂直排列。</p>
-
-<p><strong>AbsoluteLayout</strong><br/>
-AbsoluteLayout即绝对布局，对布局中的控件我们使用x，y坐标值进行定位。</p>
-
-<p><strong>RelativeLayout</strong><br/>
-RelativeLayout即相对布局，在其中的控件可以相对于父布局或布局中别的控件的位置进行定位布局。</p>
-
-<p><strong>TableLayout</strong><br/>
-TableLayout即表格布局，TableLayout中的每一行的控件由TableRow包含，最终的布局效果会呈现成表格状。</p>
-
-<h2 id="toc_2">11. Android的数据存储形式</h2>
-
-<p>在Android中的数据存储形式主要有以下几种：<br/>
-<strong>SharedPreferrences</strong><br/>
-SharedPreferrences主要用于存储一些少量的简单的应用程序配置信息。SharedPreferrences以明文键值对的形式把数据存储在一个xml文件上，该文件位于/data/data/<package name>/shared_prefs目录下。因此，SharedPreferrences只适合用于存储一些简单的数据，不适合存储复杂的或敏感的数据。</p>
-
-<p><strong>File</strong><br/>
-Android和Java一样，同样支持使用文件流来保存和访问文件。除了在手机内置存储空间上存储文件外，Android还支持读写SD卡上的文件：只要获取相应的权限后，调用Environment的getExternalStorageDirectory方法即可获取路径。</p>
-
-<p><strong>SQLite数据库</strong><br/>
-Android系统集成了一个轻量级的数据库：SQLite。SQLite是一个嵌入式数据库引擎，专门适用于资源有限的设备上适量数据的存取。在Android上我们一般使用SQLiteOpenHelper辅助类来操作SQLite数据库。</p>
-
-<h2 id="toc_3">12. Sqlite的基本操作</h2>
-
-<p>SQLite为熟悉SQL语句的程序员提供了相应的函数使用SQL语句，也为不了解SQL语法的程序员提供了简便的增删查改接口：</p>
-
-<pre><code>String path = &quot;数据库路径&quot;;  
-SQLiteDatabase database = SQLiteDatabase.openOrCreateDatabase(path, null);  
-// 执行sql语句  
-database.execSQL(sql);  
-// 执行带占位符的sql语句  
-database.execSQL(sql, bindArgs);  
-// 执行查找的sql语句  
-database.rawQuery(sql, selectionArgs);  
-  
-// 执行增删查改  
-database.insert(table, nullColumnHack, values);  
-database.delete(table, whereClause, whereArgs);  
-database.query(table, columns, selection, selectionArgs, groupBy, having, orderBy);  
-database.update(table, values, whereClause, whereArgs);  
-  
-// 开启事务  
-database.beginTransaction();  
-// 确认事务成功  
-database.setTransactionSuccessful();  
-// 结束事务  
-database.endTransaction(); 
-</code></pre>
-
-<h2 id="toc_4">13. Android中的MVC模式</h2>
-
-<p>MVC全名是Model View Controller，是模型(model)－视图(view)－控制器(controller)的缩写，一种软件设计典范，用一种业务逻辑、数据、界面显示分离的方法组织代码，将业务逻辑聚集到一个部件里面，在改进和个性化定制界面及用户交互的同时，不需要重新编写业务逻辑。<br/>
-MVC模式的示意图如下：<br/>
-<img src="media/14870442740078/14870534341275.jpg" alt=""/></p>
-
-<p>Android的设计也使用了MVC模式，其中：<br/>
-1. View对应于Android的View控件和xml所编写的界面<br/>
-2. Control对应于Android中的Activity，负责接收用户请求和改变模型状态<br/>
-3. Model一般由我们自己实现来处理程序功能和逻辑</p>
-
-<h2 id="toc_5">14. Merge、ViewStub的作用</h2>
-
-<p>Merge和ViewStub均为Android中的xml优化标签，用于对Android的View布局进行优化。<br/>
-Merge<br/>
-merge标签应用于xml的顶层标签，主要应对于layout嵌套浪费的现象。在Android layout文件中需要一个顶级容器来容纳其他的组件，而不能直接放置多个组件，通过使用merge标签作为顶层容器，我们可以删减多余或者额外的层级，从而优化整个Android Layout的结构。</p>
-
-<p>以下是一个例子：<br/>
-activity_merge_test.xml：</p>
-
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;  
-&lt;FrameLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;  
-    android:layout_width=&quot;match_parent&quot;  
-    android:layout_height=&quot;match_parent&quot; &gt;  
-      
-    &lt;TextView   
-        android:id=&quot;@+id/text_view&quot;  
-        android:layout_width=&quot;match_parent&quot;  
-        android:layout_height=&quot;match_parent&quot;  
-        android:gravity=&quot;top|center_horizontal&quot;  
-        android:text=&quot;text_view&quot;/&gt;  
-  
-    &lt;TextView   
-        android:id=&quot;@+id/text_view_2&quot;  
-        android:layout_width=&quot;match_parent&quot;  
-        android:layout_height=&quot;match_parent&quot;  
-        android:gravity=&quot;bottom|center_horizontal&quot;  
-        android:text=&quot;text_view_2&quot;/&gt;  
-      
-&lt;/FrameLayout&gt;  
-</code></pre>
-
-<p>MergeTestActivity：</p>
-
-<pre><code>public class MergeTestActivity extends Activity {  
-    @Override  
-    protected void onCreate(Bundle savedInstanceState) {  
-        super.onCreate(savedInstanceState);  
-        setContentView(R.layout.activity_merge_test);  
-    }  
-}  
-</code></pre>
-
-<p>效果图如下：</p>
-
-<p><img src="media/14870442740078/14870535754556.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
-由hierarchyviewer分析可得（此处只分析与Activity界面相关的部分）：<br/>
-<img src="media/14870442740078/14870536080097.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
-
-<p>由hierarchyviewer得到的View树状图我们可以发现，id为content的FrameLayout中只有LinearLayout一个元素，造成了layout的嵌套浪费（如红框圈出所示）。此处我们若使用merge标签，便可以减少一层layout标签的嵌套，使程序运行得更快更流畅。</p>
-
-<p>xml代码改为如下：</p>
-
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;  
-&lt;merge xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;  
-    android:layout_width=&quot;match_parent&quot;  
-    android:layout_height=&quot;match_parent&quot; &gt;  
-      
-    &lt;TextView   
-        android:id=&quot;@+id/text_view&quot;  
-        android:layout_width=&quot;match_parent&quot;  
-        android:layout_height=&quot;match_parent&quot;  
-        android:gravity=&quot;top|center_horizontal&quot;  
-        android:text=&quot;text_view&quot;/&gt;  
-  
-    &lt;TextView   
-        android:id=&quot;@+id/text_view_2&quot;  
-        android:layout_width=&quot;match_parent&quot;  
-        android:layout_height=&quot;match_parent&quot;  
-        android:gravity=&quot;bottom|center_horizontal&quot;  
-        android:text=&quot;text_view_2&quot;/&gt;  
-      
-&lt;/merge&gt;  
-</code></pre>
-
-<p>效果图没有变化，使用hierarchyviewer分析可得：<br/>
-<img src="media/14870442740078/14870536547753.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
-
-<p>此时已经减少了一层layout嵌套，我们通过使用merge标签，达到了优化的目的。</p>
-
-<p><strong>ViewStub</strong><br/>
-ViewStub即占位符，用于处理动态觉得显示某个View的情况。在开发应用程序的时候，我们经常会在运行时动态根据条件来决定显示哪个View或某个布局。那么最通常的想法就是把可能用到的View都写在上面，先把它们的可见性都设为View.GONE，然后在代码中动态的更改它的可见性。这样的做法的优点是逻辑简单而且控制起来比较灵活。但是它的缺点就是，耗费资源。虽然把View的初始可见View.GONE但是在Inflate布局的时候View仍然会被Inflate，也就是说仍然会创建对象，会被实例化，会被设置属性。也就是说，会耗费内存等资源。而使用ViewStub的话在inflate布局的时候不会被inflate，ViewStub的inflate操作被延迟到了直到我们调用其inflate方法。</p>
-
-<p>ViewStub的xml文件设置如下：</p>
-
-<pre><code>&lt;ViewStub  
-    android:id=&quot;@+id/view_stub&quot;  
-    android:inflatedId=&quot;@+id/my_view&quot;  
-    android:layout_width=&quot;wrap_content&quot;  
-    android:layout_height=&quot;wrap_content&quot;  
-    android:layout=&quot;@layout/view_view_stub&quot; /&gt;  
-</code></pre>
-
-<p>其中，inflateId属性表示ViewStub被inflate后重新被赋予的id值，layout属性指定了调用inflate方法时inflate的具体布局。</p>
-
-<p>找到ViewStub并调用inflate：</p>
-
-<pre><code>ViewStub viewStub = (ViewStub)findViewById(R.id.view_stub);  
-viewStub.inflate();  
-</code></pre>
-
-<p>值得注意的是：<br/>
-　　1. ViewStub只能Inflate一次，之后ViewStub对象会被置为空。按句话说，某个被ViewStub指定的布局被Inflate后，就不会够再通过ViewStub来控制它了。<br/>
-　　2. ViewStub只能用来Inflate一个布局文件，而不是某个具体的View。</p>
-
-<h2 id="toc_6">15. Json有什么优劣势</h2>
-
-<p>JSON，即JavaScript Object Notation，是 一种轻量级的数据交换格式，具有良好的可读和便于快速编写的特性。业内主流技术为其提供了完整的解决方案（有点类似于正则表达式 ，获得了当今大部分语言的支持），从而可以在不同平台间进行数据交换。JSON采用兼容性很高的文本格式，同时也具备类似于C语言体系的行为。这些特性使JSON成为理想的数据交换语言。 易于人阅读和编写，同时也易于机器解析和生成(一般用于提升网络传输速率)。</p>
-
-<p>Json优点：<br/>
-与传统的xml相比，Json有一下优点：</p>
-
-<p>　　1. 在解码难度方面，XML的解析得考虑子节点父节点，而Json不需要，解析难度较低<br/>
-　　2. Json数据的体积小<br/>
-　　3. Json的传输速度快于XML<br/>
-但Json也有它不足之处：<br/>
-　　1. 没有XML格式这么推广的深入人心和使用广泛, 没有XML那么通用性<br/>
-　　2. 命名空间允许不同上下文中的相同的信息段彼此混合，然而在Json中已经找不到了命名空间</p>
 
 ]]></content>
   </entry>

@@ -1,0 +1,664 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  JVM - m78snail
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="m78snail" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:m78snail.com ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="_self" href="index.html">主页</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">文章</a></li>
+        
+        <li id=""><a target="_self" href="about.html">关于</a></li>
+        
+        <li id=""><a target="_self" href="project.html">项目</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="http://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; m78snail</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="_self" href="index.html">主页</a></li>
+        
+        <li><a target="_self" href="archives.html">文章</a></li>
+        
+        <li><a target="_self" href="about.html">关于</a></li>
+        
+        <li><a target="_self" href="project.html">项目</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html">心情日记</a></li>
+        
+            <li><a href="Android.html">Android</a></li>
+        
+            <li><a href="%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html">工具使用</a></li>
+        
+            <li><a href="Mac.html">Mac</a></li>
+        
+            <li><a href="%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html">开源框架</a></li>
+        
+            <li><a href="Rx%E5%AE%B6%E6%97%8F.html">Rx家族</a></li>
+        
+            <li><a href="%E7%BD%91%E7%BB%9C.html">网络</a></li>
+        
+            <li><a href="Dagger2.html">Dagger2</a></li>
+        
+            <li><a href="%E9%9D%A2%E8%AF%95.html">面试</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>JVM</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2016/2/14</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='%E9%9D%A2%E8%AF%95.html'>面试</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+              &nbsp;<a  class="ds-thread-count" data-thread-key="14870642938148.html" data-count-type="comments" href="14870642938148.html#ds-thread"></a>
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <p>　　JVM过去过来就问了这么些问题，没怎么变，内存模型和GC算法这块问得比较多，可以在网上多找几篇博客来看看。<br/>
+　　推荐书籍：《深入理解java虚拟机》</p>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">1. 内存模型以及分区，需要详细到每个区放什么。</h2>
+
+<p>JVM内存模型如下图所示:<br/>
+<img src="media/14870642938148/14870644399593.jpg" alt="C400"/></p>
+
+<p>此处我们集中注意中间绿色的部分，该部分为JVM的运行时内存，该部分包含了：<br/>
+线程私有的（灰色）：<br/>
+　　1. 程序计数器：记录执行到第几条指令<br/>
+　　2. 虚拟机方法栈：执行Java方法所用，每执行一个方法便加入一个栈帧，里面含有局部变量表、操作栈、动态链接和方法出口等<br/>
+　　3. 本地方法栈：与虚拟机方法栈相似，用于执行native方法</p>
+
+<p>线程共享的（蓝色）：<br/>
+　　1. 堆：对象实例存放地，，分为年轻代和老年代。年轻代又细分为伊甸园区和两个相对的Survival区<br/>
+　　2. 方法区：也叫永久代，存放了类的信息、常量、类静态变量等元素，含有一个运行时常量池</p>
+
+<h2 id="toc_1">2. 堆里面的分区：Eden，survival from to，老年代，各自的特点</h2>
+
+<p><strong>1.Eden区</strong><br/>
+Eden区位于Java堆的年轻代，是新对象分配内存的地方，由于堆是所有线程共享的，因此在堆上分配内存需要加锁。而Sun JDK为提升效率，会为每个新建的线程在Eden上分配一块独立的空间由该线程独享，这块空间称为TLAB（Thread Local Allocation Buffer）。在TLAB上分配内存不需要加锁，因此JVM在给线程中的对象分配内存时会尽量在TLAB上分配。如果对象过大或TLAB用完，则仍然在堆上进行分配。如果Eden区内存也用完了，则会进行一次Minor GC（young GC）。</p>
+
+<p><strong>2.Survival from to</strong><br/>
+Survival区与Eden区相同都在Java堆的年轻代。Survival区有两块，一块称为from区，另一块为to区，这两个区是相对的，在发生一次Minor GC后，from区就会和to区互换。在发生Minor GC时，Eden区和Survival from区会把一些仍然存活的对象复制进Survival to区，并清除内存。Survival to区会把一些存活得足够旧的对象移至年老代。</p>
+
+<p><strong>3.年老代</strong><br/>
+年老代里存放的都是存活时间较久的，大小较大的对象，因此年老代使用标记整理算法。当年老代容量满的时候，会触发一次Major GC（full GC），回收年老代和年轻代中不再被使用的对象资源。</p>
+
+<h2 id="toc_2">3. 对象创建方法，对象的内存分配，对象的访问定位</h2>
+
+<p><strong>对象的创建</strong><br/>
+Java对象的创建大致上有以下几个步骤：</p>
+
+<p>　　1. <strong>类加载检查</strong>：检查这个指令的参数是否能在常量池中定位到一个类的符号引用，并且检查这个符号引用代表的类是否已被加载、解析和初始化过。如果没有，那必须先执行相应的类的加载过程<br/>
+　　2. <strong>为对象分配内存</strong>：对象所需内存的大小在类加载完成后便完全确定，为对象分配空间的任务等同于把一块确定大小的内存从Java堆中划分出来。由于堆被线程共享，因此此过程需要进行同步处理（分配在TLAB上不需要同步）<br/>
+　　3. <strong>内存空间初始化</strong>：虚拟机将分配到的内存空间都初始化为零值（不包括对象头），内存空间初始化保证了对象的实例字段在Java代码中可以不赋初始值就直接使用，程序能访问到这些字段的数据类型所对应的零值。<br/>
+　　4. <strong>对象设置</strong>：JVM对对象头进行必要的设置，保存一些对象的信息（指明是哪个类的实例，哈希码，GC年龄等）<br/>
+　　5. <strong>init</strong>：执行完上面的4个步骤后，对JVM来说对象已经创建完毕了，但对于Java程序来说，我们还需要对对象进行一些必要的初始化。</p>
+
+<p><strong>对象的内存分配</strong><br/>
+Java对象的内存分配有两种情况，由Java堆是否规整来决定（Java堆是否规整由所采用的垃圾收集器是否带有压缩整理功能决定）：<br/>
+　　1. 指针碰撞(Bump the pointer)：如果Java堆中的内存是规整的，所有用过的内存都放在一边，空闲的内存放在另一边，中间放着一个指针作为分界点的指示器，分配内存也就是把指针向空闲空间那边移动一段与内存大小相等的距离<br/>
+　　2. 空闲列表(Free List)：如果Java堆中的内存不是规整的，已使用的内存和空闲的内存相互交错，就没有办法简单的进行指针碰撞了。虚拟机必须维护一张列表，记录哪些内存块是可用的，在分配的时候从列表中找到一块足够大的空间划分给对象实例，并更新列表上的记录</p>
+
+<p><strong>对象的访问定位</strong><br/>
+对象的访问形式取决于虚拟机的实现，目前主流的访问方式有使用句柄和直接指针两种：<br/>
+<strong>使用句柄：</strong><br/>
+如果使用句柄访问，Java堆中将会划分出一块内存来作为句柄池，引用中存储的就是对象的句柄地址，而句柄中包含了对象实例数据与类型数据各自的具体地址信息：<br/>
+<img src="media/14870642938148/14870648573054.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>优势：引用中存储的是稳定的句柄地址，在对象被移动(垃圾收集时移动对象是非常普遍的行为)时只会改变句柄中的实例数据指针，而引用本身不需要修改。<br/>
+<strong>直接指针：</strong><br/>
+如果使用直接指针访问对象，那么对象的实例数据中就包含一个指向对象类型数据的指针，引用中存的直接就是对象的地址：<br/>
+<img src="media/14870642938148/14870648872588.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+优势：速度更快，节省了一次指针定位的时间开销，积少成多的效应非常可观。</p>
+
+<h2 id="toc_3">4. GC的两种判定方法：引用计数与引用链</h2>
+
+<p>基于引用计数与基于引用链这两大类别的自动内存管理方式最大的不同之处在于：前者只需要局部信息，而后者需要全局信息</p>
+
+<p><strong>引用计数</strong><br/>
+引用计数顾名思义，就是记录下一个对象被引用指向的次数。引用计数方式最基本的形态就是让每个被管理的对象与一个引用计数器关联在一起，该计数器记录着该对象当前被引用的次数，每当创建一个新的引用指向该对象时其计数器就加1，每当指向该对象的引用失效时计数器就减1。当该计数器的值降到0就认为对象死亡。每个计数器只记录了其对应对象的局部信息——被引用的次数，而没有（也不需要）一份全局的对象图的生死信息。由于只维护局部信息，所以不需要扫描全局对象图就可以识别并释放死对象；但也因为缺乏全局对象图信息，所以无法处理循环引用的状况。</p>
+
+<p><strong>引用链</strong><br/>
+引用链需要内存的全局信息，当使用引用链进行GC时，从对象图的“根”（GC Root，必然是活的引用，包括栈中的引用，类静态属性的引用，常量的引用，JNI的引用等）出发扫描出去，基于引用的可到达性算法来判断对象的生死。这使得对象的生死状态能批量的被识别出来，然后批量释放死对象。引用链不需要显式维护对象的引用计数，只在GC使用可达性算法遍历全局信息的时候判断对象是否被引用，是否存活。</p>
+
+<h2 id="toc_4">5. GC的三种收集方法：标记清除、标记整理、复制算法的原理与特点，分别用在什么地方</h2>
+
+<p><strong>标记清除</strong><br/>
+标记清除算法分两步执行：<br/>
+　　1. 暂停用户线程，通过GC Root使用可达性算法标记存活对象<br/>
+　　2. 清除未被标记的垃圾对象<br/>
+标记清除算法缺点如下：<br/>
+　　1. 效率较低，需要暂停用户线程<br/>
+　　2 . 清除垃圾对象后内存空间不连续，存在较多内存碎片<br/>
+标记算法如今使用的较少了</p>
+
+<p><strong>复制算法</strong><br/>
+复制算法也分两步执行，在复制算法中一般会有至少两片的内存空间（一片是活动空间，里面含有各种对象，另一片是空闲空间，里面是空的）：<br/>
+　　1. 暂停用户线程，标记活动空间的存活对象<br/>
+　　2. 把活动空间的存活对象复制到空闲空间去，清除活动空间<br/>
+复制算法相比标记清除算法，优势在于其垃圾回收后的内存是连续的。<br/>
+但是复制算法的缺点也很明显：<br/>
+　　1. 需要浪费一定的内存作为空闲空间<br/>
+　　2. 如果对象的存活率很高，则需要复制大量存活对象，导致效率低下<br/>
+复制算法一般用于年轻代的Minor GC，主要是因为年轻代的大部分对象存活率都较低</p>
+
+<p><strong>标记整理</strong><br/>
+标记整理算法是标记清除算法的改进，分为标记、整理两步：<br/>
+　　1. 暂停用户线程，标记所有存活对象<br/>
+　　2. 移动所有存活对象，按内存地址次序一次排列，回收末端对象以后的内存空间<br/>
+标记整理算法与标记清除算法相比，整理出的内存是连续的；而与复制算法相比，不需要多片内存空间。<br/>
+然而标记整理算法的第二步整理过程较为麻烦，需要整理存活对象的引用地址，理论上来说效率要低于复制算法。<br/>
+因此标记整理算法一般引用于老年代的Major GC</p>
+
+<h2 id="toc_5">6. GC收集器有哪些？它们的特点是？</h2>
+
+<p>常见的GC收集器如下图所示，连线代表可搭配使用：<br/>
+<img src="media/14870642938148/14870654689780.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+<strong>1.Serial收集器（串行收集器）</strong><br/>
+用于新生代的单线程收集器，收集时需要暂停所有工作线程（Stop the world）。优点在于：简单高效，单个CPU时没有线程交互的开销，堆较小时停顿时间不长。常与Serial Old 收集器一起使用，示意图如下所示：<br/>
+<img src="media/14870642938148/14870655013486.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p><strong>2.ParNew收集器（parallel new 收集器，新生代并行收集器）</strong><br/>
+Serial收集器多线程版本，除了使用多线程外和Serial收集器一模一样。常与Serial Old 收集器一起使用，示意图如下：<br/>
+<img src="media/14870642938148/14870655245086.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p><strong>3.Parallel Scavenge收集器</strong><br/>
+与ParNew收集器一样是一款多线程收集器，其特点在于关注点与别的GC收集器不同：一般的GC收集器关注于缩短工作线程暂停的时间，而该收集器关注于吞吐量，因此也被称为吞吐量优先收集器。（吞吐量 = 用户运行代码时间 /  (用户运行代码时间 + 垃圾回收时间)）高吞吐量与停顿时间短相比主要强调任务快完成，因此常和Parallel Old 收集器一起使用（没有Parallel Old之前与Serial Old一起使用），示意图如下：<br/>
+<img src="media/14870642938148/14870655572103.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p><strong>4.Serial Old收集器</strong><br/>
+Serial收集器的年老代版本，不在赘述。</p>
+
+<p><strong>5.Parallel Old收集器</strong><br/>
+年老代的并行收集器，在JDK1.6开始使用。</p>
+
+<p><strong>6.CMS收集器（Concurrent Mark Sweep，并发标记清除收集器）</strong><br/>
+CMS收集器是一个年老代的收集器，是以最短回收停顿时间为目标的收集器，其示意图如下所示：<br/>
+<img src="media/14870642938148/14870655936116.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>CMS收集器基于标记清除算法实现，主要分为4个步骤：<br/>
+　　1. 初始标记，需要stop the world，标记GC Root能关联到的对象，速度快<br/>
+　　2. 并发标记，对GC Root执行可达性算法<br/>
+　　3. 重新标记，需要stop the world，修复并发标记时因用户线程运行而产生的标记变化，所需时间比初始标记长，但远比并发标记短<br/>
+　　4. 并发清理<br/>
+CMS收集器的缺点在于：<br/>
+　　1. 其对于CPU资源很敏感。在并发阶段，虽然CMS收集器不会暂停用户线程，但是会因为占用了一部分CPU资源而导致应用程序变慢，总吞吐量降低。其默认启动的回收线程数是（cpu数量+3）/4，当cpu数较少的时候，会分掉大部分的cpu去执行收集器线程<br/>
+　　2. 无法处理浮动垃圾，浮动垃圾即在并发清除阶段因为是并发执行，还会产生垃圾，这一部分垃圾即为浮动垃圾，要等下次收集<br/>
+　　3. CMS收集器使用的是标记清除算法，GC后会产生碎片<br/>
+<strong>7.G1收集器（Garbage First收集器）</strong><br/>
+相比CMS收集器，G1收集器主要有两处改进：</p>
+
+<p>　　1. 使用标记整理算法，确保GC后不会产生内存碎片<br/>
+　　2. 可以精确控制停顿，允许指定消耗在垃圾回收上的时间</p>
+
+<p>G1收集器可以实现在基本不牺牲吞吐量的前提下完成低停顿的内存回收，这是由于它能够极力地避免全区域的垃圾收集，之前的收集器进行收集的范围都是整个新生代或老年代，而G1将整个Java堆（包括新生代、老年代）划分为多个大小固定的独立区域（Region），并且跟踪这些区域里面的垃圾堆积程度，在后台维护一个优先列表，每次根据允许的收集时间，优先回收垃圾最多的区域（这就是Garbage First名称的来由）。区域划分及有优先级的区域回收，保证了G1收集器在有限的时间内可以获得最高的收集效率。</p>
+
+<h2 id="toc_6">7. Minor GC与Full GC分别在什么时候发生？</h2>
+
+<p>Minor GC也叫Young GC，当年轻代内存满的时候会触发，会对年轻代进行GC<br/>
+Full GC也叫Major GC，当年老代满的时候会触发，当我们调用System.gc时也可能会触发，会对年轻代和年老代进行GC</p>
+
+<h2 id="toc_7">8. 类加载的五个过程：加载、验证、准备、解析、初始化</h2>
+
+<p>JVM把class文件加载的内存，并对数据进行校验、转换解析和初始化，最终形成JVM可以直接使用的Java类型的过程就是加载机制。<br/>
+类从被加载到虚拟机内存中开始，到卸载出内存为止，它的生命周期包括了：加载(Loading)、验证(Verification)、准备(Preparation)、解析(Resolution)、初始化(Initialization)、使用(Using)、卸载(Unloading)七个阶段，其中验证、准备、解析三个部分统称链接。<br/>
+<strong>1.加载</strong><br/>
+在加载阶段，虚拟机需要完成以下事情：<br/>
+　　1. 通过一个类的权限定名来获取定义此类的二进制字节流<br/>
+　　2. 将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构<br/>
+　　3. 在java堆中生成一个代表这个类的java.lang.Class对象，作为方法去这些数据的访问入口<br/>
+<strong>2.验证</strong><br/>
+在验证阶段，虚拟机主要完成：<br/>
+　　1. 文件格式验证：验证class文件格式规范<br/>
+　　2. 元数据验证：这个阶段是对字节码描述的信息进行语义分析，以保证起描述的信息符合java语言规范要求<br/>
+　　3. 字节码验证：进行数据流和控制流分析，这个阶段对类的方法体进行校验分析，这个阶段的任务是保证被校验类的方法在运行时不会做出危害虚拟机安全的行为<br/>
+　　4. 符号引用验证：符号引用中通过字符串描述的全限定名是否能找到对应的类、符号引用类中的类，字段和方法的访问性(private、protected、public、default)是否可被当前类访问<br/>
+<strong>3.准备</strong><br/>
+准备阶段是正式为类变量（被static修饰的变量）分配内存并设置变量初始值（0值）的阶段，这些内存都将在方法区中进行分配</p>
+
+<p><strong>4.解析</strong><br/>
+解析阶段是虚拟机将常量池内的符号引用替换为直接引用的过程<br/>
+常见的解析有四种：<br/>
+　　1. 类或接口的解析<br/>
+　　2. 字段解析<br/>
+　　3. 类方法解析<br/>
+　　4. 接口方法解析</p>
+
+<p><strong>5.初始化</strong><br/>
+初始化阶段才真正开始执行类中定义的java程序代码，初始化阶段是执行类构造器<clinit>()方法的过程</p>
+
+<h2 id="toc_8">9. 双亲委派模型：Bootstrap ClassLoader、Extension ClassLoader、ApplicationClassLoader</h2>
+
+<p>JVM的类加载是通过类加载器实现的， Java中的类加载器体系结构如下：<br/>
+<img src="media/14870642938148/14870660696688.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<ul>
+<li>启动类加载器（Bootstrap ClassLoader）：是用本地代码实现的类装入器，它负责将 <Java_Runtime_Home>/lib下面的类库加载到内存中（比如rt.jar）。由于引导类加载器涉及到虚拟机本地实现细节，开发者无法直接获取到启动类加载器的引用，所以不允许直接通过引用进行操作</li>
+<li>标准扩展类加载器：是由 Sun 的 ExtClassLoader（sun.misc.Launcher$ExtClassLoader）实现的。它负责将&lt; Java_Runtime_Home &gt;/lib/ext或者由系统变量 java.ext.dir指定位置中的类库加载到内存中。开发者可以直接使用标准扩展类加载器</li>
+<li>应用程序类加载器：由sun.misc.Launcher$AppClassLoader实现，负责加载用户类路径classpath上所指定的类库，是类加载器ClassLoader中的getSystemClassLoader()方法的返回值，开发者可以直接使用应用程序类加载器，如果程序中没有自定义过类加载器，该加载器就是程序中默认的类加载器
+值得注意的是：上述三个JDK提供的类加载器虽然是父子类加载器关系，但是没有使用继承，而是使用了组合关系。</li>
+</ul>
+
+<p>从JDK1.2开始，JVM规范推荐开发者使用双亲委派模式(ParentsDelegation Model)进行类加载，其加载过程如下：<br/>
+　　1. 如果一个类加载器收到了类加载请求，它首先不会自己去尝试加载这个类，而是把类加载请求委派给父类加载器去完成<br/>
+　　2. 每一层的类加载器都把类加载请求委派给父类加载器，直到所有的类加载请求都传递给顶层的启动类加载器<br/>
+　　3. 如果顶层的启动类加载器无法完成加载请求，则子类加载器会尝试去加载，如果连最初发起类加载请求的类加载器也无法完成加载请求时，将会抛出ClassNotFoundException，而不再调用其子类加载器去进行类加载<br/>
+采用双亲委派模型的好处在于：使得java类随着它的类加载器一起具备了一种带有优先级的层次关系，越是基础的类，越是被上层的类加载器进行加载，保证了java程序的稳定运行。</p>
+
+<h2 id="toc_9">10. 分派：静态分派与动态分派</h2>
+
+<p>要理解分派，我们先来理解Java中的两种类型：</p>
+
+<ul>
+<li>静态类型：变量声明时的类型</li>
+<li>实际类型：变量实例化时采用的类型
+举例的Java代码如下：</li>
+</ul>
+
+<pre><code>class Car {}  
+class Bus extends Car {}  
+public class Main {  
+    public static void main(String[] args) throws Exception {  
+        // Car 为静态类型，Bus 为实际类型  
+        Car car = new Bus();  
+    }  
+}  
+</code></pre>
+
+<p><strong>静态分派</strong><br/>
+所有依赖静态类型来定位方法执行版本的分派动作称为静态分派，其典型应用是方法重载（重载是通过参数的静态类型而不是实际类型来选择重载的版本的）。<br/>
+举例Java代码如下：</p>
+
+<pre><code>class Car {}  
+class Bus extends Car {}  
+class Jeep extends Car {}  
+public class Main {  
+    public static void main(String[] args) throws Exception {  
+        // Car 为静态类型，Car 为实际类型  
+        Car car1 = new Car();  
+        // Car 为静态类型，Bus 为实际类型  
+        Car car2 = new Bus();  
+        // Car 为静态类型，Jeep 为实际类型  
+        Car car3 = new Jeep();  
+          
+        showCar(car1);  
+        showCar(car2);  
+        showCar(car3);  
+    }  
+    private static void showCar(Car car) {  
+        System.out.println(&quot;I have a Car !&quot;);  
+    }  
+    private static void showCar(Bus bus) {  
+        System.out.println(&quot;I have a Bus !&quot;);  
+    }  
+    private static void showCar(Jeep jeep) {  
+        System.out.println(&quot;I have a Jeep !&quot;);  
+    }  
+}  
+</code></pre>
+
+<p>代码输出如下：<br/>
+<img src="media/14870642938148/14870662267498.jpg" alt="" class="mw_img_left" style="width:200px;display: block; float: left; margin: 0px 8px 8px 0px;"/></p>
+
+<p>从上面的例子我们可以看出重载调用的具体方法版本是由静态类型来决定的。</p>
+
+<p><strong>动态分派</strong><br/>
+与静态分派类似，动态分派指在在运行期根据实际类型确定方法执行版本，其典型应用是方法重写（即多态）。<br/>
+举例Java代码如下：</p>
+
+<pre><code>class Car {  
+    public void showCar() {  
+        System.out.println(&quot;I have a Car !&quot;);  
+    }  
+}  
+class Bus extends Car {  
+    public void showCar() {  
+        System.out.println(&quot;I have a Bus !&quot;);  
+    }  
+}  
+class Jeep extends Car {  
+    public void showCar() {  
+        System.out.println(&quot;I have a Jeep !&quot;);  
+    }  
+}  
+public class Main {  
+    public static void main(String[] args) throws Exception {  
+        // Car 为静态类型，Car 为实际类型  
+        Car car1 = new Car();  
+        // Car 为静态类型，Bus 为实际类型  
+        Car car2 = new Bus();  
+        // Car 为静态类型，Jeep 为实际类型  
+        Car car3 = new Jeep();  
+          
+        car1.showCar();  
+        car2.showCar();  
+        car3.showCar();  
+    }  
+}  
+</code></pre>
+
+<p>运行结果如下：<br/>
+<img src="media/14870642938148/14870662737711.jpg" alt="" class="mw_img_left" style="width:200px;display: block; float: left; margin: 0px 8px 8px 0px;"/><br/>
+可以看出来重写是一个根据实际类型决定方法版本的动态分派过程。</p>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="14779858228757.html" 
+          title="Previous Post: 谈谈新买的Mac和最近的生活">&laquo; 谈谈新买的Mac和最近的生活</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="14870550376223.html" 
+          title="Next Post: Android 常见面试题（四）">Android 常见面试题（四） &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+              <div class="ds-thread" data-thread-key="14870642938148.html" data-url="m78snail.com/14870642938148.html" data-title="JVM"></div>
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <div class="site-a-logo"><img src="icon2.jpeg" /></div>
+            
+                <h1>m78snail</h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+<a target="_blank" class="weibo" href="http://www.weibo.com/2811618257/profile?topnav=1&wvr=6&is_all=1" title="weibo">Weibo</a>
+
+<a target="_blank" class="github" target="_blank" href="https://github.com/M78Snail" title="GitHub">GitHub</a>
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html"><strong>心情日记</strong></a>
+        
+            <a href="Android.html"><strong>Android</strong></a>
+        
+            <a href="%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html"><strong>工具使用</strong></a>
+        
+            <a href="Mac.html"><strong>Mac</strong></a>
+        
+            <a href="%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html"><strong>开源框架</strong></a>
+        
+            <a href="Rx%E5%AE%B6%E6%97%8F.html"><strong>Rx家族</strong></a>
+        
+            <a href="%E7%BD%91%E7%BB%9C.html"><strong>网络</strong></a>
+        
+            <a href="Dagger2.html"><strong>Dagger2</strong></a>
+        
+            <a href="%E9%9D%A2%E8%AF%95.html"><strong>面试</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="14829144540758.html">Https完全解析 与 okHttp的结合</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14779864279806.html">用力的人跑不远</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14779861870049.html">Git 常用方法</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14779864962440.html">xUtils框架中HttpUtils模块源码剖析</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14779857522449.html">otto 框架分析</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+
+
+<script type="text/javascript">
+var duoshuoQuery = {short_name:'m78snail'};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+
+
+
+  </body>
+</html>
