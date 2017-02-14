@@ -4,1174 +4,13 @@
   <title><![CDATA[m78snail]]></title>
   <link href="m78snail.com/atom.xml" rel="self"/>
   <link href="m78snail.com/"/>
-  <updated>2017-02-14T17:02:36+08:00</updated>
+  <updated>2017-02-14T17:02:49+08:00</updated>
   <id>m78snail.com/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
-  
-  <entry>
-    <title type="html"><![CDATA[Android 常见面试题（四）]]></title>
-    <link href="m78snail.com/14870550376223.html"/>
-    <updated>2017-02-14T14:50:37+08:00</updated>
-    <id>m78snail.com/14870550376223.html</id>
-    <content type="html"><![CDATA[
-<span id="more"></span><!-- more -->
-
-<h2 id="toc_0">21. Android内存优化方法：ListView优化，及时关闭资源，图片缓存等等</h2>
-
-<p>首先有一些与内存泄漏相关的点：<br/>
-<strong>1.具有close方法的对象切记调用close方法释放资源</strong><br/>
-常见的有Cursor和各种流等对象。博主就曾经因为Cursor对象忘记close，在进行了多次数据库查询后APP就因为OOM而崩溃了。</p>
-
-<p><strong>2.动态注册的广播不使用后记得取消注册</strong><br/>
-取消注册后可释放Context中持有的相关的广播过滤器资源。</p>
-
-<p><strong>3.bitmap的recycle方法</strong><br/>
-在Android3.0版本以前，bitmap对象的构造涉及到JVM的两块内存区域：一块是Bitmap对象所在的Java堆，一块是Bitmap对象持有的native层资源所在的Native堆。在Java堆上分配的资源由于JVM的GC机制的关系我们不需要去特别关心，但在Native堆上分配的资源就需要我们显式地调用bitmap的native方法recycle去回收了。然而在Android3.0版本后bitmap内存资源分配都在Java堆上，因此是否调用recycle方法对内存影响就不大了。</p>
-
-<p><strong>4.listView的Adapter中注意convertView的使用</strong><br/>
-在Adapter的getView方法中，有一个重要的参数就是convertView。convertView是一个View参数，它代表了一个回收的View（如果没有就为null）。Android的ListView虽然看起来有很多项，但其实真正的ItemView的数目只有屏幕上显示的哪几个，当一个ItemView从可见变为不可见时，他就会被回收掉，在下次调用getView方法时传入的convertView就是某个被回收的View。因此在getView方法中，当convertView不为null时，我们应该使用convertView而不是重新创建一个View。更高效的方式是把convertView结合一个自定义的ViewHolder一起使用，可以有效的减少findViewById的时间。</p>
-
-<p><strong>5.handler</strong><br/>
-Handler常见的应用场景是多线程的通信，此时要是Handler使用不当就相当容易造成内存泄露。在多线程通信的场景下，子线程通常都会持有Handler对象的引用，如果一个Handler对象在Activity中不是静态的，那么该Handler对象就会持有该Activity对象的引用，从而导致Activity组件无法正常的被GC回收，导致了内存泄露。因此一般而言我们应该把Handler对象置为Activity中的静态变量，通过软引用或者弱引用的方式来获取Activity及其内部域，避免持有Activity的强引用导致该组件无法回收。</p>
-
-<p><strong>6.集合对象清理</strong><br/>
-对于一些集合中不再使用的对象，我们应该把它们移除出我们的集合。避免由于集合持有那些对象的引用导致它们无法被JVM的GC所回收。</p>
-
-<p>还有一些内存优化的方法，个人认为有以下几个方面：</p>
-
-<ul>
-<li>Java引用的灵活使用</li>
-<li>图片缓存</li>
-<li>Bitmap压缩加载</li>
-</ul>
-
-<p><strong>Java引用的灵活使用</strong><br/>
-众所周知，在Java中有强软弱虚四种引用，合理的使用软引用和弱引用有利于GC工作的进行，回收不需要的内存。</p>
-
-<p><strong>图片缓存</strong><br/>
-使用图片缓存可以有效防止内存中同时载入过多的图片，也可以减少经常载入图片所耗费的时间。<br/>
-一般而言，设计图片缓存的思路如下，可以把图片的缓存分为以下几个层级：</p>
-
-<ul>
-<li>强引用 HashMap （用于存储最常用的图片）</li>
-<li>软引用 HashMap （用于存储比较常用的图片）</li>
-<li>SD卡 （用于存储使用过的图片）</li>
-<li>下载 （第一次使用）</li>
-</ul>
-
-<p>一般而言我们都是用LRU算法（最近最少使用），最近使用的图片一般缓存于强引用的HashMap中，随着使用次数的减少慢慢移动至软引用HashMap、SD卡中。<br/>
-除了我们自己设计图片缓存外，我们还可以直接使用Google提供的LruCache（内部由LinkedHashMap实现缓存队列），以及DiskLruCache<br/>
-<strong>Bitmap压缩加载</strong><br/>
-对于某些原尺寸特别大的图片，我们可以选择压缩后再加载以节省我们的内存空间：</p>
-
-<pre><code>// 创建解析参数  
-Options options = new Options();  
-// 只解析大小，并不生成实际图片  
-options.inJustDecodeBounds = true;  
-BitmapFactory.decodeFile(pathName, options);  
-// 计算缩放大小  
-int widthScale = options.outWidth/width_we_need;  
-int heightScale = options.outHeight/height_we_need;  
-// 选取小的为缩放尺寸  
-options.inSampleSize = Math.min(widthScale, heightScale);  
-// 生成Bitmap  
-options.inJustDecodeBounds = false; // 记得关掉  
-Bitmap bitmap = BitmapFactory.decodeFile(pathName, options); 
-</code></pre>
-
-<p>压缩到合适的尺寸后再加载就不必担心原来的bitmap太大而占用内存空间了。</p>
-
-<h2 id="toc_1">22. Android中弱引用与软引用的应用场景</h2>
-
-<p>软引用与弱引用一般用于：需要某个对象，但又不关心它的死活的时候（就是该对象存在就用，不存在就算了）。<br/>
-在Android中的应用场景主要有：</p>
-
-<ul>
-<li>Handler获取Activity的引用：使用静态变量和软弱引用保证不干扰Activity的回收</li>
-<li>缓存设计：使用软弱应用保证内存紧张时GC可以回收使用较少的缓存资源</li>
-</ul>
-
-<h2 id="toc_2">23. Bitmap的四中属性，与每种属性队形的大小。</h2>
-
-<p>在 <strong>Android</strong> 中图片有四种属性，分别是：<br/>
-<strong>ALPHA_8</strong>：每个像素占用 1byte 内存<br/>
-<strong>ARGB_4444</strong>：每个像素占用 2byte 内存<br/>
-<strong>ARGB_8888</strong>：每个像素占用 4byte 内存 （默认）<br/>
-<strong>RGB_565</strong>：每个像素占用 2byte 内存(没有 alpha 属性)</p>
-
-<h2 id="toc_3">24. View与View Group分类，自定义View过程：onMeasure()、onLayout()、onDraw()</h2>
-
-<p>View是Android中基本的UI单元，占据屏幕的一块矩形区域，可用于绘制并能处理事件，而ViewGroup是View的子类，他能包含多个View，并让他们在其中按照一定的规则排列。VIew与ViewGroup的设计使用了组合模式。</p>
-
-<p>自定义View我们一般需要重写一下三个方法：</p>
-
-<ul>
-<li>onMeasure：用于测量自定义View的大小，在方法中必须调用setMeasureDimension方法</li>
-<li>onLayout：用于确定自定义View布局</li>
-<li>onDraw：用于绘制自定义View本身</li>
-</ul>
-
-<h2 id="toc_4">25. Touch事件分发机制</h2>
-
-<p><img src="media/14870550376223/14870559086978.jpg" alt=""/></p>
-
-<h2 id="toc_5">26. Android长连接，怎么处理心跳机制</h2>
-
-<p>　　所谓的心跳包就是客户端定时放送简单的信息给服务器端，告诉它我还在而已。代码就是每隔几分钟发送一个固定信息给服务器端，服务器端回复一个固定信息。如果服务器端几分钟后没有收到客户端信息则视客户端断开。比如有些通信软件长时间不适用，要想知道它的状态是在线还是离线，就需要心跳包，定时发包收包。<br/>
-　　心跳包之所以叫心跳包是因为：它像心跳一样每隔固定时间发一次，以此来告诉服务器，这个客户端还活在。事实上这是为了保持长连接，至于这个包的内容，是没有什么特别规定的，不过一般都是很小的包，或者只包含包头的一个空包。<br/>
-　　在TCP机制里面，本身是存在有心跳包机制的，也就是TCP选项:SO_KEEPALIVE. 系统默认是设置的2小时的心跳频率。<br/>
-心跳包的机制，其实就是传统的长连接。或许有的人知道消息推送的机制，消息推送也是一种长连接 ，是将数据有服务器端推送到客户端这边从而改变传统的“拉”的请求方式。下面我来介绍一下安卓和客户端两个数据请求的方式<br/>
-　　1、push  这个也就是有服务器推送到客户端这边  现在有第三方技术 比如极光推送。<br/>
-　　2、pull   这种方式就是客户端向服务器发送请求数据（http请求）<br/>
-<strong>1、首先服务器和客户端有一次“握手”</strong></p>
-
-<pre><code>public void connect()  
-      {  
-        LogUtil.e(TAG, &quot;准备链接...&quot;);  
-        InetAddress serverAddr;  
-        try {  
-            socket = new Socket(Config.Host, Config.SockectPort);  
-            _connect = true;  
-            mReceiveThread = new ReceiveThread();  
-            receiveStop = false;  
-            mReceiveThread.start();  
-            LogUtil.e(TAG, &quot;链接成功.&quot;);  
-  
-        } catch (Exception e) {  
-            LogUtil.e(TAG, &quot;链接出错.&quot; + e.getMessage().toString());  
-            e.printStackTrace();  
-        }  
-    }  
-</code></pre>
-
-<p><strong>2、下面就要开启一个线程  去不断读取服务器那边传过来的数据  采用Thread去实现</strong></p>
-
-<pre><code>private class ReceiveThread extends Thread {  
-        private byte[] buf;  
-        private String str = null;  
-  
-        @Override  
-        public void run() {  
-            while (true) {  
-                try {  
-                    // LogUtil.e(TAG, &quot;监听中...:&quot;+socket.isConnected());  
-                    if (socket!=null &amp;&amp; socket.isConnected()) {  
-  
-                        if (!socket.isInputShutdown()) {  
-                            BufferedReader inStream = new BufferedReader(  
-                                    new InputStreamReader(  
-                                            socket.getInputStream()));  
-                            String content = inStream.readLine();                              
-                            if (content == null)  
-                                continue;  
-                            LogUtil.e(TAG, &quot;收到信息:&quot; + content);  
-                            LogUtil.e(TAG, &quot;信息长度:&quot;+content.length());  
-                            if (!content.startsWith(&quot;CMD:&quot;))  
-                                continue;  
-                            int spacePos = content.indexOf(&quot; &quot;);  
-                            if (spacePos == -1)  
-                                continue;  
-                            String cmd = content.substring(4, spacePos);  
-                            String body = content.substring(spacePos).trim();  
-                            LogUtil.e(TAG, &quot;收到信息(CMD):&quot; + cmd);  
-                            LogUtil.e(TAG, &quot;收到信息(BODY):&quot; + body);  
-                            if (cmd.equals(&quot;LOGIN&quot;))  
-                           {  
-                                // 登录  
-                                ReceiveLogin(body);  
-                                continue;  
-                            }  
-                              if (cmd.equals(&quot;KEEPLIVE&quot;)) {  
-                                if (!body.equals(&quot;1&quot;)) {  
-                                    Log.e(TAG, &quot;心跳时检测到异常，重新登录!&quot;);  
-                                    socket = null;  
-                                    KeepAlive();  
-                                } else {  
-                                    Date now = Calendar.getInstance().getTime();  
-                                    lastKeepAliveOkTime = now;  
-                                }  
-                                continue;  
-                            }  
-                        }  
-                    } else {  
-                        if(socket!=null)  
-                            LogUtil.e(TAG, &quot;链接状态:&quot; + socket.isConnected());  
-                    }  
-  
-                } catch (Exception e) {  
-                    LogUtil.e(TAG, &quot;监听出错:&quot; + e.toString());  
-                    e.printStackTrace();  
-                }  
-            }  
-        }  
-</code></pre>
-
-<p><strong>3 、 Socket 是否断开了  断开了 需要重新去连接</strong></p>
-
-<pre><code>public void KeepAlive()  
-        {  
-        // 判断socket是否已断开,断开就重连  
-        if (lastKeepAliveOkTime != null) {  
-            LogUtil.e(  
-                    TAG,  
-                    &quot;上次心跳成功时间:&quot;  
-                            + DateTimeUtil.dateFormat(lastKeepAliveOkTime,  
-                                    &quot;yyyy-MM-dd HH:mm:ss&quot;));  
-            Date now = Calendar.getInstance().getTime();  
-            long between = (now.getTime() - lastKeepAliveOkTime.getTime());// 得到两者的毫秒数  
-            if (between &gt; 60 * 1000) {  
-                LogUtil.e(TAG, &quot;心跳异常超过1分钟,重新连接:&quot;);  
-                lastKeepAliveOkTime = null;  
-                socket = null;  
-            }  
-  
-        } else {  
-            lastKeepAliveOkTime = Calendar.getInstance().getTime();  
-        }  
-  
-        if (!checkIsAlive()) {  
-            LogUtil.e(TAG, &quot;链接已断开,重新连接.&quot;);  
-            connect();  
-            if (loginPara != null)  
-                Login(loginPara);  
-        }  
-  
-    //此方法是检测是否连接  
-      boolean checkIsAlive() {  
-        if (socket == null)  
-            return false;  
-            try {  
-            socket.sendUrgentData(0xFF);  
-        } catch (IOException e) {  
-            return false;  
-        }  
-        return true;  
-  
-    }  
-   //然后发送数据的方法  
-    public void sendmessage(String msg) {  
-        if (!checkIsAlive())  
-            return;  
-        LogUtil.e(TAG, &quot;准备发送消息:&quot; + msg);  
-        try {  
-            if (socket != null &amp;&amp; socket.isConnected()) {  
-                if (!socket.isOutputShutdown()) {  
-                    PrintWriter outStream = new PrintWriter(new BufferedWriter(  
-                            new OutputStreamWriter(socket.getOutputStream())),  
-                            true);  
-  
-                    outStream.print(msg + (char) 13 + (char) 10);  
-                    outStream.flush();  
-                }  
-            }  
-            LogUtil.e(TAG, &quot;发送成功!&quot;);  
-        } catch (Exception e) {  
-            e.printStackTrace();  
-        }  
-    }  
-</code></pre>
-
-<hr/>
-
-<p>实现轮询</p>
-
-<p>原理 <br/>
-其原理在于在android端的程序中，让一个SERVICE一直跑在后台，在规定时间之内调用服务器接口进行数据获取。</p>
-
-<p>这里的原理很简单，当然实现起来也不难；</p>
-
-<p>然后，这个类之中肯定要做网络了数据请求，所以我们在Service中建立一个线程（因为在android系统中网络请求属于长时间操作，不能放主线程，不然会导致异常），在线程中和服务器进行通信。</p>
-
-<p>最后，这个逻辑写完后，我们需要考虑一个问题，如何进行在规定时间内调用该服务器，当然可以用Thread+Handler(这个不是那么稳定),也可以使用AlamManager+Thread（比较稳定），因为我们需要其在后台一直运行，所以可以依靠系统的Alammanager这个类来实现，Alammanager是属于系统的一个闹钟提醒类，通过它我们能实现在规定间隔时间调用，并且也比较稳定，这个service被杀后会自己自动启动服务。</p>
-
-<h2 id="toc_6">27. Zygote的启动过程。</h2>
-
-<p>　　1. 系统启动时init进程会创建Zygote进程，Zygote进程负责后续Android应用程序框架层的其它进程的创建和启动工作。<br/>
-　　2. Zygote进程会首先创建一个SystemServer进程，SystemServer进程负责启动系统的关键服务，如包管理服务PackageManagerService和应用程序组件管理服务ActivityManagerService。<br/>
-　　3. 当我们需要启动一个Android应用程序时，ActivityManagerService会通过Socket进程间通信机制，通知Zygote进程为这个应用程序创建一个新的进程。</p>
-
-<h2 id="toc_7">28. Android IPC:Binder原理</h2>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Android 常见面试题（三）]]></title>
-    <link href="m78snail.com/14870545331290.html"/>
-    <updated>2017-02-14T14:42:13+08:00</updated>
-    <id>m78snail.com/14870545331290.html</id>
-    <content type="html"><![CDATA[
-<span id="more"></span><!-- more -->
-
-<h2 id="toc_0">16. 动画有哪几类，各有什么特点</h2>
-
-<p>如今Android的动画主要有三种，分别是：逐帧（Frame）动画，补间（Tween）动画，属性（Property）动画</p>
-
-<h2 id="toc_1">17. Handler、Looper消息队列模型，各部分的作用。</h2>
-
-<p>简单提提Handler、Looper模型中各部分的作用，主要有以下三部分：</p>
-
-<ul>
-<li>MessageQueue：消息队列，存储待处理的消息</li>
-<li>Looper：封装了消息队列与Handler，线程绑定，使用loop方法循环处理消息</li>
-<li>Handler：消息处理的辅助类，里面封装了消息的投递、处理和获取等一系列操作</li>
-</ul>
-
-<h2 id="toc_2">18. 怎样退出终止App</h2>
-
-<p>测试：<br/>
-依次打开3个Activity（ActivityA，ActivityB，ActivityC），并在第3个Activity中终止App<br/>
-System.exit（0）<br/>
-重写Application方法：</p>
-
-<pre><code>public class MyApplication extends Application {  
-  
-    public void exit() {  
-        System.exit(0);  
-    }  
-      
-}  
-</code></pre>
-
-<p>切记在AndroidManifest中修改使用的Application</p>
-
-<p>在第三个Activity中调用该方法：</p>
-
-<pre><code>public class ActivityC extends Activity {  
-  
-    @Override  
-    protected void onCreate(Bundle savedInstanceState) {  
-        super.onCreate(savedInstanceState);  
-        setContentView(R.layout.activity);  
-        Button button = (Button)findViewById(R.id.btn);  
-        button.setText(&quot;Finish app&quot;);  
-        button.setOnClickListener(new OnClickListener() {  
-              
-            @Override  
-            public void onClick(View v) {  
-                // 退出App  
-                ((MyApplication)getApplication()).exit();  
-            }  
-        });  
-    }  
-}  
-</code></pre>
-
-<p>失败，应用进程被杀死，然而过会应用重启了……并且ActivityA和ActivityB都被“复活了”，只杀死了ActivityC。</p>
-
-<p><strong>android.os.Process.killProcess(android.os.Process.myPid())</strong><br/>
-失败，与System.exit（0）一样，虽然杀死了进程，但过会就被重启了，并且ActivityA和ActivityB都被“复活了”。</p>
-
-<p><strong>ActivityManager am= (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);<br/>
-am.killBackgroundProcesses(this.getPackageName());</strong><br/>
-失败，毫无反应。</p>
-
-<p><strong>自定义BaseActivity维护Activity列表</strong><br/>
-自定义一个BaseActivity：</p>
-
-<pre><code>public class BaseActivity extends Activity {  
-  
-    // 维护一个Activity软引用的列表  
-    private static List&lt;SoftReference&lt;Activity&gt;&gt; list = new ArrayList&lt;SoftReference&lt;Activity&gt;&gt;();  
-  
-    @Override  
-    protected void onCreate(Bundle savedInstanceState) {  
-        super.onCreate(savedInstanceState);  
-        list.add(new SoftReference&lt;Activity&gt;(this));  
-    }  
-  
-    @Override  
-    protected void onDestroy() {  
-        super.onDestroy();  
-        list.remove(new SoftReference&lt;Activity&gt;(this));  
-    }  
-  
-    /** 
-     * 关闭所有的Activity 
-     */  
-    public void finishAll() {  
-        for (SoftReference&lt;Activity&gt; sr : list) {  
-            if (sr.get() != null) {  
-                sr.get().finish();  
-            }  
-        }  
-    }  
-  
-}  
-</code></pre>
-
-<p>对于ActivityA、ActivityB和ActivityC继承BaseActivity而不是Activity，在ActivityC中调用finishAll方法即可关闭所有Activity进而退出App。</p>
-
-<p><strong>finishAffinity</strong>()<br/>
-直接关闭相同任务栈中的所用Activity，与上一个方法效果差不多，但是是Android自带的，方便多了。</p>
-
-<p>综上所述，测试结果如下：<br/>
-　　1. System.exit（0）：只能关闭当前Activity，关闭进程可能导致数据存储问题，不推荐<br/>
-　　2. Android.os.Process.killProcess(android.os.Process.myPid())：同上<br/>
-　　3. ActivityManager am= (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);<br/>
-am.killBackgroundProcesses(this.getPackageName())：测试无效<br/>
-　　4. 自定义BaseActivity维护Activity列表：可以关闭依次启动的所用Activity，进而退出整个App<br/>
-　　5. finishAffinity()：可以关闭同一个任务栈中的所有Activity，Android自带方法，比较方便</p>
-
-<h2 id="toc_3">19. Asset目录与res目录的区别</h2>
-
-<p>Asset目录和res目录均为Android中用来存放资源的目录，其中：</p>
-
-<ul>
-<li>asset目录下存放的资源代表应用无法直接访问的原生资源，应用程序需要通过AssetManager以二进制流的形式来读取资源</li>
-<li>res目录下的资源可通过R资源清单类访问，Android SDK会在编译时在R类中为他们创建对应的索引项</li>
-</ul>
-
-<h2 id="toc_4">20. Android怎么加速启动Activity</h2>
-
-<p>个人认为，影响Activity启动时间的主要有两个地方：<br/>
-　　1. onCreate、onStart、onResume等回调方法的执行时间<br/>
-　　2. Activity对应的界面的inflate时间<br/>
-对于第一点，我们应该尽量减少在这些回调方法中执行耗时操作（涉及数据库，图片等），如果一定要执行耗时操作，可以考虑新开子线程处理。<br/>
-对于第二点，我们应该合理使用各种xml的优化标签，并界面上减少View的嵌套层数与绘制时间。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Android 常见面试题（二）]]></title>
-    <link href="m78snail.com/14870442740078.html"/>
-    <updated>2017-02-14T11:51:14+08:00</updated>
-    <id>m78snail.com/14870442740078.html</id>
-    <content type="html"><![CDATA[
-<span id="more"></span><!-- more -->
-
-<h2 id="toc_0">9. Thread、AsycTask、IntentService的使用场景与特点</h2>
-
-<p>Thread、AsyncTask和IntentService都与多线程有关，当我们在Android中涉及并发编程时（进行网络请求、加载较大的文件等操作）就需要使用。<br/>
-<strong>Thread</strong><br/>
-Java中的子线程，可以通过传入Runnable接口或继承Thread重写run方法新建。</p>
-
-<p><strong>AsyncTask</strong><br/>
-由Java线程池改造的异步任务工具</p>
-
-<p><strong>IntentService</strong><br/>
-Android四大组件之一的Service默认是在主线程中运行的，IntentService是Service的子类，有如下特点：<br/>
-1. IntentService会创建单独的worker线程来处理所有的Intent请求<br/>
-2. 当所有请求处理完成后，IntentService会自动停止<br/>
-3. 为Service的onBind方法提供了默认实现，返回null<br/>
-4. 为Service的onStartCommand方法提供了默认实现，把请求Intent添加到队列中<br/>
-实现IntentService的例子如下：</p>
-
-<pre><code>public class MyIntentService extends IntentService {  
-      
-    public MyIntentService(String name) {  
-        super(name);  
-    }  
-  
-    @Override  
-    protected void onHandleIntent(Intent intent) {  
-        // IntentService会创建单独的worker线程来处理此处的代码  
-  
-    }  
-  
-}  
-</code></pre>
-
-<p>我们只需重写onHandleIntent方法即可，该方法的代码会在一个子线程中运行。</p>
-
-<h2 id="toc_1">10. 五种布局： FrameLayout 、 LinearLayout 、 AbsoluteLayout 、 RelativeLayout 、TableLayout 各自特点</h2>
-
-<p><strong>FrameLayout</strong><br/>
-FrameLayout即单帧布局，在该布局中的所有空间都会被置于布局的左上角。</p>
-
-<p><strong>LinearLayout</strong><br/>
-LinearLayout即线性布局，使用该布局必须为其指定orientation属性（排列方向属性，可以设置为水平或垂直的），其中的空间就会根据设置的属性呈水平或垂直排列。</p>
-
-<p><strong>AbsoluteLayout</strong><br/>
-AbsoluteLayout即绝对布局，对布局中的控件我们使用x，y坐标值进行定位。</p>
-
-<p><strong>RelativeLayout</strong><br/>
-RelativeLayout即相对布局，在其中的控件可以相对于父布局或布局中别的控件的位置进行定位布局。</p>
-
-<p><strong>TableLayout</strong><br/>
-TableLayout即表格布局，TableLayout中的每一行的控件由TableRow包含，最终的布局效果会呈现成表格状。</p>
-
-<h2 id="toc_2">11. Android的数据存储形式</h2>
-
-<p>在Android中的数据存储形式主要有以下几种：<br/>
-<strong>SharedPreferrences</strong><br/>
-SharedPreferrences主要用于存储一些少量的简单的应用程序配置信息。SharedPreferrences以明文键值对的形式把数据存储在一个xml文件上，该文件位于/data/data/<package name>/shared_prefs目录下。因此，SharedPreferrences只适合用于存储一些简单的数据，不适合存储复杂的或敏感的数据。</p>
-
-<p><strong>File</strong><br/>
-Android和Java一样，同样支持使用文件流来保存和访问文件。除了在手机内置存储空间上存储文件外，Android还支持读写SD卡上的文件：只要获取相应的权限后，调用Environment的getExternalStorageDirectory方法即可获取路径。</p>
-
-<p><strong>SQLite数据库</strong><br/>
-Android系统集成了一个轻量级的数据库：SQLite。SQLite是一个嵌入式数据库引擎，专门适用于资源有限的设备上适量数据的存取。在Android上我们一般使用SQLiteOpenHelper辅助类来操作SQLite数据库。</p>
-
-<h2 id="toc_3">12. Sqlite的基本操作</h2>
-
-<p>SQLite为熟悉SQL语句的程序员提供了相应的函数使用SQL语句，也为不了解SQL语法的程序员提供了简便的增删查改接口：</p>
-
-<pre><code>String path = &quot;数据库路径&quot;;  
-SQLiteDatabase database = SQLiteDatabase.openOrCreateDatabase(path, null);  
-// 执行sql语句  
-database.execSQL(sql);  
-// 执行带占位符的sql语句  
-database.execSQL(sql, bindArgs);  
-// 执行查找的sql语句  
-database.rawQuery(sql, selectionArgs);  
-  
-// 执行增删查改  
-database.insert(table, nullColumnHack, values);  
-database.delete(table, whereClause, whereArgs);  
-database.query(table, columns, selection, selectionArgs, groupBy, having, orderBy);  
-database.update(table, values, whereClause, whereArgs);  
-  
-// 开启事务  
-database.beginTransaction();  
-// 确认事务成功  
-database.setTransactionSuccessful();  
-// 结束事务  
-database.endTransaction(); 
-</code></pre>
-
-<h2 id="toc_4">13. Android中的MVC模式</h2>
-
-<p>MVC全名是Model View Controller，是模型(model)－视图(view)－控制器(controller)的缩写，一种软件设计典范，用一种业务逻辑、数据、界面显示分离的方法组织代码，将业务逻辑聚集到一个部件里面，在改进和个性化定制界面及用户交互的同时，不需要重新编写业务逻辑。<br/>
-MVC模式的示意图如下：<br/>
-<img src="media/14870442740078/14870534341275.jpg" alt=""/></p>
-
-<p>Android的设计也使用了MVC模式，其中：<br/>
-1. View对应于Android的View控件和xml所编写的界面<br/>
-2. Control对应于Android中的Activity，负责接收用户请求和改变模型状态<br/>
-3. Model一般由我们自己实现来处理程序功能和逻辑</p>
-
-<h2 id="toc_5">14. Merge、ViewStub的作用</h2>
-
-<p>Merge和ViewStub均为Android中的xml优化标签，用于对Android的View布局进行优化。<br/>
-Merge<br/>
-merge标签应用于xml的顶层标签，主要应对于layout嵌套浪费的现象。在Android layout文件中需要一个顶级容器来容纳其他的组件，而不能直接放置多个组件，通过使用merge标签作为顶层容器，我们可以删减多余或者额外的层级，从而优化整个Android Layout的结构。</p>
-
-<p>以下是一个例子：<br/>
-activity_merge_test.xml：</p>
-
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;  
-&lt;FrameLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;  
-    android:layout_width=&quot;match_parent&quot;  
-    android:layout_height=&quot;match_parent&quot; &gt;  
-      
-    &lt;TextView   
-        android:id=&quot;@+id/text_view&quot;  
-        android:layout_width=&quot;match_parent&quot;  
-        android:layout_height=&quot;match_parent&quot;  
-        android:gravity=&quot;top|center_horizontal&quot;  
-        android:text=&quot;text_view&quot;/&gt;  
-  
-    &lt;TextView   
-        android:id=&quot;@+id/text_view_2&quot;  
-        android:layout_width=&quot;match_parent&quot;  
-        android:layout_height=&quot;match_parent&quot;  
-        android:gravity=&quot;bottom|center_horizontal&quot;  
-        android:text=&quot;text_view_2&quot;/&gt;  
-      
-&lt;/FrameLayout&gt;  
-</code></pre>
-
-<p>MergeTestActivity：</p>
-
-<pre><code>public class MergeTestActivity extends Activity {  
-    @Override  
-    protected void onCreate(Bundle savedInstanceState) {  
-        super.onCreate(savedInstanceState);  
-        setContentView(R.layout.activity_merge_test);  
-    }  
-}  
-</code></pre>
-
-<p>效果图如下：</p>
-
-<p><img src="media/14870442740078/14870535754556.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
-由hierarchyviewer分析可得（此处只分析与Activity界面相关的部分）：<br/>
-<img src="media/14870442740078/14870536080097.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
-
-<p>由hierarchyviewer得到的View树状图我们可以发现，id为content的FrameLayout中只有LinearLayout一个元素，造成了layout的嵌套浪费（如红框圈出所示）。此处我们若使用merge标签，便可以减少一层layout标签的嵌套，使程序运行得更快更流畅。</p>
-
-<p>xml代码改为如下：</p>
-
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;  
-&lt;merge xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;  
-    android:layout_width=&quot;match_parent&quot;  
-    android:layout_height=&quot;match_parent&quot; &gt;  
-      
-    &lt;TextView   
-        android:id=&quot;@+id/text_view&quot;  
-        android:layout_width=&quot;match_parent&quot;  
-        android:layout_height=&quot;match_parent&quot;  
-        android:gravity=&quot;top|center_horizontal&quot;  
-        android:text=&quot;text_view&quot;/&gt;  
-  
-    &lt;TextView   
-        android:id=&quot;@+id/text_view_2&quot;  
-        android:layout_width=&quot;match_parent&quot;  
-        android:layout_height=&quot;match_parent&quot;  
-        android:gravity=&quot;bottom|center_horizontal&quot;  
-        android:text=&quot;text_view_2&quot;/&gt;  
-      
-&lt;/merge&gt;  
-</code></pre>
-
-<p>效果图没有变化，使用hierarchyviewer分析可得：<br/>
-<img src="media/14870442740078/14870536547753.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
-
-<p>此时已经减少了一层layout嵌套，我们通过使用merge标签，达到了优化的目的。</p>
-
-<p><strong>ViewStub</strong><br/>
-ViewStub即占位符，用于处理动态觉得显示某个View的情况。在开发应用程序的时候，我们经常会在运行时动态根据条件来决定显示哪个View或某个布局。那么最通常的想法就是把可能用到的View都写在上面，先把它们的可见性都设为View.GONE，然后在代码中动态的更改它的可见性。这样的做法的优点是逻辑简单而且控制起来比较灵活。但是它的缺点就是，耗费资源。虽然把View的初始可见View.GONE但是在Inflate布局的时候View仍然会被Inflate，也就是说仍然会创建对象，会被实例化，会被设置属性。也就是说，会耗费内存等资源。而使用ViewStub的话在inflate布局的时候不会被inflate，ViewStub的inflate操作被延迟到了直到我们调用其inflate方法。</p>
-
-<p>ViewStub的xml文件设置如下：</p>
-
-<pre><code>&lt;ViewStub  
-    android:id=&quot;@+id/view_stub&quot;  
-    android:inflatedId=&quot;@+id/my_view&quot;  
-    android:layout_width=&quot;wrap_content&quot;  
-    android:layout_height=&quot;wrap_content&quot;  
-    android:layout=&quot;@layout/view_view_stub&quot; /&gt;  
-</code></pre>
-
-<p>其中，inflateId属性表示ViewStub被inflate后重新被赋予的id值，layout属性指定了调用inflate方法时inflate的具体布局。</p>
-
-<p>找到ViewStub并调用inflate：</p>
-
-<pre><code>ViewStub viewStub = (ViewStub)findViewById(R.id.view_stub);  
-viewStub.inflate();  
-</code></pre>
-
-<p>值得注意的是：<br/>
-　　1. ViewStub只能Inflate一次，之后ViewStub对象会被置为空。按句话说，某个被ViewStub指定的布局被Inflate后，就不会够再通过ViewStub来控制它了。<br/>
-　　2. ViewStub只能用来Inflate一个布局文件，而不是某个具体的View。</p>
-
-<h2 id="toc_6">15. Json有什么优劣势</h2>
-
-<p>JSON，即JavaScript Object Notation，是 一种轻量级的数据交换格式，具有良好的可读和便于快速编写的特性。业内主流技术为其提供了完整的解决方案（有点类似于正则表达式 ，获得了当今大部分语言的支持），从而可以在不同平台间进行数据交换。JSON采用兼容性很高的文本格式，同时也具备类似于C语言体系的行为。这些特性使JSON成为理想的数据交换语言。 易于人阅读和编写，同时也易于机器解析和生成(一般用于提升网络传输速率)。</p>
-
-<p>Json优点：<br/>
-与传统的xml相比，Json有一下优点：</p>
-
-<p>　　1. 在解码难度方面，XML的解析得考虑子节点父节点，而Json不需要，解析难度较低<br/>
-　　2. Json数据的体积小<br/>
-　　3. Json的传输速度快于XML<br/>
-但Json也有它不足之处：<br/>
-　　1. 没有XML格式这么推广的深入人心和使用广泛, 没有XML那么通用性<br/>
-　　2. 命名空间允许不同上下文中的相同的信息段彼此混合，然而在Json中已经找不到了命名空间</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Android 常见面试题（一）]]></title>
-    <link href="m78snail.com/14870412116317.html"/>
-    <updated>2017-02-14T11:00:11+08:00</updated>
-    <id>m78snail.com/14870412116317.html</id>
-    <content type="html"><![CDATA[
-<p>　　Android的话，多是一些项目中的实践，使用多了，自然就知道了，还有就是多逛逛一些名人的博客，书上能讲到的东西不多。另外android底层的东西，有时间的话可以多了解一下，加分项。推荐书籍：《疯狂android讲义》《深入理解android》其他综合性的书籍也需要阅读，推荐：《程序员面试笔试宝典》《程序员面试金典》。</p>
-
-<span id="more"></span><!-- more -->
-
-<h2 id="toc_0">1. Activity与Fragment的生命周期</h2>
-
-<h3 id="toc_1">（1）Activity的生命周期如下图所示：</h3>
-
-<p><img src="media/14870412116317/14870420474230.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
-
-<h3 id="toc_2">（2）Fragment生命周期如下图所示：</h3>
-
-<p><img src="media/14870412116317/14870420815631.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
-
-<h2 id="toc_3">2. Acitivty的四种启动模式与特点</h2>
-
-<p>　　Android中的Activity由任务栈管理，当我们start一个新的Activity时，就往任务栈中新加入一个栈帧，而当我们finish一个Activity界面时，则往任务栈中移除一个栈帧。Activity具有四种启动模式，我们可以在配置文件中通过修改launchMode修改，启动模式分别是：standard、singleTop、singleTask和singleInstance<br/>
-<strong>standard</strong><br/>
-standard为默认Activity的启动模式。在standard启动模式下，无论何时start一个Activity，系统都会往任务栈中加入一个新的栈帧。</p>
-
-<p><strong>singleTop</strong><br/>
-在singleTop启动模式下，当我们start一个Activity时，系统会先去检测任务栈栈顶的Activity和要启动t的Activity是否相同。如果相同则不进行任何操作，否则往任务栈中加入一个新的栈帧。</p>
-
-<p><strong>singleTask</strong><br/>
-在singleTask启动模式下，当我们start一个Activity时，系统会先去检测任务栈中是否含有将要启动的Activity。如果含有，则把该Activity所在栈帧的顶部的栈帧移除，使该Activity所在的栈帧处在栈顶，如果没有，则新加入一个栈帧。</p>
-
-<p><strong>singleInstance</strong><br/>
-在singleInstance启动模式下，当我们start一个新的Activity时，该Activity会在一个新的任务栈中启动。</p>
-
-<h2 id="toc_4">4. Service的生命周期，两种启动方法，有什么区别</h2>
-
-<p>　　Android中的Service组件可以通过startService和bindService两种方法来启动，其生命周期示意图如下：<br/>
-<img src="media/14870412116317/14870427132798.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
-
-<p>如果一个Service同时被调用了startService和bindService方法，那么它的生命周期就变成如下图所示：<br/>
-<img src="media/14870412116317/14870427394623.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
-
-<h2 id="toc_5">5. 怎么保证service不被杀死</h2>
-
-<p>　　要想使Service存活下来，我们就必须保证Service所在的进程不被杀掉，一般来说有以下方法：<br/>
-1. 在onStartCommand回调方法中返回START_STICKY，那么该进程被杀掉后系统会试图重启它<br/>
-2. 设置配置文件中application的persistent属性，把应用提升为系统级别应用，免疫low memory killer<br/>
-3. 在Service的onDestroy方法中重启该Service，不过如果进程被直接杀掉这种方法就无效了<br/>
-4. 通过监听特殊的系统广播（如屏幕变化、电量变化、网络变化等）去不断重启Service<br/>
-5. 使用AlarmManager定时重复开启Service<br/>
-6. 通过设置Service的process属性，把Service放在子进程中，避免与主进程一起被回收<br/>
-7. 开启一个另外的进程与Service进程互相监视，双方要是有任意一方被杀掉则重启</p>
-
-<h2 id="toc_6">6. 广播的两种注册方法，有什么区别</h2>
-
-<p>Android四大组件之一的broadcast（广播）拥有两种不同的注册方法：静态注册与动态注册<br/>
-<strong>静态注册</strong><br/>
-广播静态注册指把广播相应的信息写在AndroidManifest.xml中，例子如下：</p>
-
-<pre><code>&lt;receiver android:name=&quot;.StaticReceiver&quot;&gt;    
-   &lt;intent-filter&gt;    
-      &lt;action android:name=&quot;XXX&quot; /&gt;   
-   &lt;/intent-filter&gt;    
-&lt;/receiver&gt;  
-</code></pre>
-
-<p>静态广播的好处在于：不需程序启动即可接收，可用作自动启动程序<br/>
-<strong>动态注册</strong><br/>
-广播动态注册指在程序中调用registerReceiver方法来注册广播，例子如下：</p>
-
-<pre><code>IntentFilter filter = new IntentFilter();  
-filter.addAction(&quot;XXX&quot;);  
-DynamicReceiver receiver = new DynamicReceiver();  
-registerReceiver(receiver,  filter);  
-// 不使用后记得取消注册  
-unregisterReceiver(receiver);  
-</code></pre>
-
-<p>动态广播的好处在于：程序适应系统变化做操作，但在程序运行状态才能接收到</p>
-
-<h2 id="toc_7">7. Intent的使用方法，可以传递哪些数据类型</h2>
-
-<p>Intent即意图，是Android中连接四大组件的枢纽，Android中的Activity、Service和BroadcastReceiver都依靠Intent来启动。<br/>
-Intent对象的属性大致包含七种，分别是Component、Action、Category、Data、Type、Extra、Flag。<br/>
-<strong>Component</strong><br/>
-Component用于明确指定需要启动的目标组件，使用方法如下：</p>
-
-<pre><code>Intent intent = new Intent();  
-// 方法一：传入上下文参数与class参数  
-intent.setComponent(new ComponentName(context, XXX.class));  
-// 方法二：传入包名与类名  
-intent.setComponent(new ComponentName(pkg, cls));  
-</code></pre>
-
-<p>指定Component属性的Intent已经明确了它将要启动的组件，因此这种Intent也被称为显示Intent，没有指定Component属性的Intent被称为隐试Intent。<br/>
-<strong>Action、Category</strong><br/>
-Action代表Intent所要完成的一个抽象“动作”，而Category则用于为Action增加额外的附加类别信息，它们的使用方法如下:</p>
-
-<pre><code>Intent intent = new Intent();  
-// 设置一个字符串代表Action  
-intent.setAction(action);  
-// 添加一个字符串代表category  
-intent.addCategory(category1);  
-intent.addCategory(category2);  
-</code></pre>
-
-<p>值得注意的是Action属性是唯一的，但Category属性可以有多个。通常设置了Action和Category来启动组件的Intent就不指定Component属性了，因此这种Intent被称为隐试Intent。</p>
-
-<p><strong>Data、Type</strong><br/>
-Data属性接受一个Uri对象，Data属性通常用于向Action属性提供操作的数据。Type属性用于指定该Data属性所指定Uri对应的MIME类型。它们的使用方法如下：</p>
-
-<pre><code>Intent intent = new Intent();  
-// 设置Data属性  
-intent.setData(new Uri());  
-// 设置Type属性  
-intent.setType(type);  
-// 同时设置Data和Type属性  
-intent.setDataAndType(data, type);  
-</code></pre>
-
-<p>值得注意的是Data属性和Type属性会互相覆盖，如果需要同时设置Data属性和Type属性需要使用setDataAndType。<br/>
-<strong>Extra</strong><br/>
-Intent的Extra属性用于进行数据交换，Intent的Extra属性值应该是一个Bundle对象（一个类似Map的对象，可以存入多个键值对，但存入的对象必须是基本类型或可序列化的），用法如下：</p>
-
-<pre><code>Intent intent = new Intent();  
-// 直接往Intent添加基本类型，在方法内也是把数据存入Bundle  
-// 该方法有多种重载  
-intent.putExtra(name, value);  
-// 新建Bundle  
-Bundle bundle = new Bundle();  
-// 往Bundle添加数据，XXX为基本类型  
-bundle.putXXX(key, value);  
-bundle.putXXXArray(key, value);  
-// 把Bundle添加进Intent  
-intent.putExtras(bundle);  
-</code></pre>
-
-<p><strong>Flag</strong><br/>
-Intent的Flag属性用于为该Intent添加一些额外的控制旗标，Intent可调用addFlags方法来添加控制旗标。</p>
-
-<h2 id="toc_8">8.ContentProvider使用方法</h2>
-
-<p>为了在应用程序之间交换数据，Android提供了ContentProvider。当一个应用程序需要把自己的数据暴露给其他程序使用时，该应用程序就可以通过ContentProvider来实现，而其他程序则使用ContentResolver来操作ContentProvider暴露的数据。<br/>
-实现ContentProvider的Java代码如下：</p>
-
-<pre><code>public class MyProvider extends ContentProvider {  
-  
-    @Override  
-    public boolean onCreate() {  
-        // 第一次创建时调用，如果创建成功则返回true  
-        // 可以在这里打开数据库什么的  
-        return true;  
-    }  
-  
-    @Override  
-    public String getType(Uri uri) {  
-        // 返回ContentProvider所提供数据的MIME类型  
-        return null;  
-    }  
-  
-    @Override  
-    public Cursor query(Uri uri, String[] projection, String selection,  
-            String[] selectionArgs, String sortOrder) {  
-        // 实现查询方法  
-        return null;  
-    }  
-      
-    @Override  
-    public Uri insert(Uri uri, ContentValues values) {  
-        // 实现插入方法，返回插入条数  
-        return null;  
-    }  
-  
-    @Override  
-    public int delete(Uri uri, String selection, String[] selectionArgs) {  
-        // 实现删除方法，返回删除条数  
-        return 0;  
-    }  
-  
-    @Override  
-    public int update(Uri uri, ContentValues values, String selection,  
-            String[] selectionArgs) {  
-        // 实现更新方法，返回更新条数  
-        return 0;  
-    }  
-  
-}  
-</code></pre>
-
-<p>当我们实现了自己的ContentProvider后，还需要去AndroidManifest.xml中注册才行：</p>
-
-<pre><code>&lt;provider   
-    android:name=&quot;.MyProvider&quot;  
-    android:authorities=&quot;com.example.test.provider&quot;  
-    android:exported=&quot;true&quot; /&gt;  
-</code></pre>
-
-<p>配置ContentProvider时我们需要设置如下属性：</p>
-
-<ul>
-<li>name：类名</li>
-<li>authorities：为ContentProvider指定一个对应的Uri，其他程序通过这个Uri来找到该ContentProvider</li>
-<li>exported：允许ContentProvider被其他应用调用
-当其他应用需要访问我们提供的ContentProvider的使用，只需使用ContentResolver并传入相应的Uri即可：</li>
-</ul>
-
-<pre><code>public class MyActivity extends Activity {  
-  
-    private static String TAG = &quot;MyActivity&quot;;  
-      
-    @Override  
-    protected void onCreate(Bundle savedInstanceState) {  
-        super.onCreate(savedInstanceState);  
-        setContentView(R.layout.activity_main);  
-        ContentResolver resolver = getContentResolver();  
-        // 传入对应的Uri进行增删查改操作  
-        resolver.query(uri, projection, selection, selectionArgs, sortOrder);  
-        resolver.insert(url, values);  
-        resolver.delete(url, where, selectionArgs);  
-        resolver.update(uri, values, where, selectionArgs);  
-    }  
-      
-}  
-</code></pre>
-
-<p>除此之外，我们还可以使用ContentObserver来为ContentProvider添加观察者。我们在其他程序的ContentResolver中注册ContentObserver，当ContentProvider发生改变时，我们在数据改动的使用调用：</p>
-
-<pre><code>getContext().getContentResolver().notifyChange(uri, null);  
-</code></pre>
-
-<p>那么此时ContentObserver中的onChange回调方法就会被调用，我们就可以简单地监听ContentProvider的数据改变了。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[TCP/IP 与 HTTP]]></title>
-    <link href="m78snail.com/14869684713757.html"/>
-    <updated>2017-02-13T14:47:51+08:00</updated>
-    <id>m78snail.com/14869684713757.html</id>
-    <content type="html"><![CDATA[
-<p>　　网络其实大体分为两块，一个TCP协议，一个HTTP协议，只要把这两块以及相关协议搞清楚，一般问题不大。</p>
-
-<span id="more"></span><!-- more -->
-
-<h2 id="toc_0">1、OSI与TCP/IP各层的结构与功能，都有哪些协议</h2>
-
-<h3 id="toc_1">（1）OSI七层模型</h3>
-
-<p>　　OSI中的层 功能 TCP/IP协议族 <br/>
-应用层 文件传输，电子邮件，文件服务，虚拟终端 TFTP，HTTP，SNMP，FTP，SMTP，DNS，Telnet <br/>
-　　表示层 数据格式化，代码转换，数据加密 没有协议 <br/>
-　　会话层 解除或建立与别的接点的联系 没有协议 <br/>
-　　传输层 提供端对端的接口 TCP，UDP <br/>
-　　网络层 为数据包选择路由 IP，ICMP，RIP，OSPF，BGP，IGMP <br/>
-　　数据链路层 传输有地址的帧以及错误检测功能 SLIP，CSLIP，PPP，ARP，RARP，MTU <br/>
-　　物理层 以二进制数据形式在物理媒体上传输数据 ISO2110，IEEE802，IEEE802.2</p>
-
-<h3 id="toc_2">(2)TCP/IP五层模型的协议</h3>
-
-<p>　　应用层 ,传输层 ,网络层 ,数据链路层 ,物理层</p>
-
-<h2 id="toc_3">2、TCP与UDP的区别</h2>
-
-<p>　　1.基于连接与无连接； <br/>
-　　2.对系统资源的要求（TCP较多，UDP少）； <br/>
-　　3.UDP程序结构较简单； <br/>
-　　4.流模式与数据报模式 ； <br/>
-　　5.TCP保证数据正确性，UDP可能丢包，TCP保证数据顺序，UDP不保证。</p>
-
-<h2 id="toc_4">3、TCP报文结构</h2>
-
-<p>　　TCP的包头结构： <br/>
-　　源端口 16位 <br/>
-　　目标端口 16位 <br/>
-　　序列号 32位 <br/>
-　　回应序号 32位 <br/>
-　　TCP头长度 4位 <br/>
-　　reserved 6位 <br/>
-　　控制代码 6位 <br/>
-　　窗口大小 16位 <br/>
-　　偏移量 16位 <br/>
-　　校验和 16位 <br/>
-　　选项 32位(可选) <br/>
-　　这样我们得出了TCP<br/>
-　　包头的最小长度，为20字节</p>
-
-<h2 id="toc_5">4、TCP的三次握手与四次挥手过程，各个状态名称与含义，TIMEWAIT的作用</h2>
-
-<h3 id="toc_6">(1) TCP三次握手过程</h3>
-
-<p>　　1. 主机A通过向主机B发送一个含有同步序列号的标志位的数据段给主机B,向主机B请求建立连接，通过这个数据段，主机A高速主机B两件事:我想要和你通信；你可以用那个序列号作为起始数据段来回应我。<br/>
-　　2. 主机B收到主机A的请求后，用一个带有确认应答的(ACK)和同步序列(SYN)标志位的数据段响应主机A,也告诉主机A两件事：我已经收到你的请求了，你可以传输数据了；你要用那个序列号作为起始数据段来回应我。<br/>
-　　3. 主机A收到这个数据段后，再发送一个确认应答(ACK),确认已收到主机B的数据段：我已收到回复,我现在要开始传输实际数据了 这样3次握手就完成了,主机A和主机B 就可以传输数据了。  </p>
-
-<h3 id="toc_7">(2) 3次握手的特点</h3>
-
-<p>没有应用层的数据 <br/>
-　　SYN这个标志位只有在TCP建产连接时才会被置1 <br/>
-　　握手完成后SYN标志位被置0</p>
-
-<h3 id="toc_8">(3) TCP建立连接要进行3次握手,而断开连接要进行4次</h3>
-
-<p>　　1. 当主机A完成传输后，将控制位FIN置1，提出停止TCP连接的请求。<br/>
-　　2. 主机B收到FIN后对其作出响应，确认这一方向上的TCP连接将关闭，将ACK置1<br/>
-　　3. 由B端再提出反方向的关闭请求，将FIN置1 <br/>
-　　4. 主机A对主机B的请求进行确认，将ACK置1，双方向的关闭结束。 <br/>
-　　由TCP的三次握手和四次断开可以看出,TCP使用面向连接的通信方式,大大提高了数据通信的可靠性,使发送数据端 和接收端在数据正式传输前就有了交互,为数据正式传输打下了可靠的基础。</p>
-
-<h3 id="toc_9">(4) 名词解释</h3>
-
-<p>　　ACK：TCP报头的控制位之一,对数据进行确认.确认由目的端发出,用它来告诉发送端这个序列号之前的数据段 都收到了.比如,确认号为X,则表示前X-1个数据段都收到了,只有当ACK=1时,确认号才有效,当ACK=0时,确认号无效,这时会要求重传数据,保证数据的完整性。 <br/>
-　　SYN：同步序列号,TCP建立连接时将这个位置1。 <br/>
-　　FIN：发送端完成发送任务位,当TCP完成数据传输需要断开时,提出断开连接的一方将这位置1。</p>
-
-<p>　　客户端与服务器端建立TCP/IP连接后关闭SOCKET后，服务器端连接的端口 状态为TIME_WAIT</p>
-
-<h3 id="toc_10">(5) 是不是所有执行主动关闭的socket都会进入TIME_WAIT状态呢？</h3>
-
-<p>　　有没有什么情况使主动关闭的socket直接进入CLOSED状态呢？</p>
-
-<p>　　主动关闭的一方在发送最后一个ack 后 <br/>
-就会进入TIME_WAIT 状态 停留2MSL（max segment lifetime）时间</p>
-
-<p>　　这个是TCP/IP必不可少的，也就是“解决”不了的。 <br/>
-　　也就是TCP/IP设计者本来是这么设计的</p>
-
-<p>　　主要有两个原因 <br/>
-　　<1>.防止上一次连接中的包，迷路后重新出现，影响新连接 <br/>
-（经过2MSL，上一次连接中所有的重复包都会消失）</p>
-
-<p>　　<2>.可靠的关闭TCP连接<br/>
-　　在主动关闭方发送的最后一个ACK(fin),有可能丢失,这时被动方会重新发fin,如果这时主动方处于CLOSED状态,就会响应rst而不是ACK。所以主动方要处于TIME_WAIT状态，而不能是CLOSED。TIME_WAIT并不会占用很大资源，除非受到攻击。还有，如果任何一方send或recv超时，就会直接进入CLOSED状态。<br/>
-　　<br/>
-　　<img src="media/14869684713757/14869705283677.jpg" alt=""/></p>
-
-<h2 id="toc_11">5、TCP拥塞控制</h2>
-
-<p>　　<1>.慢开始与拥塞避免<br/>
-　　<2>.快重传和快恢复<br/>
-　　<3>.随机早期检测RED</p>
-
-<h3 id="toc_12">1.慢开始与拥塞避免</h3>
-
-<p>　　发送报文段速率的确定，既要根据接收端的接收能力，又要从全局考虑不要使网络发生拥塞，这由接收窗口和拥塞窗口两个状态量确定。接收端窗口(Reciver Window)又称通知窗口(Advertised Window)，是接收端根据目前的接收缓存大小所许诺的最新窗口值，是来自接收端的流量控制。拥塞窗口(Congestion Window)是发送端根据自己估计的网络拥塞程度而设置的窗口值，是来自发送端的流量控制。</p>
-
-<h4 id="toc_13">慢启动原理：</h4>
-
-<p>　　<1>. 当主机开始发送数据时，如果立即将较大的发送窗口的全部数据字节都注入到网络中，那么由于不清楚网络的情况，有可能引起网络拥塞。<br/>
-　　<2>. 比较好的方法是试探一下，即从小到大逐渐增大发送端的拥塞控制窗口数值。<br/>
-　　<3>. 通常在刚刚开始发送报文段时可先将拥塞窗口cwnd设置为一个最大报文段的MSS的数值。在每收到一个对新报文段确认后，将拥塞窗口增加至多一个MSS的数值,当rwind足够大的时候，为了防止拥塞窗口cwind的增长引起网络拥塞，还需要另外一个变量-慢开始门限ssthresh。</p>
-
-<h4 id="toc_14">拥塞控制具体过程为：</h4>
-
-<p>　　<1>. TCP连接初始化，将拥塞窗口设置为1<br/>
-　　<2>. 执行慢开始算法，cwind按指数规律增长，直到cwind==ssthress开始执行拥塞避免算法，cwnd按线性规律增长<br/>
-　　<3>. 当网络发生拥塞，把ssthresh值更新为拥塞前ssthresh值的一半，cwnd重新设置为1，按照步骤<2>执行。</p>
-
-<h3 id="toc_15">2. 快重传和快恢复</h3>
-
-<p>　　一条TCP连接有时会因等待重传计时器的超时而空闲较长的时间，慢开始和拥塞避免无法很好的解决这类问题，因此提出了快重传和快恢复的拥塞控制方法。<br/>
-　　快重传算法并非取消了重传机制，只是在某些情况下更早的重传丢失的报文段(如果当发送端接收到三个重复的确认ACK时，则断定分组丢失，立即重传丢失的报文段，而不必等待重传计时器超时)。慢开始算法只是在TCP建立时才使用。</p>
-
-<h4 id="toc_16">快恢复算法有以下两个要点：</h4>
-
-<p>　　<1>. 当发送方连续接收到三个重复确认时，就执行“乘法减小”算法，把慢开始门限减半，这是为了预防网络发生拥塞。<br/>
-　　<2>. 由于发送发现在认为网络很可能没有发生拥塞，因此现在不执行慢开始算法，而是把cwnd值设置为慢开始门限减半后的值，然后开始执行拥塞避免算法，使拥塞窗口的线性增大。　　</p>
-
-<h2 id="toc_17">6、TCP滑动窗口与回退N针协议</h2>
-
-<p>　　只有在接收窗口向前滑动时(与此同时也发送了确认)，发送窗口才有可能向前滑动。收发两端的窗口按照以上规律不断地向前滑动，因此这种协议又称为滑动窗口协议。<br/>
-　　当发送窗口和接收窗口的大小都等于1时，就是停止等待协议。<br/>
-　　当发送窗口大于1，接收窗口等于1时，就是回退N步协议。<br/>
-　　当发送窗口和接收窗口的大小均大于1时，就是选择重发协议。<br/>
-　　协议中规定，对于窗口内未经确认的分组需要重传。这种分组的数量最多可以等于发送窗口的大小，即滑动窗口的大小n减去1(因为发送窗口不可能大于(n-1),起码接收窗口要大于等于1)。</p>
-
-<h2 id="toc_18">7、Http的报文结构</h2>
-
-<p>　　HTTP请求报文由3部分组成(请求行+请求头+请求体)<br/>
-　　<img src="media/14869684713757/14869767849546.jpg" alt=""/><br/>
-<img src="media/14869684713757/14869768085539.jpg" alt=""/></p>
-
-<h3 id="toc_19">请求例子</h3>
-
-<p>POST　　/meme.php/login　　HTTP/1.1<br/>
-HOST:114.215.86.90<br/>
-Cache-Control:no-cache</p>
-
-<p>tel=13637 &amp; password=123456</p>
-
-<h3 id="toc_20">响应例子</h3>
-
-<p>HTTP/1.1　　200　　OK<br/>
-Date:Sat</p>
-
-<p>{&quot;status&quot;:202}</p>
-
-<h2 id="toc_21">8、Http的状态码含义</h2>
-
-<p>　　响应码由三位十进制数字组成，它们出现在<br/>
-　　响应码分为五种类型，由它们的第一位数字表示：<br/>
-　　1.1xx:信息，请求收到，继续处理<br/>
-　　2.2xx：成功，行为被成功地接受,理解和采纳<br/>
-　　3.3xx：重定向，为了完成请求，必须进一步执行的动作<br/>
-　　4.4xx：客户端错误，请求包含语法错误或者请求无法实现<br/>
-　　5.5xx：服务器错误，服务器不能实现一种明显无效的请求</p>
-
-<h2 id="toc_22">9、Http1.1和Http1.0的区别</h2>
-
-<p>　　<1>. HTTP/1.0协议使用非持久连接，即在非持久连接下，一个TCP连接只传输一个Web对象；<br/>
-　　<2>. HTTP/1.1默认使用持久连接(可以配置成非持久连接)。在持久连接下，不必为每个Web对象的传送建立一个新的连接，一个连接中可以传输多个对象！</p>
-
-<h2 id="toc_23">10、电脑上访问一个网页，整个过程是怎么样的</h2>
-
-<h3 id="toc_24"><1>连接</h3>
-
-<p>　　当我们输入这样一个请求时，首先要建立一个socket连接，因为socket是通过ip和端口建立的，所以之前还有一个DNS解析过程，把<a href="http://www.mytest.com/%E5%8F%98%E6%88%90ip%EF%BC%8C%E5%A6%82%E6%9E%9Curl%E9%87%8C%E4%B8%8D%E5%8C%85%E5%90%AB%E7%AB%AF%E5%8F%A3%E5%8F%B7%EF%BC%8C%E5%88%99%E4%BC%9A%E4%BD%BF%E7%94%A8%E8%AF%A5%E5%8D%8F%E8%AE%AE%E7%9A%84%E9%BB%98%E8%AE%A4%E7%AB%AF%E5%8F%A3%E5%8F%B7%E3%80%82">http://www.mytest.com/变成ip，如果url里不包含端口号，则会使用该协议的默认端口号。</a> DNS的过程是这样的：首先我们知道我们本地的机器上在配置网络时都会填写DNS，这样本机就会把这个url发给这个配置的DNS服务器，如果能够找到相应的url则返回其ip，否则该DNS将继续将该解析请求发送给上级DNS，整个DNS可以看做是一个树状结构，该请求将一直发送到根直到得到结果。现在已经拥有了目标ip和端口号，这样我们就可以打开socket连接了。</p>
-
-<h3 id="toc_25"><2>请求</h3>
-
-<p>　　连接成功建立后，开始向web服务器发送请求，这个请求一般是GET或POST命令（POST用于FORM参数的传递）。GET命令的格式为：　　GET 路径/文件名 HTTP/1.0 文件名指出所访问的文件，HTTP/1.0指出Web浏览器使用的HTTP版本。现在可以发送GET命令： <br/>
-GET /mytest/index.html HTTP/1.0，µ</p>
-
-<h3 id="toc_26"><3>应答</h3>
-
-<p>　　Web服务器收到这个请求，进行处理。从它的文档空间中搜索子目录mytest的文件index.html。如果找到该文件，Web服务器把该文件内容传送给相应的Web浏览器。<br/>
-　　为了告知浏览器，，Web服务器首先传送一些HTTP头信息，然后传送具体内容（即HTTP体信息），HTTP头信息和HTTP体信息之间用一个空行分开。<br/>
-　　常用的HTTP头信息有：<br/>
-　　　　① HTTP 1.0 200 OK 　这是Web服务器应答的第一行，列出服务器正在运行的HTTP版本号和应答代码。代码”200 OK”表示请求完成。<br/>
-　　　　② MIME_Version:1.0　它指示MIME类型的版本。<br/>
-　　　　③ content_type:类型　这个头信息非常重要，它指示HTTP体信息的MIME类型。如：content_type:text/html指示传送的数据是HTML文档。<br/>
-　　　　④ content_length:长度值　它指示HTTP体信息的长度（字节）。</p>
-
-<h3 id="toc_27"><4>关闭连接</h3>
-
-<p>　　当应答结束后，Web浏览器与Web服务器必须断开，以保证其它Web浏览器能够与Web服务器建立连接。</p>
-
-<h2 id="toc_28">11、Ping的整个过程。ICMP报文是什么</h2>
-
-<p>　　在了解ping命令之前，我们首先需要了解一下ICMP协议，即：网络控制消息协议（Internet Control Message Protocol）。<br/>
-　　ICMP是TCP/IP协议族的一个子协议，工作在网络互联层（网络层）。ICMP协议是一种面向无连接的协议，用于传输出错报告控制信息。用于在IP主机、路由器之间传递控制消息。控制消息是指网络通不通、主机是否可达、路由是否可用等网络本身的消息。这些控制消息虽然并不传输用户数据，但是对于用户数据的传递起着重要的作用。</p>
-
-<h3 id="toc_29">ping某个域名的整个过程</h3>
-
-<p>　　ICMP的一个重要应用就是分组网间探测PING（Packe InterNet Groper），用来测试主机之间的连通性。PING使用了ICMP回送请求与回送回答报文。PING是应用层直接使用网络层ICMP的一个例子，没有经过传输层的TCP或UDP。<br/>
-<img src="media/14869684713757/14869789657922.jpg" alt=""/></p>
-
-<h2 id="toc_30">12、IP地址分类</h2>
-
-<p>　　最初设计互联网络时，为了便于寻址以及层次化构造网络，每个IP地址包括两个标识码（ID），即网络ID和主机ID。同一个物理网络上的所有主机都使用同一个网络ID，网络上的一个主机（包括网络上工作站，服务器和路由器等）有一个主机ID与其对应。IP地址根据网络ID的不同分为5种类型，A类地址、B类地址、C类地址、D类地址和E类地址。</p>
-
-<h3 id="toc_31">1． A类IP地址</h3>
-
-<p>　　一个A类IP地址由1字节的网络地址和3字节主机地址组成，网络地址的最高位必须是“0”， 地址范围从1.0.0.0 到126.0.0.0。可用的A类网络有126个，每个网络能容纳1亿多个主机。</p>
-
-<h3 id="toc_32">2． B类IP地址</h3>
-
-<p>　　一个B类IP地址由2个字节的网络地址和2个字节的主机地址组成，网络地址的最高位必须是“10”，地址范围从128.0.0.0到191.255.255.255。可用的B类网络有16382个，每个网络能容纳6万多个主机 。</p>
-
-<h3 id="toc_33">3． C类IP地址</h3>
-
-<p>　　一个C类IP地址由3字节的网络地址和1字节的主机地址组成，网络地址的最高位必须是“110”。范围从192.0.0.0到223.255.255.255。C类网络可达209万余个，每个网络能容纳254个主机。</p>
-
-<h3 id="toc_34">4． D类地址用于多点广播（Multicast）</h3>
-
-<p>　　D类IP地址第一个字节以“lll0”开始，它是一个专门保留的地址。它并不指向特定的网络，目前这一类地址被用在多点广播（Multicast）中。多点广播地址用来一次寻址一组计算机，它标识共享同一协议的一组计算机。</p>
-
-<h3 id="toc_35">5． E类IP地址</h3>
-
-<p>　　以“llll0”开始，为将来使用保留。</p>
-
-<p>全零（“0．0．0．0”）地址对应于当前主机。全“1”的IP地址（“255．255．255．255”）是当前子网的广播地址。</p>
-
-<p>在IP地址3种主要类型里，各保留了3个区域作为私有地址，其地址范围如下：</p>
-
-<p>A类地址：10.0.0.0～10.255.255.255</p>
-
-<p>B类地址：172.16.0.0～172.31.255.255</p>
-
-<p>C类地址：192.168.0.0～192.168.255.255</p>
-
-<p>A类地址的第一组数字为1～126。注意，数字0和 127不作为A类地址，数字127保留给内部回送函数，而数字0则表示该地址是本地宿主机，不能传送。</p>
-
-<p>B类地址的第一组数字为128～191。</p>
-
-<p>C类地址的第一组数字为192～223。</p>
-
-<h2 id="toc_36">13、路由器和交换机的区别</h2>
-
-<p>　　路由器和交换机，二者区别如下：<br/>
-　　1，路由器工作于OSI模型的网络层，能够识别IP地址，并根据IP地址转发数据包，并维护着路由表，能够基于路由表进行最佳路线选择； <br/>
-　　2，路由器上还能开启ACL访问控制列表、NAT地址转换等功能，扩展网络应用,； <br/>
-　　3，传统交换机工作于OSI模型的数据链路层，能够识别MAC地址，根据MAC地址转发数据帧，并维护着一张桥表，根据桥表上MAC地址和端口的对应关系进行数据帧转发。 <br/>
-　　4，交换机能够隔离冲突域，并划分VLAN。</p>
-
-<h2 id="toc_37">14、为什么需要3次握手与4次握手</h2>
-
-<p>　　在谢希仁著《计算机网络》第四版中讲“三次握手”的目的是“为了防止已失效的连接请求报文段突然又传送到了服务端，因而产生错误”。在另一部经典的《计算机网络》一书中讲“三次握手”的目的是为了解决“网络中存在延迟的重复分组”的问题。这两种不用的表述其实阐明的是同一个问题。</p>
-
-<p>为什么需要“四次挥手” <br/>
-　　那可能有人会有疑问，在tcp连接握手时为何ACK是和SYN一起发送，这里ACK却没有和FIN一起发送呢。原因是因为tcp是全双工模式，接收到FIN时意味将没有数据再发来，但是还是可以继续发送数据。</p>
-
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[Https完全解析 与 okHttp的结合]]></title>
@@ -3585,6 +2424,783 @@ class JsInteration {
 <p>关于WebView的四个基本用法就介绍到这里，再下一章会介绍WebView的优化。<br/>
 欢迎留言讨论。<br/>
 项目示例代码在：<a href="https://github.com/M78Snail/WebViewStudy">https://github.com/M78Snail/WebViewStudy</a></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Android Studio快捷键－Mac版]]></title>
+    <link href="m78snail.com/14779858991590.html"/>
+    <updated>2016-11-01T15:38:19+08:00</updated>
+    <id>m78snail.com/14779858991590.html</id>
+    <content type="html"><![CDATA[
+<p>从windows转到mac需要改变很多，以前在Android Studio培养的操作习惯也要跟着改变。为了以后工作方便打算总结一下Mac下的Android Studio的一些快捷键。</p>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">Mac下快捷键的符号所对应的按键</h2>
+
+<p><code>⌥</code> —&gt; option|alt<br/>
+<code>⇧</code> —&gt; shift<br/>
+<code>⌃</code> —&gt; control<br/>
+<code>⌘</code> —&gt; command<br/>
+<code>⎋</code> —&gt; esc</p>
+
+<pre><code>注: 与F6/F7/F12等F功能键开头的组合的快捷键需要按住fn开启功能键
+如：快捷键 ⌘F12 的按键组合为：fn + command + F12
+</code></pre>
+
+<h2 id="toc_1">Android Studio 常用快捷键 for mac</h2>
+
+<p><strong>查找／查看相关</strong><br/>
+<code>⌘O</code>:  全局查找class类名&lt;使用率非常高&gt;</p>
+
+<p><code>⌘F</code>: 在当前编辑文件中查找&lt;使用率非常高&gt; ｜ 对应window中的Ctrl + F</p>
+
+<p><code>⌘F12</code>：当前编辑的文件中结构快速导航 | 对应window中的 Ctrl + F12</p>
+
+<p><code>⌘E</code>: 打开最近访问的文件列表 | 对应window中的Ctrl + E</p>
+
+<p><code>⌥⌘O</code>: 输入类名／方法名／字段名来查找任何匹配的类／方法／字段&lt;使用率非常高&gt;</p>
+
+<p><code>⇧⌘O</code>: 全局项目查找文件（类／资源文件／布局文件都通过该快捷键查找）&lt;使用率非常高&gt;</p>
+
+<p><code>⌃H</code>: 查看当前编辑class类的hierarchy结构 | 对应window中的Ctrl + H</p>
+
+<p><code>⌥F7</code>: 列出全局项目中该类／方法 被引用／调用的情况&lt;使用率非常高&gt;[比<code>⌥⌘F7</code>显示效果好] | 对应window中的Alt + F7</p>
+
+<p><code>⌃⌥H</code>: 方法被调用结构［method’s Call Hierarchy］| 对应window中的ctrl + alt + h</p>
+
+<p><code>⌘P</code>: 列出函数方法一系列的有效参数，如果光标是一个方法调用的括号之间 | 对应window中的Ctrl + P</p>
+
+<p><code>⌃J</code>: 查看类／方法的注释文档</p>
+
+<p><code>⌥L</code>:代码提示功能</p>
+
+<p><strong>控制操作相关</strong></p>
+
+<p><code>⌘/</code>: 注释与取消注释，注释效果 //... | 对应window中的Ctrl + /</p>
+
+<p><code>⌥⌘/</code>: 注释与取消注释，注释效果 /<em>...</em>/ | 对应window中的Ctrl+Shift+/</p>
+
+<p><code>⇧⌥up/down</code>: 移动行上下移动 | 对应window中的alt + shift + up/down</p>
+
+<p><code>⌘delete</code>: 删除行 ｜ 对应window中的ctrl + y</p>
+
+<p><code>⌘d</code>: 复制行 ｜ 对应window中的 ctrl + d</p>
+
+<p><code>⌘J</code>: 快速生成模版代码块，如if,while,return等&lt;使用频率非常高，高效率编写代码&gt; | 对应window中的Ctrl + J</p>
+
+<p><code>⌘N</code>: 快速生成getter／setter方法，构造方法，toString()方法等 &lt;使用率非常高&gt; | 对应window中的Alt + Insert</p>
+
+<p><code>⌃O</code>: 引入重写父类的方法［Override Methods］&lt;使用率非常高&gt;</p>
+
+<p><code>⌃I</code>: 引入实现接口或抽象类方法［Implement Methods］&lt;使用率非常高&gt;</p>
+
+<p><code>⌃Space</code>: 当申明一个变量时，根据变量类型提示给出建议的变量名称，等还有其他很多智能提示作用&lt;使用率非常高&gt;</p>
+
+<p><code>⌥⌘L</code>: 代码格式化 &lt;使用率非常高&gt; | 对应window中的Ctrl+Alt+L</p>
+
+<p><code>⌘⇧U</code>: 切换选中内容的大小写 &lt;使用率非常高&gt; | 对应window中的Ctrl+Shift+U</p>
+
+<p><code>⌃L</code>:翻译</p>
+
+<p>参考 <a href="http://blog.csdn.net/janice0529/article/details/45322871">http://blog.csdn.net/janice0529/article/details/45322871</a></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[谈谈新买的Mac和最近的生活]]></title>
+    <link href="m78snail.com/14779858228757.html"/>
+    <updated>2016-11-01T15:37:02+08:00</updated>
+    <id>m78snail.com/14779858228757.html</id>
+    <content type="html"><![CDATA[
+<p>大学毕业也快一个月了，脱离了学生的身份，我也正式进入了社会为了生计而打拼。从学生变成打工仔，对于我来说其实影响不是多么大，也许是因为自己本来就不是什么循规蹈矩的好学生吧。<br/>
+    在公司实习的时候我就知道公司给每个人办公配的电脑是笔记本，说实话我挺失望的，不过公司有另外一个福利就是自己买电脑公司可以报销4000，前提是3年不能离开公司，这一点倒是挺爽的，因为我所属于的部门出差比较多，所以我打算入手一台MacBook Pro。下面是我用了3天的使用体验。</p>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">Mac</h2>
+
+<p>三天的使用带给我以下5点，最直观的使用感受：</p>
+
+<ul>
+<li>1. 超细致的屏幕视觉</li>
+<li>2. 精致的外观感受</li>
+<li>3. 超强的电池续航</li>
+<li>4. 秒杀一切电脑厂商的触摸板</li>
+<li>5. 良好的苹果生态</li>
+</ul>
+
+<p><img src="media/14690075075215/14690892264815.jpg" alt="" class="mw_img_center" style="width:200px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>有人说Mac 有什么好的，同样的电脑配置，别的牌子价格可能低3，4千，说实话我以前也是这么觉得，觉得Mac就是装逼而已，但是用了以后才会发现 苹果这家公司觉不是那些仅仅为追求表明上的性能数值的公司可以比的。细腻到每一个触控按键，超人性化的设计。真的是用过苹果的产品，你再也不会想要去用别家的产品了。</p>
+
+<h2 id="toc_1">贵阳出差</h2>
+
+<p>说完了Mac想谈几句贵阳出差的事情。公司是做大数据平台的，在贵阳这边有项目。才刚毕业没多久就要出差，也算是过上了四海为家的日子，不愿意去考虑太多的事情，做好眼前的事情吧。<br/>
+贵阳这里我是第二次来了，上一次还是冬天的时候过来实习，贵阳的冬天冷啊，山里的风又大，这一次正好是酷暑7月，全国很多地方都能把人热死，但是贵阳的夏天真的舒服，不是狠毒的太阳，凉爽的风拂过脸庞，还有那未被污染的蓝蓝的天空，这里真的像世外桃源。<br/>
+现在的我很快乐，来到贵阳，这里有脾气超好的鹏哥，有脾气相投的哥们，当然还有我最爱的女朋友，嘿嘿。</p>
+
+<hr/>
+
+<p><img src="media/14690075075215/14690892999707.jpg" alt="" class="mw_img_center" style="width:300px;display: block; clear:both; margin: 0 auto;"/></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Android 常见面试题（四）]]></title>
+    <link href="m78snail.com/14870550376223.html"/>
+    <updated>2017-02-14T14:50:37+08:00</updated>
+    <id>m78snail.com/14870550376223.html</id>
+    <content type="html"><![CDATA[
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">21. Android内存优化方法：ListView优化，及时关闭资源，图片缓存等等</h2>
+
+<p>首先有一些与内存泄漏相关的点：<br/>
+<strong>1.具有close方法的对象切记调用close方法释放资源</strong><br/>
+常见的有Cursor和各种流等对象。博主就曾经因为Cursor对象忘记close，在进行了多次数据库查询后APP就因为OOM而崩溃了。</p>
+
+<p><strong>2.动态注册的广播不使用后记得取消注册</strong><br/>
+取消注册后可释放Context中持有的相关的广播过滤器资源。</p>
+
+<p><strong>3.bitmap的recycle方法</strong><br/>
+在Android3.0版本以前，bitmap对象的构造涉及到JVM的两块内存区域：一块是Bitmap对象所在的Java堆，一块是Bitmap对象持有的native层资源所在的Native堆。在Java堆上分配的资源由于JVM的GC机制的关系我们不需要去特别关心，但在Native堆上分配的资源就需要我们显式地调用bitmap的native方法recycle去回收了。然而在Android3.0版本后bitmap内存资源分配都在Java堆上，因此是否调用recycle方法对内存影响就不大了。</p>
+
+<p><strong>4.listView的Adapter中注意convertView的使用</strong><br/>
+在Adapter的getView方法中，有一个重要的参数就是convertView。convertView是一个View参数，它代表了一个回收的View（如果没有就为null）。Android的ListView虽然看起来有很多项，但其实真正的ItemView的数目只有屏幕上显示的哪几个，当一个ItemView从可见变为不可见时，他就会被回收掉，在下次调用getView方法时传入的convertView就是某个被回收的View。因此在getView方法中，当convertView不为null时，我们应该使用convertView而不是重新创建一个View。更高效的方式是把convertView结合一个自定义的ViewHolder一起使用，可以有效的减少findViewById的时间。</p>
+
+<p><strong>5.handler</strong><br/>
+Handler常见的应用场景是多线程的通信，此时要是Handler使用不当就相当容易造成内存泄露。在多线程通信的场景下，子线程通常都会持有Handler对象的引用，如果一个Handler对象在Activity中不是静态的，那么该Handler对象就会持有该Activity对象的引用，从而导致Activity组件无法正常的被GC回收，导致了内存泄露。因此一般而言我们应该把Handler对象置为Activity中的静态变量，通过软引用或者弱引用的方式来获取Activity及其内部域，避免持有Activity的强引用导致该组件无法回收。</p>
+
+<p><strong>6.集合对象清理</strong><br/>
+对于一些集合中不再使用的对象，我们应该把它们移除出我们的集合。避免由于集合持有那些对象的引用导致它们无法被JVM的GC所回收。</p>
+
+<p>还有一些内存优化的方法，个人认为有以下几个方面：</p>
+
+<ul>
+<li>Java引用的灵活使用</li>
+<li>图片缓存</li>
+<li>Bitmap压缩加载</li>
+</ul>
+
+<p><strong>Java引用的灵活使用</strong><br/>
+众所周知，在Java中有强软弱虚四种引用，合理的使用软引用和弱引用有利于GC工作的进行，回收不需要的内存。</p>
+
+<p><strong>图片缓存</strong><br/>
+使用图片缓存可以有效防止内存中同时载入过多的图片，也可以减少经常载入图片所耗费的时间。<br/>
+一般而言，设计图片缓存的思路如下，可以把图片的缓存分为以下几个层级：</p>
+
+<ul>
+<li>强引用 HashMap （用于存储最常用的图片）</li>
+<li>软引用 HashMap （用于存储比较常用的图片）</li>
+<li>SD卡 （用于存储使用过的图片）</li>
+<li>下载 （第一次使用）</li>
+</ul>
+
+<p>一般而言我们都是用LRU算法（最近最少使用），最近使用的图片一般缓存于强引用的HashMap中，随着使用次数的减少慢慢移动至软引用HashMap、SD卡中。<br/>
+除了我们自己设计图片缓存外，我们还可以直接使用Google提供的LruCache（内部由LinkedHashMap实现缓存队列），以及DiskLruCache<br/>
+<strong>Bitmap压缩加载</strong><br/>
+对于某些原尺寸特别大的图片，我们可以选择压缩后再加载以节省我们的内存空间：</p>
+
+<pre><code>// 创建解析参数  
+Options options = new Options();  
+// 只解析大小，并不生成实际图片  
+options.inJustDecodeBounds = true;  
+BitmapFactory.decodeFile(pathName, options);  
+// 计算缩放大小  
+int widthScale = options.outWidth/width_we_need;  
+int heightScale = options.outHeight/height_we_need;  
+// 选取小的为缩放尺寸  
+options.inSampleSize = Math.min(widthScale, heightScale);  
+// 生成Bitmap  
+options.inJustDecodeBounds = false; // 记得关掉  
+Bitmap bitmap = BitmapFactory.decodeFile(pathName, options); 
+</code></pre>
+
+<p>压缩到合适的尺寸后再加载就不必担心原来的bitmap太大而占用内存空间了。</p>
+
+<h2 id="toc_1">22. Android中弱引用与软引用的应用场景</h2>
+
+<p>软引用与弱引用一般用于：需要某个对象，但又不关心它的死活的时候（就是该对象存在就用，不存在就算了）。<br/>
+在Android中的应用场景主要有：</p>
+
+<ul>
+<li>Handler获取Activity的引用：使用静态变量和软弱引用保证不干扰Activity的回收</li>
+<li>缓存设计：使用软弱应用保证内存紧张时GC可以回收使用较少的缓存资源</li>
+</ul>
+
+<h2 id="toc_2">23. Bitmap的四中属性，与每种属性队形的大小。</h2>
+
+<p>在 <strong>Android</strong> 中图片有四种属性，分别是：<br/>
+<strong>ALPHA_8</strong>：每个像素占用 1byte 内存<br/>
+<strong>ARGB_4444</strong>：每个像素占用 2byte 内存<br/>
+<strong>ARGB_8888</strong>：每个像素占用 4byte 内存 （默认）<br/>
+<strong>RGB_565</strong>：每个像素占用 2byte 内存(没有 alpha 属性)</p>
+
+<h2 id="toc_3">24. View与View Group分类，自定义View过程：onMeasure()、onLayout()、onDraw()</h2>
+
+<p>View是Android中基本的UI单元，占据屏幕的一块矩形区域，可用于绘制并能处理事件，而ViewGroup是View的子类，他能包含多个View，并让他们在其中按照一定的规则排列。VIew与ViewGroup的设计使用了组合模式。</p>
+
+<p>自定义View我们一般需要重写一下三个方法：</p>
+
+<ul>
+<li>onMeasure：用于测量自定义View的大小，在方法中必须调用setMeasureDimension方法</li>
+<li>onLayout：用于确定自定义View布局</li>
+<li>onDraw：用于绘制自定义View本身</li>
+</ul>
+
+<h2 id="toc_4">25. Touch事件分发机制</h2>
+
+<p><img src="media/14870550376223/14870559086978.jpg" alt=""/></p>
+
+<h2 id="toc_5">26. Android长连接，怎么处理心跳机制</h2>
+
+<p>　　所谓的心跳包就是客户端定时放送简单的信息给服务器端，告诉它我还在而已。代码就是每隔几分钟发送一个固定信息给服务器端，服务器端回复一个固定信息。如果服务器端几分钟后没有收到客户端信息则视客户端断开。比如有些通信软件长时间不适用，要想知道它的状态是在线还是离线，就需要心跳包，定时发包收包。<br/>
+　　心跳包之所以叫心跳包是因为：它像心跳一样每隔固定时间发一次，以此来告诉服务器，这个客户端还活在。事实上这是为了保持长连接，至于这个包的内容，是没有什么特别规定的，不过一般都是很小的包，或者只包含包头的一个空包。<br/>
+　　在TCP机制里面，本身是存在有心跳包机制的，也就是TCP选项:SO_KEEPALIVE. 系统默认是设置的2小时的心跳频率。<br/>
+心跳包的机制，其实就是传统的长连接。或许有的人知道消息推送的机制，消息推送也是一种长连接 ，是将数据有服务器端推送到客户端这边从而改变传统的“拉”的请求方式。下面我来介绍一下安卓和客户端两个数据请求的方式<br/>
+　　1、push  这个也就是有服务器推送到客户端这边  现在有第三方技术 比如极光推送。<br/>
+　　2、pull   这种方式就是客户端向服务器发送请求数据（http请求）<br/>
+<strong>1、首先服务器和客户端有一次“握手”</strong></p>
+
+<pre><code>public void connect()  
+      {  
+        LogUtil.e(TAG, &quot;准备链接...&quot;);  
+        InetAddress serverAddr;  
+        try {  
+            socket = new Socket(Config.Host, Config.SockectPort);  
+            _connect = true;  
+            mReceiveThread = new ReceiveThread();  
+            receiveStop = false;  
+            mReceiveThread.start();  
+            LogUtil.e(TAG, &quot;链接成功.&quot;);  
+  
+        } catch (Exception e) {  
+            LogUtil.e(TAG, &quot;链接出错.&quot; + e.getMessage().toString());  
+            e.printStackTrace();  
+        }  
+    }  
+</code></pre>
+
+<p><strong>2、下面就要开启一个线程  去不断读取服务器那边传过来的数据  采用Thread去实现</strong></p>
+
+<pre><code>private class ReceiveThread extends Thread {  
+        private byte[] buf;  
+        private String str = null;  
+  
+        @Override  
+        public void run() {  
+            while (true) {  
+                try {  
+                    // LogUtil.e(TAG, &quot;监听中...:&quot;+socket.isConnected());  
+                    if (socket!=null &amp;&amp; socket.isConnected()) {  
+  
+                        if (!socket.isInputShutdown()) {  
+                            BufferedReader inStream = new BufferedReader(  
+                                    new InputStreamReader(  
+                                            socket.getInputStream()));  
+                            String content = inStream.readLine();                              
+                            if (content == null)  
+                                continue;  
+                            LogUtil.e(TAG, &quot;收到信息:&quot; + content);  
+                            LogUtil.e(TAG, &quot;信息长度:&quot;+content.length());  
+                            if (!content.startsWith(&quot;CMD:&quot;))  
+                                continue;  
+                            int spacePos = content.indexOf(&quot; &quot;);  
+                            if (spacePos == -1)  
+                                continue;  
+                            String cmd = content.substring(4, spacePos);  
+                            String body = content.substring(spacePos).trim();  
+                            LogUtil.e(TAG, &quot;收到信息(CMD):&quot; + cmd);  
+                            LogUtil.e(TAG, &quot;收到信息(BODY):&quot; + body);  
+                            if (cmd.equals(&quot;LOGIN&quot;))  
+                           {  
+                                // 登录  
+                                ReceiveLogin(body);  
+                                continue;  
+                            }  
+                              if (cmd.equals(&quot;KEEPLIVE&quot;)) {  
+                                if (!body.equals(&quot;1&quot;)) {  
+                                    Log.e(TAG, &quot;心跳时检测到异常，重新登录!&quot;);  
+                                    socket = null;  
+                                    KeepAlive();  
+                                } else {  
+                                    Date now = Calendar.getInstance().getTime();  
+                                    lastKeepAliveOkTime = now;  
+                                }  
+                                continue;  
+                            }  
+                        }  
+                    } else {  
+                        if(socket!=null)  
+                            LogUtil.e(TAG, &quot;链接状态:&quot; + socket.isConnected());  
+                    }  
+  
+                } catch (Exception e) {  
+                    LogUtil.e(TAG, &quot;监听出错:&quot; + e.toString());  
+                    e.printStackTrace();  
+                }  
+            }  
+        }  
+</code></pre>
+
+<p><strong>3 、 Socket 是否断开了  断开了 需要重新去连接</strong></p>
+
+<pre><code>public void KeepAlive()  
+        {  
+        // 判断socket是否已断开,断开就重连  
+        if (lastKeepAliveOkTime != null) {  
+            LogUtil.e(  
+                    TAG,  
+                    &quot;上次心跳成功时间:&quot;  
+                            + DateTimeUtil.dateFormat(lastKeepAliveOkTime,  
+                                    &quot;yyyy-MM-dd HH:mm:ss&quot;));  
+            Date now = Calendar.getInstance().getTime();  
+            long between = (now.getTime() - lastKeepAliveOkTime.getTime());// 得到两者的毫秒数  
+            if (between &gt; 60 * 1000) {  
+                LogUtil.e(TAG, &quot;心跳异常超过1分钟,重新连接:&quot;);  
+                lastKeepAliveOkTime = null;  
+                socket = null;  
+            }  
+  
+        } else {  
+            lastKeepAliveOkTime = Calendar.getInstance().getTime();  
+        }  
+  
+        if (!checkIsAlive()) {  
+            LogUtil.e(TAG, &quot;链接已断开,重新连接.&quot;);  
+            connect();  
+            if (loginPara != null)  
+                Login(loginPara);  
+        }  
+  
+    //此方法是检测是否连接  
+      boolean checkIsAlive() {  
+        if (socket == null)  
+            return false;  
+            try {  
+            socket.sendUrgentData(0xFF);  
+        } catch (IOException e) {  
+            return false;  
+        }  
+        return true;  
+  
+    }  
+   //然后发送数据的方法  
+    public void sendmessage(String msg) {  
+        if (!checkIsAlive())  
+            return;  
+        LogUtil.e(TAG, &quot;准备发送消息:&quot; + msg);  
+        try {  
+            if (socket != null &amp;&amp; socket.isConnected()) {  
+                if (!socket.isOutputShutdown()) {  
+                    PrintWriter outStream = new PrintWriter(new BufferedWriter(  
+                            new OutputStreamWriter(socket.getOutputStream())),  
+                            true);  
+  
+                    outStream.print(msg + (char) 13 + (char) 10);  
+                    outStream.flush();  
+                }  
+            }  
+            LogUtil.e(TAG, &quot;发送成功!&quot;);  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }  
+    }  
+</code></pre>
+
+<hr/>
+
+<p>实现轮询</p>
+
+<p>原理 <br/>
+其原理在于在android端的程序中，让一个SERVICE一直跑在后台，在规定时间之内调用服务器接口进行数据获取。</p>
+
+<p>这里的原理很简单，当然实现起来也不难；</p>
+
+<p>然后，这个类之中肯定要做网络了数据请求，所以我们在Service中建立一个线程（因为在android系统中网络请求属于长时间操作，不能放主线程，不然会导致异常），在线程中和服务器进行通信。</p>
+
+<p>最后，这个逻辑写完后，我们需要考虑一个问题，如何进行在规定时间内调用该服务器，当然可以用Thread+Handler(这个不是那么稳定),也可以使用AlamManager+Thread（比较稳定），因为我们需要其在后台一直运行，所以可以依靠系统的Alammanager这个类来实现，Alammanager是属于系统的一个闹钟提醒类，通过它我们能实现在规定间隔时间调用，并且也比较稳定，这个service被杀后会自己自动启动服务。</p>
+
+<h2 id="toc_6">27. Zygote的启动过程。</h2>
+
+<p>　　1. 系统启动时init进程会创建Zygote进程，Zygote进程负责后续Android应用程序框架层的其它进程的创建和启动工作。<br/>
+　　2. Zygote进程会首先创建一个SystemServer进程，SystemServer进程负责启动系统的关键服务，如包管理服务PackageManagerService和应用程序组件管理服务ActivityManagerService。<br/>
+　　3. 当我们需要启动一个Android应用程序时，ActivityManagerService会通过Socket进程间通信机制，通知Zygote进程为这个应用程序创建一个新的进程。</p>
+
+<h2 id="toc_7">28. Android IPC:Binder原理</h2>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Android 常见面试题（三）]]></title>
+    <link href="m78snail.com/14870545331290.html"/>
+    <updated>2017-02-14T14:42:13+08:00</updated>
+    <id>m78snail.com/14870545331290.html</id>
+    <content type="html"><![CDATA[
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">16. 动画有哪几类，各有什么特点</h2>
+
+<p>如今Android的动画主要有三种，分别是：逐帧（Frame）动画，补间（Tween）动画，属性（Property）动画</p>
+
+<h2 id="toc_1">17. Handler、Looper消息队列模型，各部分的作用。</h2>
+
+<p>简单提提Handler、Looper模型中各部分的作用，主要有以下三部分：</p>
+
+<ul>
+<li>MessageQueue：消息队列，存储待处理的消息</li>
+<li>Looper：封装了消息队列与Handler，线程绑定，使用loop方法循环处理消息</li>
+<li>Handler：消息处理的辅助类，里面封装了消息的投递、处理和获取等一系列操作</li>
+</ul>
+
+<h2 id="toc_2">18. 怎样退出终止App</h2>
+
+<p>测试：<br/>
+依次打开3个Activity（ActivityA，ActivityB，ActivityC），并在第3个Activity中终止App<br/>
+System.exit（0）<br/>
+重写Application方法：</p>
+
+<pre><code>public class MyApplication extends Application {  
+  
+    public void exit() {  
+        System.exit(0);  
+    }  
+      
+}  
+</code></pre>
+
+<p>切记在AndroidManifest中修改使用的Application</p>
+
+<p>在第三个Activity中调用该方法：</p>
+
+<pre><code>public class ActivityC extends Activity {  
+  
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        setContentView(R.layout.activity);  
+        Button button = (Button)findViewById(R.id.btn);  
+        button.setText(&quot;Finish app&quot;);  
+        button.setOnClickListener(new OnClickListener() {  
+              
+            @Override  
+            public void onClick(View v) {  
+                // 退出App  
+                ((MyApplication)getApplication()).exit();  
+            }  
+        });  
+    }  
+}  
+</code></pre>
+
+<p>失败，应用进程被杀死，然而过会应用重启了……并且ActivityA和ActivityB都被“复活了”，只杀死了ActivityC。</p>
+
+<p><strong>android.os.Process.killProcess(android.os.Process.myPid())</strong><br/>
+失败，与System.exit（0）一样，虽然杀死了进程，但过会就被重启了，并且ActivityA和ActivityB都被“复活了”。</p>
+
+<p><strong>ActivityManager am= (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);<br/>
+am.killBackgroundProcesses(this.getPackageName());</strong><br/>
+失败，毫无反应。</p>
+
+<p><strong>自定义BaseActivity维护Activity列表</strong><br/>
+自定义一个BaseActivity：</p>
+
+<pre><code>public class BaseActivity extends Activity {  
+  
+    // 维护一个Activity软引用的列表  
+    private static List&lt;SoftReference&lt;Activity&gt;&gt; list = new ArrayList&lt;SoftReference&lt;Activity&gt;&gt;();  
+  
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        list.add(new SoftReference&lt;Activity&gt;(this));  
+    }  
+  
+    @Override  
+    protected void onDestroy() {  
+        super.onDestroy();  
+        list.remove(new SoftReference&lt;Activity&gt;(this));  
+    }  
+  
+    /** 
+     * 关闭所有的Activity 
+     */  
+    public void finishAll() {  
+        for (SoftReference&lt;Activity&gt; sr : list) {  
+            if (sr.get() != null) {  
+                sr.get().finish();  
+            }  
+        }  
+    }  
+  
+}  
+</code></pre>
+
+<p>对于ActivityA、ActivityB和ActivityC继承BaseActivity而不是Activity，在ActivityC中调用finishAll方法即可关闭所有Activity进而退出App。</p>
+
+<p><strong>finishAffinity</strong>()<br/>
+直接关闭相同任务栈中的所用Activity，与上一个方法效果差不多，但是是Android自带的，方便多了。</p>
+
+<p>综上所述，测试结果如下：<br/>
+　　1. System.exit（0）：只能关闭当前Activity，关闭进程可能导致数据存储问题，不推荐<br/>
+　　2. Android.os.Process.killProcess(android.os.Process.myPid())：同上<br/>
+　　3. ActivityManager am= (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);<br/>
+am.killBackgroundProcesses(this.getPackageName())：测试无效<br/>
+　　4. 自定义BaseActivity维护Activity列表：可以关闭依次启动的所用Activity，进而退出整个App<br/>
+　　5. finishAffinity()：可以关闭同一个任务栈中的所有Activity，Android自带方法，比较方便</p>
+
+<h2 id="toc_3">19. Asset目录与res目录的区别</h2>
+
+<p>Asset目录和res目录均为Android中用来存放资源的目录，其中：</p>
+
+<ul>
+<li>asset目录下存放的资源代表应用无法直接访问的原生资源，应用程序需要通过AssetManager以二进制流的形式来读取资源</li>
+<li>res目录下的资源可通过R资源清单类访问，Android SDK会在编译时在R类中为他们创建对应的索引项</li>
+</ul>
+
+<h2 id="toc_4">20. Android怎么加速启动Activity</h2>
+
+<p>个人认为，影响Activity启动时间的主要有两个地方：<br/>
+　　1. onCreate、onStart、onResume等回调方法的执行时间<br/>
+　　2. Activity对应的界面的inflate时间<br/>
+对于第一点，我们应该尽量减少在这些回调方法中执行耗时操作（涉及数据库，图片等），如果一定要执行耗时操作，可以考虑新开子线程处理。<br/>
+对于第二点，我们应该合理使用各种xml的优化标签，并界面上减少View的嵌套层数与绘制时间。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Android 常见面试题（二）]]></title>
+    <link href="m78snail.com/14870442740078.html"/>
+    <updated>2017-02-14T11:51:14+08:00</updated>
+    <id>m78snail.com/14870442740078.html</id>
+    <content type="html"><![CDATA[
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">9. Thread、AsycTask、IntentService的使用场景与特点</h2>
+
+<p>Thread、AsyncTask和IntentService都与多线程有关，当我们在Android中涉及并发编程时（进行网络请求、加载较大的文件等操作）就需要使用。<br/>
+<strong>Thread</strong><br/>
+Java中的子线程，可以通过传入Runnable接口或继承Thread重写run方法新建。</p>
+
+<p><strong>AsyncTask</strong><br/>
+由Java线程池改造的异步任务工具</p>
+
+<p><strong>IntentService</strong><br/>
+Android四大组件之一的Service默认是在主线程中运行的，IntentService是Service的子类，有如下特点：<br/>
+1. IntentService会创建单独的worker线程来处理所有的Intent请求<br/>
+2. 当所有请求处理完成后，IntentService会自动停止<br/>
+3. 为Service的onBind方法提供了默认实现，返回null<br/>
+4. 为Service的onStartCommand方法提供了默认实现，把请求Intent添加到队列中<br/>
+实现IntentService的例子如下：</p>
+
+<pre><code>public class MyIntentService extends IntentService {  
+      
+    public MyIntentService(String name) {  
+        super(name);  
+    }  
+  
+    @Override  
+    protected void onHandleIntent(Intent intent) {  
+        // IntentService会创建单独的worker线程来处理此处的代码  
+  
+    }  
+  
+}  
+</code></pre>
+
+<p>我们只需重写onHandleIntent方法即可，该方法的代码会在一个子线程中运行。</p>
+
+<h2 id="toc_1">10. 五种布局： FrameLayout 、 LinearLayout 、 AbsoluteLayout 、 RelativeLayout 、TableLayout 各自特点</h2>
+
+<p><strong>FrameLayout</strong><br/>
+FrameLayout即单帧布局，在该布局中的所有空间都会被置于布局的左上角。</p>
+
+<p><strong>LinearLayout</strong><br/>
+LinearLayout即线性布局，使用该布局必须为其指定orientation属性（排列方向属性，可以设置为水平或垂直的），其中的空间就会根据设置的属性呈水平或垂直排列。</p>
+
+<p><strong>AbsoluteLayout</strong><br/>
+AbsoluteLayout即绝对布局，对布局中的控件我们使用x，y坐标值进行定位。</p>
+
+<p><strong>RelativeLayout</strong><br/>
+RelativeLayout即相对布局，在其中的控件可以相对于父布局或布局中别的控件的位置进行定位布局。</p>
+
+<p><strong>TableLayout</strong><br/>
+TableLayout即表格布局，TableLayout中的每一行的控件由TableRow包含，最终的布局效果会呈现成表格状。</p>
+
+<h2 id="toc_2">11. Android的数据存储形式</h2>
+
+<p>在Android中的数据存储形式主要有以下几种：<br/>
+<strong>SharedPreferrences</strong><br/>
+SharedPreferrences主要用于存储一些少量的简单的应用程序配置信息。SharedPreferrences以明文键值对的形式把数据存储在一个xml文件上，该文件位于/data/data/<package name>/shared_prefs目录下。因此，SharedPreferrences只适合用于存储一些简单的数据，不适合存储复杂的或敏感的数据。</p>
+
+<p><strong>File</strong><br/>
+Android和Java一样，同样支持使用文件流来保存和访问文件。除了在手机内置存储空间上存储文件外，Android还支持读写SD卡上的文件：只要获取相应的权限后，调用Environment的getExternalStorageDirectory方法即可获取路径。</p>
+
+<p><strong>SQLite数据库</strong><br/>
+Android系统集成了一个轻量级的数据库：SQLite。SQLite是一个嵌入式数据库引擎，专门适用于资源有限的设备上适量数据的存取。在Android上我们一般使用SQLiteOpenHelper辅助类来操作SQLite数据库。</p>
+
+<h2 id="toc_3">12. Sqlite的基本操作</h2>
+
+<p>SQLite为熟悉SQL语句的程序员提供了相应的函数使用SQL语句，也为不了解SQL语法的程序员提供了简便的增删查改接口：</p>
+
+<pre><code>String path = &quot;数据库路径&quot;;  
+SQLiteDatabase database = SQLiteDatabase.openOrCreateDatabase(path, null);  
+// 执行sql语句  
+database.execSQL(sql);  
+// 执行带占位符的sql语句  
+database.execSQL(sql, bindArgs);  
+// 执行查找的sql语句  
+database.rawQuery(sql, selectionArgs);  
+  
+// 执行增删查改  
+database.insert(table, nullColumnHack, values);  
+database.delete(table, whereClause, whereArgs);  
+database.query(table, columns, selection, selectionArgs, groupBy, having, orderBy);  
+database.update(table, values, whereClause, whereArgs);  
+  
+// 开启事务  
+database.beginTransaction();  
+// 确认事务成功  
+database.setTransactionSuccessful();  
+// 结束事务  
+database.endTransaction(); 
+</code></pre>
+
+<h2 id="toc_4">13. Android中的MVC模式</h2>
+
+<p>MVC全名是Model View Controller，是模型(model)－视图(view)－控制器(controller)的缩写，一种软件设计典范，用一种业务逻辑、数据、界面显示分离的方法组织代码，将业务逻辑聚集到一个部件里面，在改进和个性化定制界面及用户交互的同时，不需要重新编写业务逻辑。<br/>
+MVC模式的示意图如下：<br/>
+<img src="media/14870442740078/14870534341275.jpg" alt=""/></p>
+
+<p>Android的设计也使用了MVC模式，其中：<br/>
+1. View对应于Android的View控件和xml所编写的界面<br/>
+2. Control对应于Android中的Activity，负责接收用户请求和改变模型状态<br/>
+3. Model一般由我们自己实现来处理程序功能和逻辑</p>
+
+<h2 id="toc_5">14. Merge、ViewStub的作用</h2>
+
+<p>Merge和ViewStub均为Android中的xml优化标签，用于对Android的View布局进行优化。<br/>
+Merge<br/>
+merge标签应用于xml的顶层标签，主要应对于layout嵌套浪费的现象。在Android layout文件中需要一个顶级容器来容纳其他的组件，而不能直接放置多个组件，通过使用merge标签作为顶层容器，我们可以删减多余或者额外的层级，从而优化整个Android Layout的结构。</p>
+
+<p>以下是一个例子：<br/>
+activity_merge_test.xml：</p>
+
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;  
+&lt;FrameLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;  
+    android:layout_width=&quot;match_parent&quot;  
+    android:layout_height=&quot;match_parent&quot; &gt;  
+      
+    &lt;TextView   
+        android:id=&quot;@+id/text_view&quot;  
+        android:layout_width=&quot;match_parent&quot;  
+        android:layout_height=&quot;match_parent&quot;  
+        android:gravity=&quot;top|center_horizontal&quot;  
+        android:text=&quot;text_view&quot;/&gt;  
+  
+    &lt;TextView   
+        android:id=&quot;@+id/text_view_2&quot;  
+        android:layout_width=&quot;match_parent&quot;  
+        android:layout_height=&quot;match_parent&quot;  
+        android:gravity=&quot;bottom|center_horizontal&quot;  
+        android:text=&quot;text_view_2&quot;/&gt;  
+      
+&lt;/FrameLayout&gt;  
+</code></pre>
+
+<p>MergeTestActivity：</p>
+
+<pre><code>public class MergeTestActivity extends Activity {  
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        setContentView(R.layout.activity_merge_test);  
+    }  
+}  
+</code></pre>
+
+<p>效果图如下：</p>
+
+<p><img src="media/14870442740078/14870535754556.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+由hierarchyviewer分析可得（此处只分析与Activity界面相关的部分）：<br/>
+<img src="media/14870442740078/14870536080097.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>由hierarchyviewer得到的View树状图我们可以发现，id为content的FrameLayout中只有LinearLayout一个元素，造成了layout的嵌套浪费（如红框圈出所示）。此处我们若使用merge标签，便可以减少一层layout标签的嵌套，使程序运行得更快更流畅。</p>
+
+<p>xml代码改为如下：</p>
+
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;  
+&lt;merge xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;  
+    android:layout_width=&quot;match_parent&quot;  
+    android:layout_height=&quot;match_parent&quot; &gt;  
+      
+    &lt;TextView   
+        android:id=&quot;@+id/text_view&quot;  
+        android:layout_width=&quot;match_parent&quot;  
+        android:layout_height=&quot;match_parent&quot;  
+        android:gravity=&quot;top|center_horizontal&quot;  
+        android:text=&quot;text_view&quot;/&gt;  
+  
+    &lt;TextView   
+        android:id=&quot;@+id/text_view_2&quot;  
+        android:layout_width=&quot;match_parent&quot;  
+        android:layout_height=&quot;match_parent&quot;  
+        android:gravity=&quot;bottom|center_horizontal&quot;  
+        android:text=&quot;text_view_2&quot;/&gt;  
+      
+&lt;/merge&gt;  
+</code></pre>
+
+<p>效果图没有变化，使用hierarchyviewer分析可得：<br/>
+<img src="media/14870442740078/14870536547753.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>此时已经减少了一层layout嵌套，我们通过使用merge标签，达到了优化的目的。</p>
+
+<p><strong>ViewStub</strong><br/>
+ViewStub即占位符，用于处理动态觉得显示某个View的情况。在开发应用程序的时候，我们经常会在运行时动态根据条件来决定显示哪个View或某个布局。那么最通常的想法就是把可能用到的View都写在上面，先把它们的可见性都设为View.GONE，然后在代码中动态的更改它的可见性。这样的做法的优点是逻辑简单而且控制起来比较灵活。但是它的缺点就是，耗费资源。虽然把View的初始可见View.GONE但是在Inflate布局的时候View仍然会被Inflate，也就是说仍然会创建对象，会被实例化，会被设置属性。也就是说，会耗费内存等资源。而使用ViewStub的话在inflate布局的时候不会被inflate，ViewStub的inflate操作被延迟到了直到我们调用其inflate方法。</p>
+
+<p>ViewStub的xml文件设置如下：</p>
+
+<pre><code>&lt;ViewStub  
+    android:id=&quot;@+id/view_stub&quot;  
+    android:inflatedId=&quot;@+id/my_view&quot;  
+    android:layout_width=&quot;wrap_content&quot;  
+    android:layout_height=&quot;wrap_content&quot;  
+    android:layout=&quot;@layout/view_view_stub&quot; /&gt;  
+</code></pre>
+
+<p>其中，inflateId属性表示ViewStub被inflate后重新被赋予的id值，layout属性指定了调用inflate方法时inflate的具体布局。</p>
+
+<p>找到ViewStub并调用inflate：</p>
+
+<pre><code>ViewStub viewStub = (ViewStub)findViewById(R.id.view_stub);  
+viewStub.inflate();  
+</code></pre>
+
+<p>值得注意的是：<br/>
+　　1. ViewStub只能Inflate一次，之后ViewStub对象会被置为空。按句话说，某个被ViewStub指定的布局被Inflate后，就不会够再通过ViewStub来控制它了。<br/>
+　　2. ViewStub只能用来Inflate一个布局文件，而不是某个具体的View。</p>
+
+<h2 id="toc_6">15. Json有什么优劣势</h2>
+
+<p>JSON，即JavaScript Object Notation，是 一种轻量级的数据交换格式，具有良好的可读和便于快速编写的特性。业内主流技术为其提供了完整的解决方案（有点类似于正则表达式 ，获得了当今大部分语言的支持），从而可以在不同平台间进行数据交换。JSON采用兼容性很高的文本格式，同时也具备类似于C语言体系的行为。这些特性使JSON成为理想的数据交换语言。 易于人阅读和编写，同时也易于机器解析和生成(一般用于提升网络传输速率)。</p>
+
+<p>Json优点：<br/>
+与传统的xml相比，Json有一下优点：</p>
+
+<p>　　1. 在解码难度方面，XML的解析得考虑子节点父节点，而Json不需要，解析难度较低<br/>
+　　2. Json数据的体积小<br/>
+　　3. Json的传输速度快于XML<br/>
+但Json也有它不足之处：<br/>
+　　1. 没有XML格式这么推广的深入人心和使用广泛, 没有XML那么通用性<br/>
+　　2. 命名空间允许不同上下文中的相同的信息段彼此混合，然而在Json中已经找不到了命名空间</p>
 
 ]]></content>
   </entry>
