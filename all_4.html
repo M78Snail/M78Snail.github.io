@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  实用笔记－WebView大讲堂（二）～性能优化 - m78snail
+  m78snail
   
   </title>
   
@@ -115,193 +115,110 @@
        
 
  <script type="text/javascript">
-  $(function(){
-    $('#menu_item_index').addClass('is_active');
-  });
+	$(function(){
+		$('#menu_item_index').addClass('is_active');
+	});
 </script>
 <div class="row">
-  <div class="large-8 medium-8 columns">
-      <div class="markdown-body article-wrap">
-       <div class="article">
-          
-          <h1>实用笔记－WebView大讲堂（二）～性能优化</h1>
-     
-        <div class="read-more clearfix">
-          <span class="date">2016/7/27</span>
-
-          <span>posted in&nbsp;</span> 
-          
-              <span class="posted-in"><a href='Android.html'>Android</a></span>
-           
-         
-          <span class="comments">
-            
-
-            
-              &nbsp;<a  class="ds-thread-count" data-thread-key="14779857522080.html" data-count-type="comments" href="14779857522080.html#ds-thread"></a>
-            
-          </span>
-
-        </div>
-      </div><!-- article -->
-
-      <div class="article-content">
-      <p>上一节我总结了下WebView的实用用法：<a href="http://m78star.com/14693271804281.html">实用笔记－WebView大讲堂</a>。这一节我想总结下针对WebView的优化。</p>
-
-<pre><code>1. WebView缓存机制
-2. 几种缓存方式的实现
-3. 其他的缓存策略
-</code></pre>
-
-<span id="more"></span><!-- more -->
-
-<h2 id="toc_0">一 . Android WebView缓存机制</h2>
-
-<p>WebView中存在着两种缓存：网页数据缓存（网页数据，url等）、H5缓存（H5代码缓存数据）</p>
-
-<p>不同的缓存数据会保存在不同的文件目录下.<br/>
-当我们加载Html时候，会在我们data/应用package下生成database与cache两个文件夹: </p>
-
-<p>我们请求的Url记录是保存在webviewCache.db里，而url的内容是保存在webviewCache文件夹下。 <br/>
-<img src="media/14694992191842/14695000993706.jpg" alt=""/></p>
-
-<p>我们需要首先确保这里设置了缓存可用，才可以继续设置使用何种缓存策略。</p>
-
-<p>下面我们来看一下webview的五种缓存模式： </p>
-
-<pre><code>LOAD_CACHE_ONLY: 不使用网络，只读取本地缓存数据 
-LOAD_DEFAULT: 根据cache-control决定是否从网络上取数据。 
-LOAD_CACHE_NORMAL: API level 17中已经废弃, 从API level 11开始作用同LOAD_DEFAULT模式 
-LOAD_NO_CACHE: 不使用缓存，只从网络获取数据. 
-LOAD_CACHE_ELSE_NETWORK，只要本地有，无论是否过期，或者no-cache，都使用缓存中的数据。
-</code></pre>
-
-<ul>
-<li>几种缓存方式的实现</li>
-</ul>
-
-<p>（1）使用LOAD_CACHE_ELSE_NETWORK缓存模式，这样需要在APP退出的时候清除webview缓存，但是这样做有一个弊端就是如果当前App已经是打开状态，网页内容有更新的话不会看到；</p>
-
-<p>（2）使用LOAD_DEFAULT这种缓存方式，数据从缓存中获取还是从网络中获取根据H5页面的参数判断，这样做的好处是可以动态的处理更新内容；</p>
-
-<p>设置缓存</p>
-
-<pre><code>mWebView.getSettings().setJavaScriptEnabled(true); 
-
-mWebView.getSettings().setRenderPriority(RenderPriority.HIGH);
-
-//设置 缓存模式 
-mWebView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);  
-
-// 开启 DOM storage API 功能     
-mWebView.getSettings().setDomStorageEnabled(true); 
-
-//开启 database storage API 功能 
-mWebView.getSettings().setDatabaseEnabled(true);  
-
-String cacheDirPath = getFilesDir().getAbsolutePath()+APP_CACAHE_DIRNAME; 
-//      String cacheDirPath = getCacheDir().getAbsolutePath()+Constant.APP_DB_DIRNAME; 
-
-Log.i(TAG, &quot;cacheDirPath=&quot;+cacheDirPath); 
-
-//设置数据库缓存路径 
-mWebView.getSettings().setDatabasePath(cacheDirPath); 
-
-//设置  Application Caches 缓存目录 
-mWebView.getSettings().setAppCachePath(cacheDirPath); 
-
-//开启Application Caches 功能 
-mWebView.getSettings().setAppCacheEnabled(true);
-</code></pre>
-
-<ul>
-<li>退出App时清除缓存</li>
-</ul>
-
-<pre><code>//清理Webview缓存数据库 
-try { 
-    deleteDatabase(&quot;webview.db&quot;);
-    deleteDatabase(&quot;webviewCache.db&quot;); 
-    } catch (Exception e) { 
-            e.printStackTrace(); 
-} 
-
-//WebView 缓存文件 
-File appCacheDir = new File(getFilesDir().getAbsolutePath()+APP_CACAHE_DIRNAME); 
-Log.e(TAG, &quot;appCacheDir path=&quot;+appCacheDir.getAbsolutePath()); 
-
-File webviewCacheDir = new File(getCacheDir().getAbsolutePath()+&quot;/webviewCache&quot;); 
-Log.e(TAG, &quot;webviewCacheDir path=&quot;+webviewCacheDir.getAbsolutePath()); 
-
-//删除webview 缓存目录 
-if(webviewCacheDir.exists()){ 
-     deleteFile(webviewCacheDir); 
-} 
-//删除webview 缓存 缓存目录 
-if(appCacheDir.exists()){ 
-     deleteFile(appCacheDir); 
-}
-</code></pre>
-
-<h2 id="toc_1">二 .其他的缓存策略</h2>
-
-<p>网页在加载的时候暂时不加载图片，当所有的HTML标签加载完成时在加载图片具体的做法如下初始化webview的时候设置不加载图片</p>
-
-<pre><code>webSettings.setBlockNetworkImage(true);
-</code></pre>
-
-<p>然后在html标签加载完成之后在加载图片内容:</p>
-
-<pre><code>@Override
-    public void onPageFinished(WebView view, String url) {
-        super.onPageFinished(view, url);
-        mWebView.getSettings().setBlockNetworkImage(false);   
-    }
-</code></pre>
-
-<p>关于更多的WebView可以参考：<a href="http://blog.csdn.net/qq_23547831/article/details/51820139">WebView问题集锦</a></p>
-
-<p>欢迎大家留言，点赞。</p>
+	<div class="large-8 medium-8 columns">
+		<div class="markdown-body home-categories">
+		
+			<div class="article">
+                <a class="clearlink" href="14779858991590.html">
+                
+                  <h1>Android Studio快捷键－Mac版</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>从windows转到mac需要改变很多，以前在Android Studio培养的操作习惯也要跟着改变。为了以后工作方便打算总结一下Mac下的Android Studio的一些快捷键。</p>
 
 
-    
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                   <a href="14779858991590.html">Read more</a>&nbsp;&nbsp; 
+                    <span class="date">2016/7/21</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Android.html'>Android</a></span>
+          				  
+          					    <span class="posted-in"><a href='%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html'>工具使用</a></span>
+          				  
+          					    <span class="posted-in"><a href='Mac.html'>Mac</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
 
-      </div>
-
-      <div class="row">
-        <div class="large-6 columns">
-        <p class="text-left" style="padding:15px 0px;">
-      
-          <a href="14779858228537.html" 
-          title="Previous Post: 镇远旅行游记">&laquo; 镇远旅行游记</a>
-      
-        </p>
-        </div>
-        <div class="large-6 columns">
-      <p class="text-right" style="padding:15px 0px;">
-      
-          <a  href="14779857521960.html" 
-          title="Next Post: 实用笔记－WebView大讲堂（一）">实用笔记－WebView大讲堂（一） &raquo;</a>
-      
-      </p>
-        </div>
-      </div>
-      <div class="comments-wrap">
-        <div class="share-comments">
-          
-
-          
-
-          
-              <div class="ds-thread" data-thread-key="14779857522080.html" data-url="m78snail.com/14779857522080.html" data-title="实用笔记－WebView大讲堂（二）～性能优化"></div>
-          
-        </div>
-      </div>
-    </div><!-- article-wrap -->
-  </div><!-- large 8 -->
+                      
+                        &nbsp;<a  class="ds-thread-count" data-thread-key="14779858991590.html" data-count-type="comments" href="14779858991590.html#ds-thread"></a>
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14779858228757.html">
+                
+                  <h1>谈谈新买的Mac和最近的生活</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>大学毕业也快一个月了，脱离了学生的身份，我也正式进入了社会为了生计而打拼。从学生变成打工仔，对于我来说其实影响不是多么大，也许是因为自己本来就不是什么循规蹈矩的好学生吧。<br/>
+    在公司实习的时候我就知道公司给每个人办公配的电脑是笔记本，说实话我挺失望的，不过公司有另外一个福利就是自己买电脑公司可以报销4000，前提是3年不能离开公司，这一点倒是挺爽的，因为我所属于的部门出差比较多，所以我打算入手一台MacBook Pro。下面是我用了3天的使用体验。</p>
 
 
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                   <a href="14779858228757.html">Read more</a>&nbsp;&nbsp; 
+                    <span class="date">2016/7/20</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html'>心情日记</a></span>
+          				  
+          					    <span class="posted-in"><a href='Mac.html'>Mac</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
 
+                      
+                        &nbsp;<a  class="ds-thread-count" data-thread-key="14779858228757.html" data-count-type="comments" href="14779858228757.html#ds-thread"></a>
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+              
+
+
+			<div class="row">
+			  <div class="large-6 columns">
+			  <p class="text-left" style="padding-top:25px;">
+			   <a href="all_3.html">&laquo; Prev Page</a>  
+			  </p>
+			  </div>
+			  <div class="large-6 columns">
+			<p class="text-right" style="padding-top:25px;">
+			
+			</p>
+			  </div>
+			</div>
+		</div>
+	</div><!-- large 8 -->
 
  <div class="large-4 medium-4 columns">
   <div class="hide-for-small">

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  实用笔记－WebView大讲堂（二）～性能优化 - m78snail
+  Android 常见面试题（三） - m78snail
   
   </title>
   
@@ -124,21 +124,21 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>实用笔记－WebView大讲堂（二）～性能优化</h1>
+          <h1>Android 常见面试题（三）</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2016/7/27</span>
+          <span class="date">2017/2/14</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Android.html'>Android</a></span>
+              <span class="posted-in"><a href='%E9%9D%A2%E8%AF%95.html'>面试</a></span>
            
          
           <span class="comments">
             
 
             
-              &nbsp;<a  class="ds-thread-count" data-thread-key="14779857522080.html" data-count-type="comments" href="14779857522080.html#ds-thread"></a>
+              &nbsp;<a  class="ds-thread-count" data-thread-key="14870545331290.html" data-count-type="comments" href="14870545331290.html#ds-thread"></a>
             
           </span>
 
@@ -146,122 +146,134 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>上一节我总结了下WebView的实用用法：<a href="http://m78star.com/14693271804281.html">实用笔记－WebView大讲堂</a>。这一节我想总结下针对WebView的优化。</p>
+      <span id="more"></span><!-- more -->
 
-<pre><code>1. WebView缓存机制
-2. 几种缓存方式的实现
-3. 其他的缓存策略
-</code></pre>
+<h2 id="toc_0">16. 动画有哪几类，各有什么特点</h2>
 
-<span id="more"></span><!-- more -->
+<p>如今Android的动画主要有三种，分别是：逐帧（Frame）动画，补间（Tween）动画，属性（Property）动画</p>
 
-<h2 id="toc_0">一 . Android WebView缓存机制</h2>
+<h2 id="toc_1">17. Handler、Looper消息队列模型，各部分的作用。</h2>
 
-<p>WebView中存在着两种缓存：网页数据缓存（网页数据，url等）、H5缓存（H5代码缓存数据）</p>
-
-<p>不同的缓存数据会保存在不同的文件目录下.<br/>
-当我们加载Html时候，会在我们data/应用package下生成database与cache两个文件夹: </p>
-
-<p>我们请求的Url记录是保存在webviewCache.db里，而url的内容是保存在webviewCache文件夹下。 <br/>
-<img src="media/14694992191842/14695000993706.jpg" alt=""/></p>
-
-<p>我们需要首先确保这里设置了缓存可用，才可以继续设置使用何种缓存策略。</p>
-
-<p>下面我们来看一下webview的五种缓存模式： </p>
-
-<pre><code>LOAD_CACHE_ONLY: 不使用网络，只读取本地缓存数据 
-LOAD_DEFAULT: 根据cache-control决定是否从网络上取数据。 
-LOAD_CACHE_NORMAL: API level 17中已经废弃, 从API level 11开始作用同LOAD_DEFAULT模式 
-LOAD_NO_CACHE: 不使用缓存，只从网络获取数据. 
-LOAD_CACHE_ELSE_NETWORK，只要本地有，无论是否过期，或者no-cache，都使用缓存中的数据。
-</code></pre>
+<p>简单提提Handler、Looper模型中各部分的作用，主要有以下三部分：</p>
 
 <ul>
-<li>几种缓存方式的实现</li>
+<li>MessageQueue：消息队列，存储待处理的消息</li>
+<li>Looper：封装了消息队列与Handler，线程绑定，使用loop方法循环处理消息</li>
+<li>Handler：消息处理的辅助类，里面封装了消息的投递、处理和获取等一系列操作</li>
 </ul>
 
-<p>（1）使用LOAD_CACHE_ELSE_NETWORK缓存模式，这样需要在APP退出的时候清除webview缓存，但是这样做有一个弊端就是如果当前App已经是打开状态，网页内容有更新的话不会看到；</p>
+<h2 id="toc_2">18. 怎样退出终止App</h2>
 
-<p>（2）使用LOAD_DEFAULT这种缓存方式，数据从缓存中获取还是从网络中获取根据H5页面的参数判断，这样做的好处是可以动态的处理更新内容；</p>
+<p>测试：<br/>
+依次打开3个Activity（ActivityA，ActivityB，ActivityC），并在第3个Activity中终止App<br/>
+System.exit（0）<br/>
+重写Application方法：</p>
 
-<p>设置缓存</p>
-
-<pre><code>mWebView.getSettings().setJavaScriptEnabled(true); 
-
-mWebView.getSettings().setRenderPriority(RenderPriority.HIGH);
-
-//设置 缓存模式 
-mWebView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);  
-
-// 开启 DOM storage API 功能     
-mWebView.getSettings().setDomStorageEnabled(true); 
-
-//开启 database storage API 功能 
-mWebView.getSettings().setDatabaseEnabled(true);  
-
-String cacheDirPath = getFilesDir().getAbsolutePath()+APP_CACAHE_DIRNAME; 
-//      String cacheDirPath = getCacheDir().getAbsolutePath()+Constant.APP_DB_DIRNAME; 
-
-Log.i(TAG, &quot;cacheDirPath=&quot;+cacheDirPath); 
-
-//设置数据库缓存路径 
-mWebView.getSettings().setDatabasePath(cacheDirPath); 
-
-//设置  Application Caches 缓存目录 
-mWebView.getSettings().setAppCachePath(cacheDirPath); 
-
-//开启Application Caches 功能 
-mWebView.getSettings().setAppCacheEnabled(true);
+<pre><code>public class MyApplication extends Application {  
+  
+    public void exit() {  
+        System.exit(0);  
+    }  
+      
+}  
 </code></pre>
+
+<p>切记在AndroidManifest中修改使用的Application</p>
+
+<p>在第三个Activity中调用该方法：</p>
+
+<pre><code>public class ActivityC extends Activity {  
+  
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        setContentView(R.layout.activity);  
+        Button button = (Button)findViewById(R.id.btn);  
+        button.setText(&quot;Finish app&quot;);  
+        button.setOnClickListener(new OnClickListener() {  
+              
+            @Override  
+            public void onClick(View v) {  
+                // 退出App  
+                ((MyApplication)getApplication()).exit();  
+            }  
+        });  
+    }  
+}  
+</code></pre>
+
+<p>失败，应用进程被杀死，然而过会应用重启了……并且ActivityA和ActivityB都被“复活了”，只杀死了ActivityC。</p>
+
+<p><strong>android.os.Process.killProcess(android.os.Process.myPid())</strong><br/>
+失败，与System.exit（0）一样，虽然杀死了进程，但过会就被重启了，并且ActivityA和ActivityB都被“复活了”。</p>
+
+<p><strong>ActivityManager am= (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);<br/>
+am.killBackgroundProcesses(this.getPackageName());</strong><br/>
+失败，毫无反应。</p>
+
+<p><strong>自定义BaseActivity维护Activity列表</strong><br/>
+自定义一个BaseActivity：</p>
+
+<pre><code>public class BaseActivity extends Activity {  
+  
+    // 维护一个Activity软引用的列表  
+    private static List&lt;SoftReference&lt;Activity&gt;&gt; list = new ArrayList&lt;SoftReference&lt;Activity&gt;&gt;();  
+  
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        list.add(new SoftReference&lt;Activity&gt;(this));  
+    }  
+  
+    @Override  
+    protected void onDestroy() {  
+        super.onDestroy();  
+        list.remove(new SoftReference&lt;Activity&gt;(this));  
+    }  
+  
+    /** 
+     * 关闭所有的Activity 
+     */  
+    public void finishAll() {  
+        for (SoftReference&lt;Activity&gt; sr : list) {  
+            if (sr.get() != null) {  
+                sr.get().finish();  
+            }  
+        }  
+    }  
+  
+}  
+</code></pre>
+
+<p>对于ActivityA、ActivityB和ActivityC继承BaseActivity而不是Activity，在ActivityC中调用finishAll方法即可关闭所有Activity进而退出App。</p>
+
+<p><strong>finishAffinity</strong>()<br/>
+直接关闭相同任务栈中的所用Activity，与上一个方法效果差不多，但是是Android自带的，方便多了。</p>
+
+<p>综上所述，测试结果如下：<br/>
+　　1. System.exit（0）：只能关闭当前Activity，关闭进程可能导致数据存储问题，不推荐<br/>
+　　2. Android.os.Process.killProcess(android.os.Process.myPid())：同上<br/>
+　　3. ActivityManager am= (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);<br/>
+am.killBackgroundProcesses(this.getPackageName())：测试无效<br/>
+　　4. 自定义BaseActivity维护Activity列表：可以关闭依次启动的所用Activity，进而退出整个App<br/>
+　　5. finishAffinity()：可以关闭同一个任务栈中的所有Activity，Android自带方法，比较方便</p>
+
+<h2 id="toc_3">19. Asset目录与res目录的区别</h2>
+
+<p>Asset目录和res目录均为Android中用来存放资源的目录，其中：</p>
 
 <ul>
-<li>退出App时清除缓存</li>
+<li>asset目录下存放的资源代表应用无法直接访问的原生资源，应用程序需要通过AssetManager以二进制流的形式来读取资源</li>
+<li>res目录下的资源可通过R资源清单类访问，Android SDK会在编译时在R类中为他们创建对应的索引项</li>
 </ul>
 
-<pre><code>//清理Webview缓存数据库 
-try { 
-    deleteDatabase(&quot;webview.db&quot;);
-    deleteDatabase(&quot;webviewCache.db&quot;); 
-    } catch (Exception e) { 
-            e.printStackTrace(); 
-} 
+<h2 id="toc_4">20. Android怎么加速启动Activity</h2>
 
-//WebView 缓存文件 
-File appCacheDir = new File(getFilesDir().getAbsolutePath()+APP_CACAHE_DIRNAME); 
-Log.e(TAG, &quot;appCacheDir path=&quot;+appCacheDir.getAbsolutePath()); 
-
-File webviewCacheDir = new File(getCacheDir().getAbsolutePath()+&quot;/webviewCache&quot;); 
-Log.e(TAG, &quot;webviewCacheDir path=&quot;+webviewCacheDir.getAbsolutePath()); 
-
-//删除webview 缓存目录 
-if(webviewCacheDir.exists()){ 
-     deleteFile(webviewCacheDir); 
-} 
-//删除webview 缓存 缓存目录 
-if(appCacheDir.exists()){ 
-     deleteFile(appCacheDir); 
-}
-</code></pre>
-
-<h2 id="toc_1">二 .其他的缓存策略</h2>
-
-<p>网页在加载的时候暂时不加载图片，当所有的HTML标签加载完成时在加载图片具体的做法如下初始化webview的时候设置不加载图片</p>
-
-<pre><code>webSettings.setBlockNetworkImage(true);
-</code></pre>
-
-<p>然后在html标签加载完成之后在加载图片内容:</p>
-
-<pre><code>@Override
-    public void onPageFinished(WebView view, String url) {
-        super.onPageFinished(view, url);
-        mWebView.getSettings().setBlockNetworkImage(false);   
-    }
-</code></pre>
-
-<p>关于更多的WebView可以参考：<a href="http://blog.csdn.net/qq_23547831/article/details/51820139">WebView问题集锦</a></p>
-
-<p>欢迎大家留言，点赞。</p>
+<p>个人认为，影响Activity启动时间的主要有两个地方：<br/>
+　　1. onCreate、onStart、onResume等回调方法的执行时间<br/>
+　　2. Activity对应的界面的inflate时间<br/>
+对于第一点，我们应该尽量减少在这些回调方法中执行耗时操作（涉及数据库，图片等），如果一定要执行耗时操作，可以考虑新开子线程处理。<br/>
+对于第二点，我们应该合理使用各种xml的优化标签，并界面上减少View的嵌套层数与绘制时间。</p>
 
 
     
@@ -272,16 +284,16 @@ if(appCacheDir.exists()){
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14779858228537.html" 
-          title="Previous Post: 镇远旅行游记">&laquo; 镇远旅行游记</a>
+          <a href="14870550376223.html" 
+          title="Previous Post: Android 常见面试题（四）">&laquo; Android 常见面试题（四）</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14779857521960.html" 
-          title="Next Post: 实用笔记－WebView大讲堂（一）">实用笔记－WebView大讲堂（一） &raquo;</a>
+          <a  href="14870442740078.html" 
+          title="Next Post: Android 常见面试题（二）">Android 常见面试题（二） &raquo;</a>
       
       </p>
         </div>
@@ -293,7 +305,7 @@ if(appCacheDir.exists()){
           
 
           
-              <div class="ds-thread" data-thread-key="14779857522080.html" data-url="m78snail.com/14779857522080.html" data-title="实用笔记－WebView大讲堂（二）～性能优化"></div>
+              <div class="ds-thread" data-thread-key="14870545331290.html" data-url="m78snail.com/14870545331290.html" data-title="Android 常见面试题（三）"></div>
           
         </div>
       </div>

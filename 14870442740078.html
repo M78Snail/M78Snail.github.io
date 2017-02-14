@@ -1,0 +1,596 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  Android 常见面试题（二） - m78snail
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="m78snail" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:m78snail.com ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="_self" href="index.html">主页</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">文章</a></li>
+        
+        <li id=""><a target="_self" href="about.html">关于</a></li>
+        
+        <li id=""><a target="_self" href="project.html">项目</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="http://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; m78snail</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="_self" href="index.html">主页</a></li>
+        
+        <li><a target="_self" href="archives.html">文章</a></li>
+        
+        <li><a target="_self" href="about.html">关于</a></li>
+        
+        <li><a target="_self" href="project.html">项目</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html">心情日记</a></li>
+        
+            <li><a href="Android.html">Android</a></li>
+        
+            <li><a href="%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html">工具使用</a></li>
+        
+            <li><a href="Mac.html">Mac</a></li>
+        
+            <li><a href="%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html">开源框架</a></li>
+        
+            <li><a href="Rx%E5%AE%B6%E6%97%8F.html">Rx家族</a></li>
+        
+            <li><a href="%E7%BD%91%E7%BB%9C.html">网络</a></li>
+        
+            <li><a href="Dagger2.html">Dagger2</a></li>
+        
+            <li><a href="%E9%9D%A2%E8%AF%95.html">面试</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>Android 常见面试题（二）</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2017/2/14</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='%E9%9D%A2%E8%AF%95.html'>面试</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+              &nbsp;<a  class="ds-thread-count" data-thread-key="14870442740078.html" data-count-type="comments" href="14870442740078.html#ds-thread"></a>
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <span id="more"></span><!-- more -->
+
+<h2 id="toc_0">9. Thread、AsycTask、IntentService的使用场景与特点</h2>
+
+<p>Thread、AsyncTask和IntentService都与多线程有关，当我们在Android中涉及并发编程时（进行网络请求、加载较大的文件等操作）就需要使用。<br/>
+<strong>Thread</strong><br/>
+Java中的子线程，可以通过传入Runnable接口或继承Thread重写run方法新建。</p>
+
+<p><strong>AsyncTask</strong><br/>
+由Java线程池改造的异步任务工具</p>
+
+<p><strong>IntentService</strong><br/>
+Android四大组件之一的Service默认是在主线程中运行的，IntentService是Service的子类，有如下特点：<br/>
+1. IntentService会创建单独的worker线程来处理所有的Intent请求<br/>
+2. 当所有请求处理完成后，IntentService会自动停止<br/>
+3. 为Service的onBind方法提供了默认实现，返回null<br/>
+4. 为Service的onStartCommand方法提供了默认实现，把请求Intent添加到队列中<br/>
+实现IntentService的例子如下：</p>
+
+<pre><code>public class MyIntentService extends IntentService {  
+      
+    public MyIntentService(String name) {  
+        super(name);  
+    }  
+  
+    @Override  
+    protected void onHandleIntent(Intent intent) {  
+        // IntentService会创建单独的worker线程来处理此处的代码  
+  
+    }  
+  
+}  
+</code></pre>
+
+<p>我们只需重写onHandleIntent方法即可，该方法的代码会在一个子线程中运行。</p>
+
+<h2 id="toc_1">10. 五种布局： FrameLayout 、 LinearLayout 、 AbsoluteLayout 、 RelativeLayout 、TableLayout 各自特点</h2>
+
+<p><strong>FrameLayout</strong><br/>
+FrameLayout即单帧布局，在该布局中的所有空间都会被置于布局的左上角。</p>
+
+<p><strong>LinearLayout</strong><br/>
+LinearLayout即线性布局，使用该布局必须为其指定orientation属性（排列方向属性，可以设置为水平或垂直的），其中的空间就会根据设置的属性呈水平或垂直排列。</p>
+
+<p><strong>AbsoluteLayout</strong><br/>
+AbsoluteLayout即绝对布局，对布局中的控件我们使用x，y坐标值进行定位。</p>
+
+<p><strong>RelativeLayout</strong><br/>
+RelativeLayout即相对布局，在其中的控件可以相对于父布局或布局中别的控件的位置进行定位布局。</p>
+
+<p><strong>TableLayout</strong><br/>
+TableLayout即表格布局，TableLayout中的每一行的控件由TableRow包含，最终的布局效果会呈现成表格状。</p>
+
+<h2 id="toc_2">11. Android的数据存储形式</h2>
+
+<p>在Android中的数据存储形式主要有以下几种：<br/>
+<strong>SharedPreferrences</strong><br/>
+SharedPreferrences主要用于存储一些少量的简单的应用程序配置信息。SharedPreferrences以明文键值对的形式把数据存储在一个xml文件上，该文件位于/data/data/<package name>/shared_prefs目录下。因此，SharedPreferrences只适合用于存储一些简单的数据，不适合存储复杂的或敏感的数据。</p>
+
+<p><strong>File</strong><br/>
+Android和Java一样，同样支持使用文件流来保存和访问文件。除了在手机内置存储空间上存储文件外，Android还支持读写SD卡上的文件：只要获取相应的权限后，调用Environment的getExternalStorageDirectory方法即可获取路径。</p>
+
+<p><strong>SQLite数据库</strong><br/>
+Android系统集成了一个轻量级的数据库：SQLite。SQLite是一个嵌入式数据库引擎，专门适用于资源有限的设备上适量数据的存取。在Android上我们一般使用SQLiteOpenHelper辅助类来操作SQLite数据库。</p>
+
+<h2 id="toc_3">12. Sqlite的基本操作</h2>
+
+<p>SQLite为熟悉SQL语句的程序员提供了相应的函数使用SQL语句，也为不了解SQL语法的程序员提供了简便的增删查改接口：</p>
+
+<pre><code>String path = &quot;数据库路径&quot;;  
+SQLiteDatabase database = SQLiteDatabase.openOrCreateDatabase(path, null);  
+// 执行sql语句  
+database.execSQL(sql);  
+// 执行带占位符的sql语句  
+database.execSQL(sql, bindArgs);  
+// 执行查找的sql语句  
+database.rawQuery(sql, selectionArgs);  
+  
+// 执行增删查改  
+database.insert(table, nullColumnHack, values);  
+database.delete(table, whereClause, whereArgs);  
+database.query(table, columns, selection, selectionArgs, groupBy, having, orderBy);  
+database.update(table, values, whereClause, whereArgs);  
+  
+// 开启事务  
+database.beginTransaction();  
+// 确认事务成功  
+database.setTransactionSuccessful();  
+// 结束事务  
+database.endTransaction(); 
+</code></pre>
+
+<h2 id="toc_4">13. Android中的MVC模式</h2>
+
+<p>MVC全名是Model View Controller，是模型(model)－视图(view)－控制器(controller)的缩写，一种软件设计典范，用一种业务逻辑、数据、界面显示分离的方法组织代码，将业务逻辑聚集到一个部件里面，在改进和个性化定制界面及用户交互的同时，不需要重新编写业务逻辑。<br/>
+MVC模式的示意图如下：<br/>
+<img src="media/14870442740078/14870534341275.jpg" alt=""/></p>
+
+<p>Android的设计也使用了MVC模式，其中：<br/>
+1. View对应于Android的View控件和xml所编写的界面<br/>
+2. Control对应于Android中的Activity，负责接收用户请求和改变模型状态<br/>
+3. Model一般由我们自己实现来处理程序功能和逻辑</p>
+
+<h2 id="toc_5">14. Merge、ViewStub的作用</h2>
+
+<p>Merge和ViewStub均为Android中的xml优化标签，用于对Android的View布局进行优化。<br/>
+Merge<br/>
+merge标签应用于xml的顶层标签，主要应对于layout嵌套浪费的现象。在Android layout文件中需要一个顶级容器来容纳其他的组件，而不能直接放置多个组件，通过使用merge标签作为顶层容器，我们可以删减多余或者额外的层级，从而优化整个Android Layout的结构。</p>
+
+<p>以下是一个例子：<br/>
+activity_merge_test.xml：</p>
+
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;  
+&lt;FrameLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;  
+    android:layout_width=&quot;match_parent&quot;  
+    android:layout_height=&quot;match_parent&quot; &gt;  
+      
+    &lt;TextView   
+        android:id=&quot;@+id/text_view&quot;  
+        android:layout_width=&quot;match_parent&quot;  
+        android:layout_height=&quot;match_parent&quot;  
+        android:gravity=&quot;top|center_horizontal&quot;  
+        android:text=&quot;text_view&quot;/&gt;  
+  
+    &lt;TextView   
+        android:id=&quot;@+id/text_view_2&quot;  
+        android:layout_width=&quot;match_parent&quot;  
+        android:layout_height=&quot;match_parent&quot;  
+        android:gravity=&quot;bottom|center_horizontal&quot;  
+        android:text=&quot;text_view_2&quot;/&gt;  
+      
+&lt;/FrameLayout&gt;  
+</code></pre>
+
+<p>MergeTestActivity：</p>
+
+<pre><code>public class MergeTestActivity extends Activity {  
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        setContentView(R.layout.activity_merge_test);  
+    }  
+}  
+</code></pre>
+
+<p>效果图如下：</p>
+
+<p><img src="media/14870442740078/14870535754556.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+由hierarchyviewer分析可得（此处只分析与Activity界面相关的部分）：<br/>
+<img src="media/14870442740078/14870536080097.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>由hierarchyviewer得到的View树状图我们可以发现，id为content的FrameLayout中只有LinearLayout一个元素，造成了layout的嵌套浪费（如红框圈出所示）。此处我们若使用merge标签，便可以减少一层layout标签的嵌套，使程序运行得更快更流畅。</p>
+
+<p>xml代码改为如下：</p>
+
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;  
+&lt;merge xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;  
+    android:layout_width=&quot;match_parent&quot;  
+    android:layout_height=&quot;match_parent&quot; &gt;  
+      
+    &lt;TextView   
+        android:id=&quot;@+id/text_view&quot;  
+        android:layout_width=&quot;match_parent&quot;  
+        android:layout_height=&quot;match_parent&quot;  
+        android:gravity=&quot;top|center_horizontal&quot;  
+        android:text=&quot;text_view&quot;/&gt;  
+  
+    &lt;TextView   
+        android:id=&quot;@+id/text_view_2&quot;  
+        android:layout_width=&quot;match_parent&quot;  
+        android:layout_height=&quot;match_parent&quot;  
+        android:gravity=&quot;bottom|center_horizontal&quot;  
+        android:text=&quot;text_view_2&quot;/&gt;  
+      
+&lt;/merge&gt;  
+</code></pre>
+
+<p>效果图没有变化，使用hierarchyviewer分析可得：<br/>
+<img src="media/14870442740078/14870536547753.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>此时已经减少了一层layout嵌套，我们通过使用merge标签，达到了优化的目的。</p>
+
+<p><strong>ViewStub</strong><br/>
+ViewStub即占位符，用于处理动态觉得显示某个View的情况。在开发应用程序的时候，我们经常会在运行时动态根据条件来决定显示哪个View或某个布局。那么最通常的想法就是把可能用到的View都写在上面，先把它们的可见性都设为View.GONE，然后在代码中动态的更改它的可见性。这样的做法的优点是逻辑简单而且控制起来比较灵活。但是它的缺点就是，耗费资源。虽然把View的初始可见View.GONE但是在Inflate布局的时候View仍然会被Inflate，也就是说仍然会创建对象，会被实例化，会被设置属性。也就是说，会耗费内存等资源。而使用ViewStub的话在inflate布局的时候不会被inflate，ViewStub的inflate操作被延迟到了直到我们调用其inflate方法。</p>
+
+<p>ViewStub的xml文件设置如下：</p>
+
+<pre><code>&lt;ViewStub  
+    android:id=&quot;@+id/view_stub&quot;  
+    android:inflatedId=&quot;@+id/my_view&quot;  
+    android:layout_width=&quot;wrap_content&quot;  
+    android:layout_height=&quot;wrap_content&quot;  
+    android:layout=&quot;@layout/view_view_stub&quot; /&gt;  
+</code></pre>
+
+<p>其中，inflateId属性表示ViewStub被inflate后重新被赋予的id值，layout属性指定了调用inflate方法时inflate的具体布局。</p>
+
+<p>找到ViewStub并调用inflate：</p>
+
+<pre><code>ViewStub viewStub = (ViewStub)findViewById(R.id.view_stub);  
+viewStub.inflate();  
+</code></pre>
+
+<p>值得注意的是：<br/>
+　　1. ViewStub只能Inflate一次，之后ViewStub对象会被置为空。按句话说，某个被ViewStub指定的布局被Inflate后，就不会够再通过ViewStub来控制它了。<br/>
+　　2. ViewStub只能用来Inflate一个布局文件，而不是某个具体的View。</p>
+
+<h2 id="toc_6">15. Json有什么优劣势</h2>
+
+<p>JSON，即JavaScript Object Notation，是 一种轻量级的数据交换格式，具有良好的可读和便于快速编写的特性。业内主流技术为其提供了完整的解决方案（有点类似于正则表达式 ，获得了当今大部分语言的支持），从而可以在不同平台间进行数据交换。JSON采用兼容性很高的文本格式，同时也具备类似于C语言体系的行为。这些特性使JSON成为理想的数据交换语言。 易于人阅读和编写，同时也易于机器解析和生成(一般用于提升网络传输速率)。</p>
+
+<p>Json优点：<br/>
+与传统的xml相比，Json有一下优点：</p>
+
+<p>　　1. 在解码难度方面，XML的解析得考虑子节点父节点，而Json不需要，解析难度较低<br/>
+　　2. Json数据的体积小<br/>
+　　3. Json的传输速度快于XML<br/>
+但Json也有它不足之处：<br/>
+　　1. 没有XML格式这么推广的深入人心和使用广泛, 没有XML那么通用性<br/>
+　　2. 命名空间允许不同上下文中的相同的信息段彼此混合，然而在Json中已经找不到了命名空间</p>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="14870545331290.html" 
+          title="Previous Post: Android 常见面试题（三）">&laquo; Android 常见面试题（三）</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="14870412116317.html" 
+          title="Next Post: Android 常见面试题（一）">Android 常见面试题（一） &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+              <div class="ds-thread" data-thread-key="14870442740078.html" data-url="m78snail.com/14870442740078.html" data-title="Android 常见面试题（二）"></div>
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <div class="site-a-logo"><img src="icon2.jpeg" /></div>
+            
+                <h1>m78snail</h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+<a target="_blank" class="weibo" href="http://www.weibo.com/2811618257/profile?topnav=1&wvr=6&is_all=1" title="weibo">Weibo</a>
+
+<a target="_blank" class="github" target="_blank" href="https://github.com/M78Snail" title="GitHub">GitHub</a>
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html"><strong>心情日记</strong></a>
+        
+            <a href="Android.html"><strong>Android</strong></a>
+        
+            <a href="%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html"><strong>工具使用</strong></a>
+        
+            <a href="Mac.html"><strong>Mac</strong></a>
+        
+            <a href="%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html"><strong>开源框架</strong></a>
+        
+            <a href="Rx%E5%AE%B6%E6%97%8F.html"><strong>Rx家族</strong></a>
+        
+            <a href="%E7%BD%91%E7%BB%9C.html"><strong>网络</strong></a>
+        
+            <a href="Dagger2.html"><strong>Dagger2</strong></a>
+        
+            <a href="%E9%9D%A2%E8%AF%95.html"><strong>面试</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="14870550376223.html">Android 常见面试题（四）</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14870545331290.html">Android 常见面试题（三）</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14870442740078.html">Android 常见面试题（二）</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14870412116317.html">Android 常见面试题（一）</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14869684713757.html">TCP/IP 与 HTTP</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+
+
+<script type="text/javascript">
+var duoshuoQuery = {short_name:'m78snail'};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+
+
+
+  </body>
+</html>

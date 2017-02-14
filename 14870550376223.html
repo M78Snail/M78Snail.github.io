@@ -1,0 +1,650 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  Android 常见面试题（四） - m78snail
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="m78snail" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:m78snail.com ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="_self" href="index.html">主页</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">文章</a></li>
+        
+        <li id=""><a target="_self" href="about.html">关于</a></li>
+        
+        <li id=""><a target="_self" href="project.html">项目</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="http://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; m78snail</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="_self" href="index.html">主页</a></li>
+        
+        <li><a target="_self" href="archives.html">文章</a></li>
+        
+        <li><a target="_self" href="about.html">关于</a></li>
+        
+        <li><a target="_self" href="project.html">项目</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html">心情日记</a></li>
+        
+            <li><a href="Android.html">Android</a></li>
+        
+            <li><a href="%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html">工具使用</a></li>
+        
+            <li><a href="Mac.html">Mac</a></li>
+        
+            <li><a href="%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html">开源框架</a></li>
+        
+            <li><a href="Rx%E5%AE%B6%E6%97%8F.html">Rx家族</a></li>
+        
+            <li><a href="%E7%BD%91%E7%BB%9C.html">网络</a></li>
+        
+            <li><a href="Dagger2.html">Dagger2</a></li>
+        
+            <li><a href="%E9%9D%A2%E8%AF%95.html">面试</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>Android 常见面试题（四）</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2017/2/14</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='%E9%9D%A2%E8%AF%95.html'>面试</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+              &nbsp;<a  class="ds-thread-count" data-thread-key="14870550376223.html" data-count-type="comments" href="14870550376223.html#ds-thread"></a>
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <span id="more"></span><!-- more -->
+
+<h2 id="toc_0">21. Android内存优化方法：ListView优化，及时关闭资源，图片缓存等等</h2>
+
+<p>首先有一些与内存泄漏相关的点：<br/>
+<strong>1.具有close方法的对象切记调用close方法释放资源</strong><br/>
+常见的有Cursor和各种流等对象。博主就曾经因为Cursor对象忘记close，在进行了多次数据库查询后APP就因为OOM而崩溃了。</p>
+
+<p><strong>2.动态注册的广播不使用后记得取消注册</strong><br/>
+取消注册后可释放Context中持有的相关的广播过滤器资源。</p>
+
+<p><strong>3.bitmap的recycle方法</strong><br/>
+在Android3.0版本以前，bitmap对象的构造涉及到JVM的两块内存区域：一块是Bitmap对象所在的Java堆，一块是Bitmap对象持有的native层资源所在的Native堆。在Java堆上分配的资源由于JVM的GC机制的关系我们不需要去特别关心，但在Native堆上分配的资源就需要我们显式地调用bitmap的native方法recycle去回收了。然而在Android3.0版本后bitmap内存资源分配都在Java堆上，因此是否调用recycle方法对内存影响就不大了。</p>
+
+<p><strong>4.listView的Adapter中注意convertView的使用</strong><br/>
+在Adapter的getView方法中，有一个重要的参数就是convertView。convertView是一个View参数，它代表了一个回收的View（如果没有就为null）。Android的ListView虽然看起来有很多项，但其实真正的ItemView的数目只有屏幕上显示的哪几个，当一个ItemView从可见变为不可见时，他就会被回收掉，在下次调用getView方法时传入的convertView就是某个被回收的View。因此在getView方法中，当convertView不为null时，我们应该使用convertView而不是重新创建一个View。更高效的方式是把convertView结合一个自定义的ViewHolder一起使用，可以有效的减少findViewById的时间。</p>
+
+<p><strong>5.handler</strong><br/>
+Handler常见的应用场景是多线程的通信，此时要是Handler使用不当就相当容易造成内存泄露。在多线程通信的场景下，子线程通常都会持有Handler对象的引用，如果一个Handler对象在Activity中不是静态的，那么该Handler对象就会持有该Activity对象的引用，从而导致Activity组件无法正常的被GC回收，导致了内存泄露。因此一般而言我们应该把Handler对象置为Activity中的静态变量，通过软引用或者弱引用的方式来获取Activity及其内部域，避免持有Activity的强引用导致该组件无法回收。</p>
+
+<p><strong>6.集合对象清理</strong><br/>
+对于一些集合中不再使用的对象，我们应该把它们移除出我们的集合。避免由于集合持有那些对象的引用导致它们无法被JVM的GC所回收。</p>
+
+<p>还有一些内存优化的方法，个人认为有以下几个方面：</p>
+
+<ul>
+<li>Java引用的灵活使用</li>
+<li>图片缓存</li>
+<li>Bitmap压缩加载</li>
+</ul>
+
+<p><strong>Java引用的灵活使用</strong><br/>
+众所周知，在Java中有强软弱虚四种引用，合理的使用软引用和弱引用有利于GC工作的进行，回收不需要的内存。</p>
+
+<p><strong>图片缓存</strong><br/>
+使用图片缓存可以有效防止内存中同时载入过多的图片，也可以减少经常载入图片所耗费的时间。<br/>
+一般而言，设计图片缓存的思路如下，可以把图片的缓存分为以下几个层级：</p>
+
+<ul>
+<li>强引用 HashMap （用于存储最常用的图片）</li>
+<li>软引用 HashMap （用于存储比较常用的图片）</li>
+<li>SD卡 （用于存储使用过的图片）</li>
+<li>下载 （第一次使用）</li>
+</ul>
+
+<p>一般而言我们都是用LRU算法（最近最少使用），最近使用的图片一般缓存于强引用的HashMap中，随着使用次数的减少慢慢移动至软引用HashMap、SD卡中。<br/>
+除了我们自己设计图片缓存外，我们还可以直接使用Google提供的LruCache（内部由LinkedHashMap实现缓存队列），以及DiskLruCache<br/>
+<strong>Bitmap压缩加载</strong><br/>
+对于某些原尺寸特别大的图片，我们可以选择压缩后再加载以节省我们的内存空间：</p>
+
+<pre><code>// 创建解析参数  
+Options options = new Options();  
+// 只解析大小，并不生成实际图片  
+options.inJustDecodeBounds = true;  
+BitmapFactory.decodeFile(pathName, options);  
+// 计算缩放大小  
+int widthScale = options.outWidth/width_we_need;  
+int heightScale = options.outHeight/height_we_need;  
+// 选取小的为缩放尺寸  
+options.inSampleSize = Math.min(widthScale, heightScale);  
+// 生成Bitmap  
+options.inJustDecodeBounds = false; // 记得关掉  
+Bitmap bitmap = BitmapFactory.decodeFile(pathName, options); 
+</code></pre>
+
+<p>压缩到合适的尺寸后再加载就不必担心原来的bitmap太大而占用内存空间了。</p>
+
+<h2 id="toc_1">22. Android中弱引用与软引用的应用场景</h2>
+
+<p>软引用与弱引用一般用于：需要某个对象，但又不关心它的死活的时候（就是该对象存在就用，不存在就算了）。<br/>
+在Android中的应用场景主要有：</p>
+
+<ul>
+<li>Handler获取Activity的引用：使用静态变量和软弱引用保证不干扰Activity的回收</li>
+<li>缓存设计：使用软弱应用保证内存紧张时GC可以回收使用较少的缓存资源</li>
+</ul>
+
+<h2 id="toc_2">23. Bitmap的四中属性，与每种属性队形的大小。</h2>
+
+<p>在 <strong>Android</strong> 中图片有四种属性，分别是：<br/>
+<strong>ALPHA_8</strong>：每个像素占用 1byte 内存<br/>
+<strong>ARGB_4444</strong>：每个像素占用 2byte 内存<br/>
+<strong>ARGB_8888</strong>：每个像素占用 4byte 内存 （默认）<br/>
+<strong>RGB_565</strong>：每个像素占用 2byte 内存(没有 alpha 属性)</p>
+
+<h2 id="toc_3">24. View与View Group分类，自定义View过程：onMeasure()、onLayout()、onDraw()</h2>
+
+<p>View是Android中基本的UI单元，占据屏幕的一块矩形区域，可用于绘制并能处理事件，而ViewGroup是View的子类，他能包含多个View，并让他们在其中按照一定的规则排列。VIew与ViewGroup的设计使用了组合模式。</p>
+
+<p>自定义View我们一般需要重写一下三个方法：</p>
+
+<ul>
+<li>onMeasure：用于测量自定义View的大小，在方法中必须调用setMeasureDimension方法</li>
+<li>onLayout：用于确定自定义View布局</li>
+<li>onDraw：用于绘制自定义View本身</li>
+</ul>
+
+<h2 id="toc_4">25. Touch事件分发机制</h2>
+
+<p><img src="media/14870550376223/14870559086978.jpg" alt=""/></p>
+
+<h2 id="toc_5">26. Android长连接，怎么处理心跳机制</h2>
+
+<p>　　所谓的心跳包就是客户端定时放送简单的信息给服务器端，告诉它我还在而已。代码就是每隔几分钟发送一个固定信息给服务器端，服务器端回复一个固定信息。如果服务器端几分钟后没有收到客户端信息则视客户端断开。比如有些通信软件长时间不适用，要想知道它的状态是在线还是离线，就需要心跳包，定时发包收包。<br/>
+　　心跳包之所以叫心跳包是因为：它像心跳一样每隔固定时间发一次，以此来告诉服务器，这个客户端还活在。事实上这是为了保持长连接，至于这个包的内容，是没有什么特别规定的，不过一般都是很小的包，或者只包含包头的一个空包。<br/>
+　　在TCP机制里面，本身是存在有心跳包机制的，也就是TCP选项:SO_KEEPALIVE. 系统默认是设置的2小时的心跳频率。<br/>
+心跳包的机制，其实就是传统的长连接。或许有的人知道消息推送的机制，消息推送也是一种长连接 ，是将数据有服务器端推送到客户端这边从而改变传统的“拉”的请求方式。下面我来介绍一下安卓和客户端两个数据请求的方式<br/>
+　　1、push  这个也就是有服务器推送到客户端这边  现在有第三方技术 比如极光推送。<br/>
+　　2、pull   这种方式就是客户端向服务器发送请求数据（http请求）<br/>
+<strong>1、首先服务器和客户端有一次“握手”</strong></p>
+
+<pre><code>public void connect()  
+      {  
+        LogUtil.e(TAG, &quot;准备链接...&quot;);  
+        InetAddress serverAddr;  
+        try {  
+            socket = new Socket(Config.Host, Config.SockectPort);  
+            _connect = true;  
+            mReceiveThread = new ReceiveThread();  
+            receiveStop = false;  
+            mReceiveThread.start();  
+            LogUtil.e(TAG, &quot;链接成功.&quot;);  
+  
+        } catch (Exception e) {  
+            LogUtil.e(TAG, &quot;链接出错.&quot; + e.getMessage().toString());  
+            e.printStackTrace();  
+        }  
+    }  
+</code></pre>
+
+<p><strong>2、下面就要开启一个线程  去不断读取服务器那边传过来的数据  采用Thread去实现</strong></p>
+
+<pre><code>private class ReceiveThread extends Thread {  
+        private byte[] buf;  
+        private String str = null;  
+  
+        @Override  
+        public void run() {  
+            while (true) {  
+                try {  
+                    // LogUtil.e(TAG, &quot;监听中...:&quot;+socket.isConnected());  
+                    if (socket!=null &amp;&amp; socket.isConnected()) {  
+  
+                        if (!socket.isInputShutdown()) {  
+                            BufferedReader inStream = new BufferedReader(  
+                                    new InputStreamReader(  
+                                            socket.getInputStream()));  
+                            String content = inStream.readLine();                              
+                            if (content == null)  
+                                continue;  
+                            LogUtil.e(TAG, &quot;收到信息:&quot; + content);  
+                            LogUtil.e(TAG, &quot;信息长度:&quot;+content.length());  
+                            if (!content.startsWith(&quot;CMD:&quot;))  
+                                continue;  
+                            int spacePos = content.indexOf(&quot; &quot;);  
+                            if (spacePos == -1)  
+                                continue;  
+                            String cmd = content.substring(4, spacePos);  
+                            String body = content.substring(spacePos).trim();  
+                            LogUtil.e(TAG, &quot;收到信息(CMD):&quot; + cmd);  
+                            LogUtil.e(TAG, &quot;收到信息(BODY):&quot; + body);  
+                            if (cmd.equals(&quot;LOGIN&quot;))  
+                           {  
+                                // 登录  
+                                ReceiveLogin(body);  
+                                continue;  
+                            }  
+                              if (cmd.equals(&quot;KEEPLIVE&quot;)) {  
+                                if (!body.equals(&quot;1&quot;)) {  
+                                    Log.e(TAG, &quot;心跳时检测到异常，重新登录!&quot;);  
+                                    socket = null;  
+                                    KeepAlive();  
+                                } else {  
+                                    Date now = Calendar.getInstance().getTime();  
+                                    lastKeepAliveOkTime = now;  
+                                }  
+                                continue;  
+                            }  
+                        }  
+                    } else {  
+                        if(socket!=null)  
+                            LogUtil.e(TAG, &quot;链接状态:&quot; + socket.isConnected());  
+                    }  
+  
+                } catch (Exception e) {  
+                    LogUtil.e(TAG, &quot;监听出错:&quot; + e.toString());  
+                    e.printStackTrace();  
+                }  
+            }  
+        }  
+</code></pre>
+
+<p><strong>3 、 Socket 是否断开了  断开了 需要重新去连接</strong></p>
+
+<pre><code>public void KeepAlive()  
+        {  
+        // 判断socket是否已断开,断开就重连  
+        if (lastKeepAliveOkTime != null) {  
+            LogUtil.e(  
+                    TAG,  
+                    &quot;上次心跳成功时间:&quot;  
+                            + DateTimeUtil.dateFormat(lastKeepAliveOkTime,  
+                                    &quot;yyyy-MM-dd HH:mm:ss&quot;));  
+            Date now = Calendar.getInstance().getTime();  
+            long between = (now.getTime() - lastKeepAliveOkTime.getTime());// 得到两者的毫秒数  
+            if (between &gt; 60 * 1000) {  
+                LogUtil.e(TAG, &quot;心跳异常超过1分钟,重新连接:&quot;);  
+                lastKeepAliveOkTime = null;  
+                socket = null;  
+            }  
+  
+        } else {  
+            lastKeepAliveOkTime = Calendar.getInstance().getTime();  
+        }  
+  
+        if (!checkIsAlive()) {  
+            LogUtil.e(TAG, &quot;链接已断开,重新连接.&quot;);  
+            connect();  
+            if (loginPara != null)  
+                Login(loginPara);  
+        }  
+  
+    //此方法是检测是否连接  
+      boolean checkIsAlive() {  
+        if (socket == null)  
+            return false;  
+            try {  
+            socket.sendUrgentData(0xFF);  
+        } catch (IOException e) {  
+            return false;  
+        }  
+        return true;  
+  
+    }  
+   //然后发送数据的方法  
+    public void sendmessage(String msg) {  
+        if (!checkIsAlive())  
+            return;  
+        LogUtil.e(TAG, &quot;准备发送消息:&quot; + msg);  
+        try {  
+            if (socket != null &amp;&amp; socket.isConnected()) {  
+                if (!socket.isOutputShutdown()) {  
+                    PrintWriter outStream = new PrintWriter(new BufferedWriter(  
+                            new OutputStreamWriter(socket.getOutputStream())),  
+                            true);  
+  
+                    outStream.print(msg + (char) 13 + (char) 10);  
+                    outStream.flush();  
+                }  
+            }  
+            LogUtil.e(TAG, &quot;发送成功!&quot;);  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }  
+    }  
+</code></pre>
+
+<hr/>
+
+<p>实现轮询</p>
+
+<p>原理 <br/>
+其原理在于在android端的程序中，让一个SERVICE一直跑在后台，在规定时间之内调用服务器接口进行数据获取。</p>
+
+<p>这里的原理很简单，当然实现起来也不难；</p>
+
+<p>然后，这个类之中肯定要做网络了数据请求，所以我们在Service中建立一个线程（因为在android系统中网络请求属于长时间操作，不能放主线程，不然会导致异常），在线程中和服务器进行通信。</p>
+
+<p>最后，这个逻辑写完后，我们需要考虑一个问题，如何进行在规定时间内调用该服务器，当然可以用Thread+Handler(这个不是那么稳定),也可以使用AlamManager+Thread（比较稳定），因为我们需要其在后台一直运行，所以可以依靠系统的Alammanager这个类来实现，Alammanager是属于系统的一个闹钟提醒类，通过它我们能实现在规定间隔时间调用，并且也比较稳定，这个service被杀后会自己自动启动服务。</p>
+
+<h2 id="toc_6">27. Zygote的启动过程。</h2>
+
+<p>　　1. 系统启动时init进程会创建Zygote进程，Zygote进程负责后续Android应用程序框架层的其它进程的创建和启动工作。<br/>
+　　2. Zygote进程会首先创建一个SystemServer进程，SystemServer进程负责启动系统的关键服务，如包管理服务PackageManagerService和应用程序组件管理服务ActivityManagerService。<br/>
+　　3. 当我们需要启动一个Android应用程序时，ActivityManagerService会通过Socket进程间通信机制，通知Zygote进程为这个应用程序创建一个新的进程。</p>
+
+<h2 id="toc_7">28. Android IPC:Binder原理</h2>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="14870545331290.html" 
+          title="Next Post: Android 常见面试题（三）">Android 常见面试题（三） &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+              <div class="ds-thread" data-thread-key="14870550376223.html" data-url="m78snail.com/14870550376223.html" data-title="Android 常见面试题（四）"></div>
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <div class="site-a-logo"><img src="icon2.jpeg" /></div>
+            
+                <h1>m78snail</h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+<a target="_blank" class="weibo" href="http://www.weibo.com/2811618257/profile?topnav=1&wvr=6&is_all=1" title="weibo">Weibo</a>
+
+<a target="_blank" class="github" target="_blank" href="https://github.com/M78Snail" title="GitHub">GitHub</a>
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html"><strong>心情日记</strong></a>
+        
+            <a href="Android.html"><strong>Android</strong></a>
+        
+            <a href="%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html"><strong>工具使用</strong></a>
+        
+            <a href="Mac.html"><strong>Mac</strong></a>
+        
+            <a href="%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html"><strong>开源框架</strong></a>
+        
+            <a href="Rx%E5%AE%B6%E6%97%8F.html"><strong>Rx家族</strong></a>
+        
+            <a href="%E7%BD%91%E7%BB%9C.html"><strong>网络</strong></a>
+        
+            <a href="Dagger2.html"><strong>Dagger2</strong></a>
+        
+            <a href="%E9%9D%A2%E8%AF%95.html"><strong>面试</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="14870550376223.html">Android 常见面试题（四）</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14870545331290.html">Android 常见面试题（三）</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14870442740078.html">Android 常见面试题（二）</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14870412116317.html">Android 常见面试题（一）</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14869684713757.html">TCP/IP 与 HTTP</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+
+
+<script type="text/javascript">
+var duoshuoQuery = {short_name:'m78snail'};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+
+
+
+  </body>
+</html>
