@@ -1,0 +1,597 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  Android 常见面试题 - 四大组件 - m78snail
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="m78snail" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:m78snail.com ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="_self" href="index.html">主页</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">文章</a></li>
+        
+        <li id=""><a target="_self" href="about.html">关于</a></li>
+        
+        <li id=""><a target="_self" href="project.html">项目</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="http://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; m78snail</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="_self" href="index.html">主页</a></li>
+        
+        <li><a target="_self" href="archives.html">文章</a></li>
+        
+        <li><a target="_self" href="about.html">关于</a></li>
+        
+        <li><a target="_self" href="project.html">项目</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html">心情日记</a></li>
+        
+            <li><a href="Android.html">Android</a></li>
+        
+            <li><a href="%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html">工具使用</a></li>
+        
+            <li><a href="Mac.html">Mac</a></li>
+        
+            <li><a href="%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html">开源框架</a></li>
+        
+            <li><a href="Rx%E5%AE%B6%E6%97%8F.html">Rx家族</a></li>
+        
+            <li><a href="%E7%BD%91%E7%BB%9C.html">网络</a></li>
+        
+            <li><a href="Dagger2.html">Dagger2</a></li>
+        
+            <li><a href="%E9%9D%A2%E8%AF%95.html">面试</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>Android 常见面试题 - 四大组件</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2017/2/14</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='%E9%9D%A2%E8%AF%95.html'>面试</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+              &nbsp;<a  class="ds-thread-count" data-thread-key="14870412116317.html" data-count-type="comments" href="14870412116317.html#ds-thread"></a>
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <p>　　Android的话，多是一些项目中的实践，使用多了，自然就知道了，还有就是多逛逛一些名人的博客，书上能讲到的东西不多。另外android底层的东西，有时间的话可以多了解一下，加分项。推荐书籍：《疯狂android讲义》《深入理解android》其他综合性的书籍也需要阅读，推荐：《程序员面试笔试宝典》《程序员面试金典》。</p>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">1. Activity与Fragment的生命周期</h2>
+
+<h3 id="toc_1">（1）Activity的生命周期如下图所示：</h3>
+
+<p><img src="media/14870412116317/14870420474230.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<h3 id="toc_2">（2）Fragment生命周期如下图所示：</h3>
+
+<p><img src="media/14870412116317/14870420815631.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<h2 id="toc_3">2. Acitivty的四种启动模式与特点</h2>
+
+<p>　　Android中的Activity由任务栈管理，当我们start一个新的Activity时，就往任务栈中新加入一个栈帧，而当我们finish一个Activity界面时，则往任务栈中移除一个栈帧。Activity具有四种启动模式，我们可以在配置文件中通过修改launchMode修改，启动模式分别是：standard、singleTop、singleTask和singleInstance<br/>
+<strong>standard</strong><br/>
+standard为默认Activity的启动模式。在standard启动模式下，无论何时start一个Activity，系统都会往任务栈中加入一个新的栈帧。</p>
+
+<p><strong>singleTop</strong><br/>
+在singleTop启动模式下，当我们start一个Activity时，系统会先去检测任务栈栈顶的Activity和要启动t的Activity是否相同。如果相同则不进行任何操作，否则往任务栈中加入一个新的栈帧。</p>
+
+<p><strong>singleTask</strong><br/>
+在singleTask启动模式下，当我们start一个Activity时，系统会先去检测任务栈中是否含有将要启动的Activity。如果含有，则把该Activity所在栈帧的顶部的栈帧移除，使该Activity所在的栈帧处在栈顶，如果没有，则新加入一个栈帧。</p>
+
+<p><strong>singleInstance</strong><br/>
+在singleInstance启动模式下，当我们start一个新的Activity时，该Activity会在一个新的任务栈中启动。</p>
+
+<h2 id="toc_4">4. Service的生命周期，两种启动方法，有什么区别</h2>
+
+<p>　　Android中的Service组件可以通过startService和bindService两种方法来启动，其生命周期示意图如下：<br/>
+<img src="media/14870412116317/14870427132798.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>如果一个Service同时被调用了startService和bindService方法，那么它的生命周期就变成如下图所示：<br/>
+<img src="media/14870412116317/14870427394623.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<h2 id="toc_5">5. 怎么保证service不被杀死</h2>
+
+<p>　　要想使Service存活下来，我们就必须保证Service所在的进程不被杀掉，一般来说有以下方法：<br/>
+1. 在onStartCommand回调方法中返回START_STICKY，那么该进程被杀掉后系统会试图重启它<br/>
+2. 设置配置文件中application的persistent属性，把应用提升为系统级别应用，免疫low memory killer<br/>
+3. 在Service的onDestroy方法中重启该Service，不过如果进程被直接杀掉这种方法就无效了<br/>
+4. 通过监听特殊的系统广播（如屏幕变化、电量变化、网络变化等）去不断重启Service<br/>
+5. 使用AlarmManager定时重复开启Service<br/>
+6. 通过设置Service的process属性，把Service放在子进程中，避免与主进程一起被回收<br/>
+7. 开启一个另外的进程与Service进程互相监视，双方要是有任意一方被杀掉则重启</p>
+
+<h2 id="toc_6">6. 广播的两种注册方法，有什么区别</h2>
+
+<p>Android四大组件之一的broadcast（广播）拥有两种不同的注册方法：静态注册与动态注册<br/>
+<strong>静态注册</strong><br/>
+广播静态注册指把广播相应的信息写在AndroidManifest.xml中，例子如下：</p>
+
+<pre><code>&lt;receiver android:name=&quot;.StaticReceiver&quot;&gt;    
+   &lt;intent-filter&gt;    
+      &lt;action android:name=&quot;XXX&quot; /&gt;   
+   &lt;/intent-filter&gt;    
+&lt;/receiver&gt;  
+</code></pre>
+
+<p>静态广播的好处在于：不需程序启动即可接收，可用作自动启动程序<br/>
+<strong>动态注册</strong><br/>
+广播动态注册指在程序中调用registerReceiver方法来注册广播，例子如下：</p>
+
+<pre><code>IntentFilter filter = new IntentFilter();  
+filter.addAction(&quot;XXX&quot;);  
+DynamicReceiver receiver = new DynamicReceiver();  
+registerReceiver(receiver,  filter);  
+// 不使用后记得取消注册  
+unregisterReceiver(receiver);  
+</code></pre>
+
+<p>动态广播的好处在于：程序适应系统变化做操作，但在程序运行状态才能接收到</p>
+
+<h2 id="toc_7">7. Intent的使用方法，可以传递哪些数据类型</h2>
+
+<p>Intent即意图，是Android中连接四大组件的枢纽，Android中的Activity、Service和BroadcastReceiver都依靠Intent来启动。<br/>
+Intent对象的属性大致包含七种，分别是Component、Action、Category、Data、Type、Extra、Flag。<br/>
+<strong>Component</strong><br/>
+Component用于明确指定需要启动的目标组件，使用方法如下：</p>
+
+<pre><code>Intent intent = new Intent();  
+// 方法一：传入上下文参数与class参数  
+intent.setComponent(new ComponentName(context, XXX.class));  
+// 方法二：传入包名与类名  
+intent.setComponent(new ComponentName(pkg, cls));  
+</code></pre>
+
+<p>指定Component属性的Intent已经明确了它将要启动的组件，因此这种Intent也被称为显示Intent，没有指定Component属性的Intent被称为隐试Intent。<br/>
+<strong>Action、Category</strong><br/>
+Action代表Intent所要完成的一个抽象“动作”，而Category则用于为Action增加额外的附加类别信息，它们的使用方法如下:</p>
+
+<pre><code>Intent intent = new Intent();  
+// 设置一个字符串代表Action  
+intent.setAction(action);  
+// 添加一个字符串代表category  
+intent.addCategory(category1);  
+intent.addCategory(category2);  
+</code></pre>
+
+<p>值得注意的是Action属性是唯一的，但Category属性可以有多个。通常设置了Action和Category来启动组件的Intent就不指定Component属性了，因此这种Intent被称为隐试Intent。</p>
+
+<p><strong>Data、Type</strong><br/>
+Data属性接受一个Uri对象，Data属性通常用于向Action属性提供操作的数据。Type属性用于指定该Data属性所指定Uri对应的MIME类型。它们的使用方法如下：</p>
+
+<pre><code>Intent intent = new Intent();  
+// 设置Data属性  
+intent.setData(new Uri());  
+// 设置Type属性  
+intent.setType(type);  
+// 同时设置Data和Type属性  
+intent.setDataAndType(data, type);  
+</code></pre>
+
+<p>值得注意的是Data属性和Type属性会互相覆盖，如果需要同时设置Data属性和Type属性需要使用setDataAndType。<br/>
+<strong>Extra</strong><br/>
+Intent的Extra属性用于进行数据交换，Intent的Extra属性值应该是一个Bundle对象（一个类似Map的对象，可以存入多个键值对，但存入的对象必须是基本类型或可序列化的），用法如下：</p>
+
+<pre><code>Intent intent = new Intent();  
+// 直接往Intent添加基本类型，在方法内也是把数据存入Bundle  
+// 该方法有多种重载  
+intent.putExtra(name, value);  
+// 新建Bundle  
+Bundle bundle = new Bundle();  
+// 往Bundle添加数据，XXX为基本类型  
+bundle.putXXX(key, value);  
+bundle.putXXXArray(key, value);  
+// 把Bundle添加进Intent  
+intent.putExtras(bundle);  
+</code></pre>
+
+<p><strong>Flag</strong><br/>
+Intent的Flag属性用于为该Intent添加一些额外的控制旗标，Intent可调用addFlags方法来添加控制旗标。</p>
+
+<h2 id="toc_8">8.ContentProvider使用方法</h2>
+
+<p>为了在应用程序之间交换数据，Android提供了ContentProvider。当一个应用程序需要把自己的数据暴露给其他程序使用时，该应用程序就可以通过ContentProvider来实现，而其他程序则使用ContentResolver来操作ContentProvider暴露的数据。<br/>
+实现ContentProvider的Java代码如下：</p>
+
+<pre><code>public class MyProvider extends ContentProvider {  
+  
+    @Override  
+    public boolean onCreate() {  
+        // 第一次创建时调用，如果创建成功则返回true  
+        // 可以在这里打开数据库什么的  
+        return true;  
+    }  
+  
+    @Override  
+    public String getType(Uri uri) {  
+        // 返回ContentProvider所提供数据的MIME类型  
+        return null;  
+    }  
+  
+    @Override  
+    public Cursor query(Uri uri, String[] projection, String selection,  
+            String[] selectionArgs, String sortOrder) {  
+        // 实现查询方法  
+        return null;  
+    }  
+      
+    @Override  
+    public Uri insert(Uri uri, ContentValues values) {  
+        // 实现插入方法，返回插入条数  
+        return null;  
+    }  
+  
+    @Override  
+    public int delete(Uri uri, String selection, String[] selectionArgs) {  
+        // 实现删除方法，返回删除条数  
+        return 0;  
+    }  
+  
+    @Override  
+    public int update(Uri uri, ContentValues values, String selection,  
+            String[] selectionArgs) {  
+        // 实现更新方法，返回更新条数  
+        return 0;  
+    }  
+  
+}  
+</code></pre>
+
+<p>当我们实现了自己的ContentProvider后，还需要去AndroidManifest.xml中注册才行：</p>
+
+<pre><code>&lt;provider   
+    android:name=&quot;.MyProvider&quot;  
+    android:authorities=&quot;com.example.test.provider&quot;  
+    android:exported=&quot;true&quot; /&gt;  
+</code></pre>
+
+<p>配置ContentProvider时我们需要设置如下属性：</p>
+
+<ul>
+<li>name：类名</li>
+<li>authorities：为ContentProvider指定一个对应的Uri，其他程序通过这个Uri来找到该ContentProvider</li>
+<li>exported：允许ContentProvider被其他应用调用
+当其他应用需要访问我们提供的ContentProvider的使用，只需使用ContentResolver并传入相应的Uri即可：</li>
+</ul>
+
+<pre><code>public class MyActivity extends Activity {  
+  
+    private static String TAG = &quot;MyActivity&quot;;  
+      
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        setContentView(R.layout.activity_main);  
+        ContentResolver resolver = getContentResolver();  
+        // 传入对应的Uri进行增删查改操作  
+        resolver.query(uri, projection, selection, selectionArgs, sortOrder);  
+        resolver.insert(url, values);  
+        resolver.delete(url, where, selectionArgs);  
+        resolver.update(uri, values, where, selectionArgs);  
+    }  
+      
+}  
+</code></pre>
+
+<p>除此之外，我们还可以使用ContentObserver来为ContentProvider添加观察者。我们在其他程序的ContentResolver中注册ContentObserver，当ContentProvider发生改变时，我们在数据改动的使用调用：</p>
+
+<pre><code>getContext().getContentResolver().notifyChange(uri, null);  
+</code></pre>
+
+<p>那么此时ContentObserver中的onChange回调方法就会被调用，我们就可以简单地监听ContentProvider的数据改变了。</p>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="14869684713757.html" 
+          title="Next Post: TCP/IP 与 HTTP">TCP/IP 与 HTTP &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+              <div class="ds-thread" data-thread-key="14870412116317.html" data-url="m78snail.com/14870412116317.html" data-title="Android 常见面试题 - 四大组件"></div>
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <div class="site-a-logo"><img src="icon2.jpeg" /></div>
+            
+                <h1>m78snail</h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+<a target="_blank" class="weibo" href="http://www.weibo.com/2811618257/profile?topnav=1&wvr=6&is_all=1" title="weibo">Weibo</a>
+
+<a target="_blank" class="github" target="_blank" href="https://github.com/M78Snail" title="GitHub">GitHub</a>
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html"><strong>心情日记</strong></a>
+        
+            <a href="Android.html"><strong>Android</strong></a>
+        
+            <a href="%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html"><strong>工具使用</strong></a>
+        
+            <a href="Mac.html"><strong>Mac</strong></a>
+        
+            <a href="%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html"><strong>开源框架</strong></a>
+        
+            <a href="Rx%E5%AE%B6%E6%97%8F.html"><strong>Rx家族</strong></a>
+        
+            <a href="%E7%BD%91%E7%BB%9C.html"><strong>网络</strong></a>
+        
+            <a href="Dagger2.html"><strong>Dagger2</strong></a>
+        
+            <a href="%E9%9D%A2%E8%AF%95.html"><strong>面试</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="14870412116317.html">Android 常见面试题 - 四大组件</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14869684713757.html">TCP/IP 与 HTTP</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14829144540758.html">Https完全解析 与 okHttp的结合</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14779864279806.html">用力的人跑不远</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14779861870049.html">Git 常用方法</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+
+
+<script type="text/javascript">
+var duoshuoQuery = {short_name:'m78snail'};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+
+
+
+  </body>
+</html>
