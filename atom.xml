@@ -4,13 +4,165 @@
   <title><![CDATA[m78snail]]></title>
   <link href="m78snail.com/atom.xml" rel="self"/>
   <link href="m78snail.com/"/>
-  <updated>2017-02-14T17:59:01+08:00</updated>
+  <updated>2017-02-15T16:19:53+08:00</updated>
   <id>m78snail.com/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[装饰模式之女朋友系列之化妆篇]]></title>
+    <link href="m78snail.com/14871457028090.html"/>
+    <updated>2017-02-15T16:01:42+08:00</updated>
+    <id>m78snail.com/14871457028090.html</id>
+    <content type="html"><![CDATA[
+<ul>
+<li>上次说到，有了妹子，并且过上了幸福的生活.</li>
+<li>今天周末，我们当然要出去逛街了(shopping是必不可少的么-_-)，可是她化妆画了好久还没好.</li>
+<li>这时候我看到她的那些个瓶瓶罐罐，灵机一动.</li>
+<li>&quot;诶，你在这化妆的流程倒让我想起了一种设计模式，要不要听听&quot;</li>
+<li>&quot;你给老子滚...&quot;</li>
+<li>&quot;听听么...装饰模式耶&quot;在她怒目的注视下，我就开始BB了...</li>
+</ul>
+
+<span id="more"></span><!-- more -->
+
+<p><strong>用代码来化妆就是:</strong></p>
+
+<pre><code>// 先来一个抽象的脸(piapia, &quot;别抽脸...&quot;)
+public abstract class Face {
+      // 化妆不就是要展示出来么，那就show一个
+      public abstract void show();
+}
+</code></pre>
+
+<pre><code>// 在来个女朋友类
+public class GirlFriend extends Face {
+      @Override
+      public void show() {
+            System.out.println(&quot;I am the yunnan girl.&quot;);
+      }
+}
+</code></pre>
+
+<pre><code>// 粉底
+public class FenDiDecorator extends Decorator {
+      @Override
+      public void show() {
+            // 先执行父类的职责，要不之前的妆就白画了
+            super.show();
+            System.out.println(&quot;With fendi.&quot;);
+      }
+}
+</code></pre>
+
+<pre><code>// 画眼线
+public class YanXianDecorator extends Decorator {
+      @Override
+      public void show() {
+            super.show();
+            System.out.println(&quot;With yanxian.&quot;);
+      }
+}
+</code></pre>
+
+<pre><code>// 其他化妆品
+public class OtherDecorator extends Decorator {
+      @Override
+      public void show() {
+            super.show();
+            System.out.println(&quot;With other huazhuangpin.&quot;);
+      }
+}
+</code></pre>
+
+<pre><code>// 开始化妆
+public class DecoratorMain {
+      public static void main(String[] args) {
+            Face girlFriendFace = new GirlFriend();
+            Decorator fenDiFace = new FenDiDecorator();
+            Decorator yanXianFace = new YanXianDecorator();
+            Decorator otherFace = new OtherDecorator();
+
+            // 给画粉底的类，设定一个Face
+            fenDiFace.setFace(girlFriendFace);
+            // 给画眼线的类，设定一个画过粉底的Face
+            yanXianFace.setFace(fenDiFace);
+            otherFace.setFace(yanXianFace);
+            // 都画完之后展示出来
+            otherFace.show();
+      }
+}
+
+// 化完妆是这样滴...(忽略化妆的顺序啥的...我也不懂)
+I am the yunnan girl.
+With fendi.
+With yanxian.
+With other huazhuangpin.
+</code></pre>
+
+<p>装饰模式: 动态地给一个对象添加一些额外的职责，就能增加功能来说，装饰者模式比生成子类更为灵活.<br/>
+<img src="media/14871457028090/14871461201224.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<ul>
+<li>我还在滔滔不绝的说着，只听到</li>
+<li>&quot;哎呀，太墨迹了，不画了&quot;</li>
+<li>我: &quot;别啊，你这还没画完啊，那还不如不画呢&quot;</li>
+<li>&quot;就这样，咋地&quot;</li>
+<li>我: &quot;等会儿哦，亲...&quot;</li>
+</ul>
+
+<pre><code>// 来个卸妆的装饰类
+public class XieZhuangDecorator extends Decorator {
+      @Override
+      public void show() {
+            super.show();
+            System.out.println(&quot;Xie zhuang.&quot;);
+      }
+}
+</code></pre>
+
+<pre><code>public class DecoratorMain {
+      public static void main(String[] args) {
+            Face girlFriend = new GirlFriend();
+            Decorator fenDiFace = new FenDiDecorator();
+            Decorator yanXianFace = new YanXianDecorator();
+            Decorator otherFace = new OtherDecorator();
+
+            fenDiFace.setFace(girlFriend);
+            yanXianFace.setFace(fenDiFace);
+            otherFace.setFace(yanXianFace);
+
+            // 只需要在最后的步骤上，加上一个(装饰)就行了
+            Decorator xieZhuangFace = new XieZhuangDecorator();
+            xieZhuangFace.setFace(otherFace);
+            xieZhuangFace.show();
+
+      }
+}
+
+// 最后的状态是卸妆了，之前的代码一点没变，只增加一个装饰类就可以了. 
+I am the yunnan girl.
+With fendi.
+With yanxian.
+With other huazhuangpin.
+Xie zhuang.
+</code></pre>
+
+<ul>
+<li>&quot;你看，这个模式不错吧，想改就改&quot;</li>
+<li>&quot;更何况，还是素颜好看...嘿嘿嘿...&quot;</li>
+<li>&quot;诶诶诶，打人不打脸...-_-&quot;</li>
+</ul>
+
+<p><strong>就这样，我和我的云南妹子过着幸福的生活.</strong></p>
+
+<p>转载自：<a href="http://www.jianshu.com/p/53856bf285ed">http://www.jianshu.com/p/53856bf285ed</a></p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Https完全解析 与 okHttp的结合]]></title>
@@ -2551,724 +2703,556 @@ class JsInteration {
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[JVM]]></title>
-    <link href="m78snail.com/14870642938148.html"/>
-    <updated>2017-02-14T17:24:53+08:00</updated>
-    <id>m78snail.com/14870642938148.html</id>
+    <title type="html"><![CDATA[找女朋友之简单工厂模式，工厂模式，抽象工厂模式]]></title>
+    <link href="m78snail.com/14871411019561.html"/>
+    <updated>2017-02-15T14:45:01+08:00</updated>
+    <id>m78snail.com/14871411019561.html</id>
     <content type="html"><![CDATA[
-<p>　　JVM过去过来就问了这么些问题，没怎么变，内存模型和GC算法这块问得比较多，可以在网上多找几篇博客来看看。<br/>
-　　推荐书籍：《深入理解java虚拟机》</p>
+<h2 id="toc_0">一、 简单工厂模式</h2>
+
+<ul>
+<li>突然有一天，在梦里拥有了阿拉丁神灯.</li>
+<li>灯神说: &quot;我可以给你创造一个女朋友哦&quot;</li>
+<li>这时候我的心里...嘿嘿嘿...</li>
+<li>&quot;但是只能满足你一个地理条件，目前只有三个选项: 四川, 河北, 山东. 你挑一个? &quot; 灯神又说.</li>
+<li>&quot;那我选: 四川...或者...&quot;</li>
+<li>没等我说完，嘭的一下，出来个一个火辣的川妹子...</li>
+</ul>
 
 <span id="more"></span><!-- more -->
 
-<h2 id="toc_0">1. 内存模型以及分区，需要详细到每个区放什么。</h2>
-
-<p>JVM内存模型如下图所示:<br/>
-<img src="media/14870642938148/14870644399593.jpg" alt="C400"/></p>
-
-<p>此处我们集中注意中间绿色的部分，该部分为JVM的运行时内存，该部分包含了：<br/>
-线程私有的（灰色）：<br/>
-　　1. 程序计数器：记录执行到第几条指令<br/>
-　　2. 虚拟机方法栈：执行Java方法所用，每执行一个方法便加入一个栈帧，里面含有局部变量表、操作栈、动态链接和方法出口等<br/>
-　　3. 本地方法栈：与虚拟机方法栈相似，用于执行native方法</p>
-
-<p>线程共享的（蓝色）：<br/>
-　　1. 堆：对象实例存放地，，分为年轻代和老年代。年轻代又细分为伊甸园区和两个相对的Survival区<br/>
-　　2. 方法区：也叫永久代，存放了类的信息、常量、类静态变量等元素，含有一个运行时常量池</p>
-
-<h2 id="toc_1">2. 堆里面的分区：Eden，survival from to，老年代，各自的特点</h2>
-
-<p><strong>1.Eden区</strong><br/>
-Eden区位于Java堆的年轻代，是新对象分配内存的地方，由于堆是所有线程共享的，因此在堆上分配内存需要加锁。而Sun JDK为提升效率，会为每个新建的线程在Eden上分配一块独立的空间由该线程独享，这块空间称为TLAB（Thread Local Allocation Buffer）。在TLAB上分配内存不需要加锁，因此JVM在给线程中的对象分配内存时会尽量在TLAB上分配。如果对象过大或TLAB用完，则仍然在堆上进行分配。如果Eden区内存也用完了，则会进行一次Minor GC（young GC）。</p>
-
-<p><strong>2.Survival from to</strong><br/>
-Survival区与Eden区相同都在Java堆的年轻代。Survival区有两块，一块称为from区，另一块为to区，这两个区是相对的，在发生一次Minor GC后，from区就会和to区互换。在发生Minor GC时，Eden区和Survival from区会把一些仍然存活的对象复制进Survival to区，并清除内存。Survival to区会把一些存活得足够旧的对象移至年老代。</p>
-
-<p><strong>3.年老代</strong><br/>
-年老代里存放的都是存活时间较久的，大小较大的对象，因此年老代使用标记整理算法。当年老代容量满的时候，会触发一次Major GC（full GC），回收年老代和年轻代中不再被使用的对象资源。</p>
-
-<h2 id="toc_2">3. 对象创建方法，对象的内存分配，对象的访问定位</h2>
-
-<p><strong>对象的创建</strong><br/>
-Java对象的创建大致上有以下几个步骤：</p>
-
-<p>　　1. <strong>类加载检查</strong>：检查这个指令的参数是否能在常量池中定位到一个类的符号引用，并且检查这个符号引用代表的类是否已被加载、解析和初始化过。如果没有，那必须先执行相应的类的加载过程<br/>
-　　2. <strong>为对象分配内存</strong>：对象所需内存的大小在类加载完成后便完全确定，为对象分配空间的任务等同于把一块确定大小的内存从Java堆中划分出来。由于堆被线程共享，因此此过程需要进行同步处理（分配在TLAB上不需要同步）<br/>
-　　3. <strong>内存空间初始化</strong>：虚拟机将分配到的内存空间都初始化为零值（不包括对象头），内存空间初始化保证了对象的实例字段在Java代码中可以不赋初始值就直接使用，程序能访问到这些字段的数据类型所对应的零值。<br/>
-　　4. <strong>对象设置</strong>：JVM对对象头进行必要的设置，保存一些对象的信息（指明是哪个类的实例，哈希码，GC年龄等）<br/>
-　　5. <strong>init</strong>：执行完上面的4个步骤后，对JVM来说对象已经创建完毕了，但对于Java程序来说，我们还需要对对象进行一些必要的初始化。</p>
-
-<p><strong>对象的内存分配</strong><br/>
-Java对象的内存分配有两种情况，由Java堆是否规整来决定（Java堆是否规整由所采用的垃圾收集器是否带有压缩整理功能决定）：<br/>
-　　1. 指针碰撞(Bump the pointer)：如果Java堆中的内存是规整的，所有用过的内存都放在一边，空闲的内存放在另一边，中间放着一个指针作为分界点的指示器，分配内存也就是把指针向空闲空间那边移动一段与内存大小相等的距离<br/>
-　　2. 空闲列表(Free List)：如果Java堆中的内存不是规整的，已使用的内存和空闲的内存相互交错，就没有办法简单的进行指针碰撞了。虚拟机必须维护一张列表，记录哪些内存块是可用的，在分配的时候从列表中找到一块足够大的空间划分给对象实例，并更新列表上的记录</p>
-
-<p><strong>对象的访问定位</strong><br/>
-对象的访问形式取决于虚拟机的实现，目前主流的访问方式有使用句柄和直接指针两种：<br/>
-<strong>使用句柄：</strong><br/>
-如果使用句柄访问，Java堆中将会划分出一块内存来作为句柄池，引用中存储的就是对象的句柄地址，而句柄中包含了对象实例数据与类型数据各自的具体地址信息：<br/>
-<img src="media/14870642938148/14870648573054.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
-
-<p>优势：引用中存储的是稳定的句柄地址，在对象被移动(垃圾收集时移动对象是非常普遍的行为)时只会改变句柄中的实例数据指针，而引用本身不需要修改。<br/>
-<strong>直接指针：</strong><br/>
-如果使用直接指针访问对象，那么对象的实例数据中就包含一个指向对象类型数据的指针，引用中存的直接就是对象的地址：<br/>
-<img src="media/14870642938148/14870648872588.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
-优势：速度更快，节省了一次指针定位的时间开销，积少成多的效应非常可观。</p>
-
-<h2 id="toc_3">4. GC的两种判定方法：引用计数与引用链</h2>
-
-<p>基于引用计数与基于引用链这两大类别的自动内存管理方式最大的不同之处在于：前者只需要局部信息，而后者需要全局信息</p>
-
-<p><strong>引用计数</strong><br/>
-引用计数顾名思义，就是记录下一个对象被引用指向的次数。引用计数方式最基本的形态就是让每个被管理的对象与一个引用计数器关联在一起，该计数器记录着该对象当前被引用的次数，每当创建一个新的引用指向该对象时其计数器就加1，每当指向该对象的引用失效时计数器就减1。当该计数器的值降到0就认为对象死亡。每个计数器只记录了其对应对象的局部信息——被引用的次数，而没有（也不需要）一份全局的对象图的生死信息。由于只维护局部信息，所以不需要扫描全局对象图就可以识别并释放死对象；但也因为缺乏全局对象图信息，所以无法处理循环引用的状况。</p>
-
-<p><strong>引用链</strong><br/>
-引用链需要内存的全局信息，当使用引用链进行GC时，从对象图的“根”（GC Root，必然是活的引用，包括栈中的引用，类静态属性的引用，常量的引用，JNI的引用等）出发扫描出去，基于引用的可到达性算法来判断对象的生死。这使得对象的生死状态能批量的被识别出来，然后批量释放死对象。引用链不需要显式维护对象的引用计数，只在GC使用可达性算法遍历全局信息的时候判断对象是否被引用，是否存活。</p>
-
-<h2 id="toc_4">5. GC的三种收集方法：标记清除、标记整理、复制算法的原理与特点，分别用在什么地方</h2>
-
-<p><strong>标记清除</strong><br/>
-标记清除算法分两步执行：<br/>
-　　1. 暂停用户线程，通过GC Root使用可达性算法标记存活对象<br/>
-　　2. 清除未被标记的垃圾对象<br/>
-标记清除算法缺点如下：<br/>
-　　1. 效率较低，需要暂停用户线程<br/>
-　　2 . 清除垃圾对象后内存空间不连续，存在较多内存碎片<br/>
-标记算法如今使用的较少了</p>
-
-<p><strong>复制算法</strong><br/>
-复制算法也分两步执行，在复制算法中一般会有至少两片的内存空间（一片是活动空间，里面含有各种对象，另一片是空闲空间，里面是空的）：<br/>
-　　1. 暂停用户线程，标记活动空间的存活对象<br/>
-　　2. 把活动空间的存活对象复制到空闲空间去，清除活动空间<br/>
-复制算法相比标记清除算法，优势在于其垃圾回收后的内存是连续的。<br/>
-但是复制算法的缺点也很明显：<br/>
-　　1. 需要浪费一定的内存作为空闲空间<br/>
-　　2. 如果对象的存活率很高，则需要复制大量存活对象，导致效率低下<br/>
-复制算法一般用于年轻代的Minor GC，主要是因为年轻代的大部分对象存活率都较低</p>
-
-<p><strong>标记整理</strong><br/>
-标记整理算法是标记清除算法的改进，分为标记、整理两步：<br/>
-　　1. 暂停用户线程，标记所有存活对象<br/>
-　　2. 移动所有存活对象，按内存地址次序一次排列，回收末端对象以后的内存空间<br/>
-标记整理算法与标记清除算法相比，整理出的内存是连续的；而与复制算法相比，不需要多片内存空间。<br/>
-然而标记整理算法的第二步整理过程较为麻烦，需要整理存活对象的引用地址，理论上来说效率要低于复制算法。<br/>
-因此标记整理算法一般引用于老年代的Major GC</p>
-
-<h2 id="toc_5">6. GC收集器有哪些？它们的特点是？</h2>
-
-<p>常见的GC收集器如下图所示，连线代表可搭配使用：<br/>
-<img src="media/14870642938148/14870654689780.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
-<strong>1.Serial收集器（串行收集器）</strong><br/>
-用于新生代的单线程收集器，收集时需要暂停所有工作线程（Stop the world）。优点在于：简单高效，单个CPU时没有线程交互的开销，堆较小时停顿时间不长。常与Serial Old 收集器一起使用，示意图如下所示：<br/>
-<img src="media/14870642938148/14870655013486.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
-
-<p><strong>2.ParNew收集器（parallel new 收集器，新生代并行收集器）</strong><br/>
-Serial收集器多线程版本，除了使用多线程外和Serial收集器一模一样。常与Serial Old 收集器一起使用，示意图如下：<br/>
-<img src="media/14870642938148/14870655245086.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
-
-<p><strong>3.Parallel Scavenge收集器</strong><br/>
-与ParNew收集器一样是一款多线程收集器，其特点在于关注点与别的GC收集器不同：一般的GC收集器关注于缩短工作线程暂停的时间，而该收集器关注于吞吐量，因此也被称为吞吐量优先收集器。（吞吐量 = 用户运行代码时间 /  (用户运行代码时间 + 垃圾回收时间)）高吞吐量与停顿时间短相比主要强调任务快完成，因此常和Parallel Old 收集器一起使用（没有Parallel Old之前与Serial Old一起使用），示意图如下：<br/>
-<img src="media/14870642938148/14870655572103.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
-
-<p><strong>4.Serial Old收集器</strong><br/>
-Serial收集器的年老代版本，不在赘述。</p>
-
-<p><strong>5.Parallel Old收集器</strong><br/>
-年老代的并行收集器，在JDK1.6开始使用。</p>
-
-<p><strong>6.CMS收集器（Concurrent Mark Sweep，并发标记清除收集器）</strong><br/>
-CMS收集器是一个年老代的收集器，是以最短回收停顿时间为目标的收集器，其示意图如下所示：<br/>
-<img src="media/14870642938148/14870655936116.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
-
-<p>CMS收集器基于标记清除算法实现，主要分为4个步骤：<br/>
-　　1. 初始标记，需要stop the world，标记GC Root能关联到的对象，速度快<br/>
-　　2. 并发标记，对GC Root执行可达性算法<br/>
-　　3. 重新标记，需要stop the world，修复并发标记时因用户线程运行而产生的标记变化，所需时间比初始标记长，但远比并发标记短<br/>
-　　4. 并发清理<br/>
-CMS收集器的缺点在于：<br/>
-　　1. 其对于CPU资源很敏感。在并发阶段，虽然CMS收集器不会暂停用户线程，但是会因为占用了一部分CPU资源而导致应用程序变慢，总吞吐量降低。其默认启动的回收线程数是（cpu数量+3）/4，当cpu数较少的时候，会分掉大部分的cpu去执行收集器线程<br/>
-　　2. 无法处理浮动垃圾，浮动垃圾即在并发清除阶段因为是并发执行，还会产生垃圾，这一部分垃圾即为浮动垃圾，要等下次收集<br/>
-　　3. CMS收集器使用的是标记清除算法，GC后会产生碎片<br/>
-<strong>7.G1收集器（Garbage First收集器）</strong><br/>
-相比CMS收集器，G1收集器主要有两处改进：</p>
-
-<p>　　1. 使用标记整理算法，确保GC后不会产生内存碎片<br/>
-　　2. 可以精确控制停顿，允许指定消耗在垃圾回收上的时间</p>
-
-<p>G1收集器可以实现在基本不牺牲吞吐量的前提下完成低停顿的内存回收，这是由于它能够极力地避免全区域的垃圾收集，之前的收集器进行收集的范围都是整个新生代或老年代，而G1将整个Java堆（包括新生代、老年代）划分为多个大小固定的独立区域（Region），并且跟踪这些区域里面的垃圾堆积程度，在后台维护一个优先列表，每次根据允许的收集时间，优先回收垃圾最多的区域（这就是Garbage First名称的来由）。区域划分及有优先级的区域回收，保证了G1收集器在有限的时间内可以获得最高的收集效率。</p>
-
-<h2 id="toc_6">7. Minor GC与Full GC分别在什么时候发生？</h2>
-
-<p>Minor GC也叫Young GC，当年轻代内存满的时候会触发，会对年轻代进行GC<br/>
-Full GC也叫Major GC，当年老代满的时候会触发，当我们调用System.gc时也可能会触发，会对年轻代和年老代进行GC</p>
-
-<h2 id="toc_7">8. 类加载的五个过程：加载、验证、准备、解析、初始化</h2>
-
-<p>JVM把class文件加载的内存，并对数据进行校验、转换解析和初始化，最终形成JVM可以直接使用的Java类型的过程就是加载机制。<br/>
-类从被加载到虚拟机内存中开始，到卸载出内存为止，它的生命周期包括了：加载(Loading)、验证(Verification)、准备(Preparation)、解析(Resolution)、初始化(Initialization)、使用(Using)、卸载(Unloading)七个阶段，其中验证、准备、解析三个部分统称链接。<br/>
-<strong>1.加载</strong><br/>
-在加载阶段，虚拟机需要完成以下事情：<br/>
-　　1. 通过一个类的权限定名来获取定义此类的二进制字节流<br/>
-　　2. 将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构<br/>
-　　3. 在java堆中生成一个代表这个类的java.lang.Class对象，作为方法去这些数据的访问入口<br/>
-<strong>2.验证</strong><br/>
-在验证阶段，虚拟机主要完成：<br/>
-　　1. 文件格式验证：验证class文件格式规范<br/>
-　　2. 元数据验证：这个阶段是对字节码描述的信息进行语义分析，以保证起描述的信息符合java语言规范要求<br/>
-　　3. 字节码验证：进行数据流和控制流分析，这个阶段对类的方法体进行校验分析，这个阶段的任务是保证被校验类的方法在运行时不会做出危害虚拟机安全的行为<br/>
-　　4. 符号引用验证：符号引用中通过字符串描述的全限定名是否能找到对应的类、符号引用类中的类，字段和方法的访问性(private、protected、public、default)是否可被当前类访问<br/>
-<strong>3.准备</strong><br/>
-准备阶段是正式为类变量（被static修饰的变量）分配内存并设置变量初始值（0值）的阶段，这些内存都将在方法区中进行分配</p>
-
-<p><strong>4.解析</strong><br/>
-解析阶段是虚拟机将常量池内的符号引用替换为直接引用的过程<br/>
-常见的解析有四种：<br/>
-　　1. 类或接口的解析<br/>
-　　2. 字段解析<br/>
-　　3. 类方法解析<br/>
-　　4. 接口方法解析</p>
-
-<p><strong>5.初始化</strong><br/>
-初始化阶段才真正开始执行类中定义的java程序代码，初始化阶段是执行类构造器<clinit>()方法的过程</p>
-
-<h2 id="toc_8">9. 双亲委派模型：Bootstrap ClassLoader、Extension ClassLoader、ApplicationClassLoader</h2>
-
-<p>JVM的类加载是通过类加载器实现的， Java中的类加载器体系结构如下：<br/>
-<img src="media/14870642938148/14870660696688.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
-
-<ul>
-<li>启动类加载器（Bootstrap ClassLoader）：是用本地代码实现的类装入器，它负责将 <Java_Runtime_Home>/lib下面的类库加载到内存中（比如rt.jar）。由于引导类加载器涉及到虚拟机本地实现细节，开发者无法直接获取到启动类加载器的引用，所以不允许直接通过引用进行操作</li>
-<li>标准扩展类加载器：是由 Sun 的 ExtClassLoader（sun.misc.Launcher$ExtClassLoader）实现的。它负责将&lt; Java_Runtime_Home &gt;/lib/ext或者由系统变量 java.ext.dir指定位置中的类库加载到内存中。开发者可以直接使用标准扩展类加载器</li>
-<li>应用程序类加载器：由sun.misc.Launcher$AppClassLoader实现，负责加载用户类路径classpath上所指定的类库，是类加载器ClassLoader中的getSystemClassLoader()方法的返回值，开发者可以直接使用应用程序类加载器，如果程序中没有自定义过类加载器，该加载器就是程序中默认的类加载器
-值得注意的是：上述三个JDK提供的类加载器虽然是父子类加载器关系，但是没有使用继承，而是使用了组合关系。</li>
-</ul>
-
-<p>从JDK1.2开始，JVM规范推荐开发者使用双亲委派模式(ParentsDelegation Model)进行类加载，其加载过程如下：<br/>
-　　1. 如果一个类加载器收到了类加载请求，它首先不会自己去尝试加载这个类，而是把类加载请求委派给父类加载器去完成<br/>
-　　2. 每一层的类加载器都把类加载请求委派给父类加载器，直到所有的类加载请求都传递给顶层的启动类加载器<br/>
-　　3. 如果顶层的启动类加载器无法完成加载请求，则子类加载器会尝试去加载，如果连最初发起类加载请求的类加载器也无法完成加载请求时，将会抛出ClassNotFoundException，而不再调用其子类加载器去进行类加载<br/>
-采用双亲委派模型的好处在于：使得java类随着它的类加载器一起具备了一种带有优先级的层次关系，越是基础的类，越是被上层的类加载器进行加载，保证了java程序的稳定运行。</p>
-
-<h2 id="toc_9">10. 分派：静态分派与动态分派</h2>
-
-<p>要理解分派，我们先来理解Java中的两种类型：</p>
-
-<ul>
-<li>静态类型：变量声明时的类型</li>
-<li>实际类型：变量实例化时采用的类型
-举例的Java代码如下：</li>
-</ul>
-
-<pre><code>class Car {}  
-class Bus extends Car {}  
-public class Main {  
-    public static void main(String[] args) throws Exception {  
-        // Car 为静态类型，Bus 为实际类型  
-        Car car = new Bus();  
-    }  
-}  
-</code></pre>
-
-<p><strong>静态分派</strong><br/>
-所有依赖静态类型来定位方法执行版本的分派动作称为静态分派，其典型应用是方法重载（重载是通过参数的静态类型而不是实际类型来选择重载的版本的）。<br/>
-举例Java代码如下：</p>
-
-<pre><code>class Car {}  
-class Bus extends Car {}  
-class Jeep extends Car {}  
-public class Main {  
-    public static void main(String[] args) throws Exception {  
-        // Car 为静态类型，Car 为实际类型  
-        Car car1 = new Car();  
-        // Car 为静态类型，Bus 为实际类型  
-        Car car2 = new Bus();  
-        // Car 为静态类型，Jeep 为实际类型  
-        Car car3 = new Jeep();  
-          
-        showCar(car1);  
-        showCar(car2);  
-        showCar(car3);  
-    }  
-    private static void showCar(Car car) {  
-        System.out.println(&quot;I have a Car !&quot;);  
-    }  
-    private static void showCar(Bus bus) {  
-        System.out.println(&quot;I have a Bus !&quot;);  
-    }  
-    private static void showCar(Jeep jeep) {  
-        System.out.println(&quot;I have a Jeep !&quot;);  
-    }  
-}  
-</code></pre>
-
-<p>代码输出如下：<br/>
-<img src="media/14870642938148/14870662267498.jpg" alt="" class="mw_img_left" style="width:200px;display: block; float: left; margin: 0px 8px 8px 0px;"/></p>
-
-<p>从上面的例子我们可以看出重载调用的具体方法版本是由静态类型来决定的。</p>
-
-<p><strong>动态分派</strong><br/>
-与静态分派类似，动态分派指在在运行期根据实际类型确定方法执行版本，其典型应用是方法重写（即多态）。<br/>
-举例Java代码如下：</p>
-
-<pre><code>class Car {  
-    public void showCar() {  
-        System.out.println(&quot;I have a Car !&quot;);  
-    }  
-}  
-class Bus extends Car {  
-    public void showCar() {  
-        System.out.println(&quot;I have a Bus !&quot;);  
-    }  
-}  
-class Jeep extends Car {  
-    public void showCar() {  
-        System.out.println(&quot;I have a Jeep !&quot;);  
-    }  
-}  
-public class Main {  
-    public static void main(String[] args) throws Exception {  
-        // Car 为静态类型，Car 为实际类型  
-        Car car1 = new Car();  
-        // Car 为静态类型，Bus 为实际类型  
-        Car car2 = new Bus();  
-        // Car 为静态类型，Jeep 为实际类型  
-        Car car3 = new Jeep();  
-          
-        car1.showCar();  
-        car2.showCar();  
-        car3.showCar();  
-    }  
-}  
-</code></pre>
-
-<p>运行结果如下：<br/>
-<img src="media/14870642938148/14870662737711.jpg" alt="" class="mw_img_left" style="width:200px;display: block; float: left; margin: 0px 8px 8px 0px;"/><br/>
-可以看出来重写是一个根据实际类型决定方法版本的动态分派过程。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Android 常见面试题（四）]]></title>
-    <link href="m78snail.com/14870550376223.html"/>
-    <updated>2017-02-14T14:50:37+08:00</updated>
-    <id>m78snail.com/14870550376223.html</id>
-    <content type="html"><![CDATA[
-<span id="more"></span><!-- more -->
-
-<h2 id="toc_0">21. Android内存优化方法：ListView优化，及时关闭资源，图片缓存等等</h2>
-
-<p>首先有一些与内存泄漏相关的点：<br/>
-<strong>1.具有close方法的对象切记调用close方法释放资源</strong><br/>
-常见的有Cursor和各种流等对象。博主就曾经因为Cursor对象忘记close，在进行了多次数据库查询后APP就因为OOM而崩溃了。</p>
-
-<p><strong>2.动态注册的广播不使用后记得取消注册</strong><br/>
-取消注册后可释放Context中持有的相关的广播过滤器资源。</p>
-
-<p><strong>3.bitmap的recycle方法</strong><br/>
-在Android3.0版本以前，bitmap对象的构造涉及到JVM的两块内存区域：一块是Bitmap对象所在的Java堆，一块是Bitmap对象持有的native层资源所在的Native堆。在Java堆上分配的资源由于JVM的GC机制的关系我们不需要去特别关心，但在Native堆上分配的资源就需要我们显式地调用bitmap的native方法recycle去回收了。然而在Android3.0版本后bitmap内存资源分配都在Java堆上，因此是否调用recycle方法对内存影响就不大了。</p>
-
-<p><strong>4.listView的Adapter中注意convertView的使用</strong><br/>
-在Adapter的getView方法中，有一个重要的参数就是convertView。convertView是一个View参数，它代表了一个回收的View（如果没有就为null）。Android的ListView虽然看起来有很多项，但其实真正的ItemView的数目只有屏幕上显示的哪几个，当一个ItemView从可见变为不可见时，他就会被回收掉，在下次调用getView方法时传入的convertView就是某个被回收的View。因此在getView方法中，当convertView不为null时，我们应该使用convertView而不是重新创建一个View。更高效的方式是把convertView结合一个自定义的ViewHolder一起使用，可以有效的减少findViewById的时间。</p>
-
-<p><strong>5.handler</strong><br/>
-Handler常见的应用场景是多线程的通信，此时要是Handler使用不当就相当容易造成内存泄露。在多线程通信的场景下，子线程通常都会持有Handler对象的引用，如果一个Handler对象在Activity中不是静态的，那么该Handler对象就会持有该Activity对象的引用，从而导致Activity组件无法正常的被GC回收，导致了内存泄露。因此一般而言我们应该把Handler对象置为Activity中的静态变量，通过软引用或者弱引用的方式来获取Activity及其内部域，避免持有Activity的强引用导致该组件无法回收。</p>
-
-<p><strong>6.集合对象清理</strong><br/>
-对于一些集合中不再使用的对象，我们应该把它们移除出我们的集合。避免由于集合持有那些对象的引用导致它们无法被JVM的GC所回收。</p>
-
-<p>还有一些内存优化的方法，个人认为有以下几个方面：</p>
-
-<ul>
-<li>Java引用的灵活使用</li>
-<li>图片缓存</li>
-<li>Bitmap压缩加载</li>
-</ul>
-
-<p><strong>Java引用的灵活使用</strong><br/>
-众所周知，在Java中有强软弱虚四种引用，合理的使用软引用和弱引用有利于GC工作的进行，回收不需要的内存。</p>
-
-<p><strong>图片缓存</strong><br/>
-使用图片缓存可以有效防止内存中同时载入过多的图片，也可以减少经常载入图片所耗费的时间。<br/>
-一般而言，设计图片缓存的思路如下，可以把图片的缓存分为以下几个层级：</p>
-
-<ul>
-<li>强引用 HashMap （用于存储最常用的图片）</li>
-<li>软引用 HashMap （用于存储比较常用的图片）</li>
-<li>SD卡 （用于存储使用过的图片）</li>
-<li>下载 （第一次使用）</li>
-</ul>
-
-<p>一般而言我们都是用LRU算法（最近最少使用），最近使用的图片一般缓存于强引用的HashMap中，随着使用次数的减少慢慢移动至软引用HashMap、SD卡中。<br/>
-除了我们自己设计图片缓存外，我们还可以直接使用Google提供的LruCache（内部由LinkedHashMap实现缓存队列），以及DiskLruCache<br/>
-<strong>Bitmap压缩加载</strong><br/>
-对于某些原尺寸特别大的图片，我们可以选择压缩后再加载以节省我们的内存空间：</p>
-
-<pre><code>// 创建解析参数  
-Options options = new Options();  
-// 只解析大小，并不生成实际图片  
-options.inJustDecodeBounds = true;  
-BitmapFactory.decodeFile(pathName, options);  
-// 计算缩放大小  
-int widthScale = options.outWidth/width_we_need;  
-int heightScale = options.outHeight/height_we_need;  
-// 选取小的为缩放尺寸  
-options.inSampleSize = Math.min(widthScale, heightScale);  
-// 生成Bitmap  
-options.inJustDecodeBounds = false; // 记得关掉  
-Bitmap bitmap = BitmapFactory.decodeFile(pathName, options); 
-</code></pre>
-
-<p>压缩到合适的尺寸后再加载就不必担心原来的bitmap太大而占用内存空间了。</p>
-
-<h2 id="toc_1">22. Android中弱引用与软引用的应用场景</h2>
-
-<p>软引用与弱引用一般用于：需要某个对象，但又不关心它的死活的时候（就是该对象存在就用，不存在就算了）。<br/>
-在Android中的应用场景主要有：</p>
-
-<ul>
-<li>Handler获取Activity的引用：使用静态变量和软弱引用保证不干扰Activity的回收</li>
-<li>缓存设计：使用软弱应用保证内存紧张时GC可以回收使用较少的缓存资源</li>
-</ul>
-
-<h2 id="toc_2">23. Bitmap的四中属性，与每种属性队形的大小。</h2>
-
-<p>在 <strong>Android</strong> 中图片有四种属性，分别是：<br/>
-<strong>ALPHA_8</strong>：每个像素占用 1byte 内存<br/>
-<strong>ARGB_4444</strong>：每个像素占用 2byte 内存<br/>
-<strong>ARGB_8888</strong>：每个像素占用 4byte 内存 （默认）<br/>
-<strong>RGB_565</strong>：每个像素占用 2byte 内存(没有 alpha 属性)</p>
-
-<h2 id="toc_3">24. View与View Group分类，自定义View过程：onMeasure()、onLayout()、onDraw()</h2>
-
-<p>View是Android中基本的UI单元，占据屏幕的一块矩形区域，可用于绘制并能处理事件，而ViewGroup是View的子类，他能包含多个View，并让他们在其中按照一定的规则排列。VIew与ViewGroup的设计使用了组合模式。</p>
-
-<p>自定义View我们一般需要重写一下三个方法：</p>
-
-<ul>
-<li>onMeasure：用于测量自定义View的大小，在方法中必须调用setMeasureDimension方法</li>
-<li>onLayout：用于确定自定义View布局</li>
-<li>onDraw：用于绘制自定义View本身</li>
-</ul>
-
-<h2 id="toc_4">25. Touch事件分发机制</h2>
-
-<p><img src="media/14870550376223/14870559086978.jpg" alt=""/></p>
-
-<h2 id="toc_5">26. Android长连接，怎么处理心跳机制</h2>
-
-<p>　　所谓的心跳包就是客户端定时放送简单的信息给服务器端，告诉它我还在而已。代码就是每隔几分钟发送一个固定信息给服务器端，服务器端回复一个固定信息。如果服务器端几分钟后没有收到客户端信息则视客户端断开。比如有些通信软件长时间不适用，要想知道它的状态是在线还是离线，就需要心跳包，定时发包收包。<br/>
-　　心跳包之所以叫心跳包是因为：它像心跳一样每隔固定时间发一次，以此来告诉服务器，这个客户端还活在。事实上这是为了保持长连接，至于这个包的内容，是没有什么特别规定的，不过一般都是很小的包，或者只包含包头的一个空包。<br/>
-　　在TCP机制里面，本身是存在有心跳包机制的，也就是TCP选项:SO_KEEPALIVE. 系统默认是设置的2小时的心跳频率。<br/>
-心跳包的机制，其实就是传统的长连接。或许有的人知道消息推送的机制，消息推送也是一种长连接 ，是将数据有服务器端推送到客户端这边从而改变传统的“拉”的请求方式。下面我来介绍一下安卓和客户端两个数据请求的方式<br/>
-　　1、push  这个也就是有服务器推送到客户端这边  现在有第三方技术 比如极光推送。<br/>
-　　2、pull   这种方式就是客户端向服务器发送请求数据（http请求）<br/>
-<strong>1、首先服务器和客户端有一次“握手”</strong></p>
-
-<pre><code>public void connect()  
-      {  
-        LogUtil.e(TAG, &quot;准备链接...&quot;);  
-        InetAddress serverAddr;  
-        try {  
-            socket = new Socket(Config.Host, Config.SockectPort);  
-            _connect = true;  
-            mReceiveThread = new ReceiveThread();  
-            receiveStop = false;  
-            mReceiveThread.start();  
-            LogUtil.e(TAG, &quot;链接成功.&quot;);  
-  
-        } catch (Exception e) {  
-            LogUtil.e(TAG, &quot;链接出错.&quot; + e.getMessage().toString());  
-            e.printStackTrace();  
-        }  
-    }  
-</code></pre>
-
-<p><strong>2、下面就要开启一个线程  去不断读取服务器那边传过来的数据  采用Thread去实现</strong></p>
-
-<pre><code>private class ReceiveThread extends Thread {  
-        private byte[] buf;  
-        private String str = null;  
-  
-        @Override  
-        public void run() {  
-            while (true) {  
-                try {  
-                    // LogUtil.e(TAG, &quot;监听中...:&quot;+socket.isConnected());  
-                    if (socket!=null &amp;&amp; socket.isConnected()) {  
-  
-                        if (!socket.isInputShutdown()) {  
-                            BufferedReader inStream = new BufferedReader(  
-                                    new InputStreamReader(  
-                                            socket.getInputStream()));  
-                            String content = inStream.readLine();                              
-                            if (content == null)  
-                                continue;  
-                            LogUtil.e(TAG, &quot;收到信息:&quot; + content);  
-                            LogUtil.e(TAG, &quot;信息长度:&quot;+content.length());  
-                            if (!content.startsWith(&quot;CMD:&quot;))  
-                                continue;  
-                            int spacePos = content.indexOf(&quot; &quot;);  
-                            if (spacePos == -1)  
-                                continue;  
-                            String cmd = content.substring(4, spacePos);  
-                            String body = content.substring(spacePos).trim();  
-                            LogUtil.e(TAG, &quot;收到信息(CMD):&quot; + cmd);  
-                            LogUtil.e(TAG, &quot;收到信息(BODY):&quot; + body);  
-                            if (cmd.equals(&quot;LOGIN&quot;))  
-                           {  
-                                // 登录  
-                                ReceiveLogin(body);  
-                                continue;  
-                            }  
-                              if (cmd.equals(&quot;KEEPLIVE&quot;)) {  
-                                if (!body.equals(&quot;1&quot;)) {  
-                                    Log.e(TAG, &quot;心跳时检测到异常，重新登录!&quot;);  
-                                    socket = null;  
-                                    KeepAlive();  
-                                } else {  
-                                    Date now = Calendar.getInstance().getTime();  
-                                    lastKeepAliveOkTime = now;  
-                                }  
-                                continue;  
-                            }  
-                        }  
-                    } else {  
-                        if(socket!=null)  
-                            LogUtil.e(TAG, &quot;链接状态:&quot; + socket.isConnected());  
-                    }  
-  
-                } catch (Exception e) {  
-                    LogUtil.e(TAG, &quot;监听出错:&quot; + e.toString());  
-                    e.printStackTrace();  
-                }  
-            }  
-        }  
-</code></pre>
-
-<p><strong>3 、 Socket 是否断开了  断开了 需要重新去连接</strong></p>
-
-<pre><code>public void KeepAlive()  
-        {  
-        // 判断socket是否已断开,断开就重连  
-        if (lastKeepAliveOkTime != null) {  
-            LogUtil.e(  
-                    TAG,  
-                    &quot;上次心跳成功时间:&quot;  
-                            + DateTimeUtil.dateFormat(lastKeepAliveOkTime,  
-                                    &quot;yyyy-MM-dd HH:mm:ss&quot;));  
-            Date now = Calendar.getInstance().getTime();  
-            long between = (now.getTime() - lastKeepAliveOkTime.getTime());// 得到两者的毫秒数  
-            if (between &gt; 60 * 1000) {  
-                LogUtil.e(TAG, &quot;心跳异常超过1分钟,重新连接:&quot;);  
-                lastKeepAliveOkTime = null;  
-                socket = null;  
-            }  
-  
-        } else {  
-            lastKeepAliveOkTime = Calendar.getInstance().getTime();  
-        }  
-  
-        if (!checkIsAlive()) {  
-            LogUtil.e(TAG, &quot;链接已断开,重新连接.&quot;);  
-            connect();  
-            if (loginPara != null)  
-                Login(loginPara);  
-        }  
-  
-    //此方法是检测是否连接  
-      boolean checkIsAlive() {  
-        if (socket == null)  
-            return false;  
-            try {  
-            socket.sendUrgentData(0xFF);  
-        } catch (IOException e) {  
-            return false;  
-        }  
-        return true;  
-  
-    }  
-   //然后发送数据的方法  
-    public void sendmessage(String msg) {  
-        if (!checkIsAlive())  
-            return;  
-        LogUtil.e(TAG, &quot;准备发送消息:&quot; + msg);  
-        try {  
-            if (socket != null &amp;&amp; socket.isConnected()) {  
-                if (!socket.isOutputShutdown()) {  
-                    PrintWriter outStream = new PrintWriter(new BufferedWriter(  
-                            new OutputStreamWriter(socket.getOutputStream())),  
-                            true);  
-  
-                    outStream.print(msg + (char) 13 + (char) 10);  
-                    outStream.flush();  
-                }  
-            }  
-            LogUtil.e(TAG, &quot;发送成功!&quot;);  
-        } catch (Exception e) {  
-            e.printStackTrace();  
-        }  
-    }  
+<p><strong>用代码来展示就是:</strong></p>
+
+<pre><code>// 神灯拥有的三种选项
+public enum GFType {
+      SI_CHUAN,
+      HE_BEI,
+      SHAN_DONG
+}
 </code></pre>
 
 <hr/>
 
-<p>实现轮询</p>
+<pre><code>// 和女朋友吃什么由她的家乡口味来定，但是shopping是一定的了 -_-
+public abstract class BaseGF {
+      public abstract void eatFood();
+      public void shopping() {
+            System.out.println(&quot;Go shopping every day...&quot;);
+      };
+}
+</code></pre>
 
-<p>原理 <br/>
-其原理在于在android端的程序中，让一个SERVICE一直跑在后台，在规定时间之内调用服务器接口进行数据获取。</p>
+<hr/>
 
-<p>这里的原理很简单，当然实现起来也不难；</p>
+<pre><code>public class SiChuanGF extends BaseGF {
+      @Override
+      public void eatFood() {
+            System.out.println(&quot;Eat sichuan food...&quot;);
+      }
+}
+</code></pre>
 
-<p>然后，这个类之中肯定要做网络了数据请求，所以我们在Service中建立一个线程（因为在android系统中网络请求属于长时间操作，不能放主线程，不然会导致异常），在线程中和服务器进行通信。</p>
+<hr/>
 
-<p>最后，这个逻辑写完后，我们需要考虑一个问题，如何进行在规定时间内调用该服务器，当然可以用Thread+Handler(这个不是那么稳定),也可以使用AlamManager+Thread（比较稳定），因为我们需要其在后台一直运行，所以可以依靠系统的Alammanager这个类来实现，Alammanager是属于系统的一个闹钟提醒类，通过它我们能实现在规定间隔时间调用，并且也比较稳定，这个service被杀后会自己自动启动服务。</p>
+<pre><code>public class ShanDongGF extends BaseGF {
+      @Override
+      public void eatFood() {
+            System.out.println(&quot;Eat shandong food...&quot;);
+      }
+}
+</code></pre>
 
-<h2 id="toc_6">27. Zygote的启动过程。</h2>
+<hr/>
 
-<p>　　1. 系统启动时init进程会创建Zygote进程，Zygote进程负责后续Android应用程序框架层的其它进程的创建和启动工作。<br/>
-　　2. Zygote进程会首先创建一个SystemServer进程，SystemServer进程负责启动系统的关键服务，如包管理服务PackageManagerService和应用程序组件管理服务ActivityManagerService。<br/>
-　　3. 当我们需要启动一个Android应用程序时，ActivityManagerService会通过Socket进程间通信机制，通知Zygote进程为这个应用程序创建一个新的进程。</p>
+<pre><code>// 神灯为我们创建女朋友的工厂
+public class GFFactory {
+      public static BaseGF createGF(GFType gFType) {
+            switch (gFType) {
+                  case SI_CHUAN:
+                        return new SiChuanGF();
+                  case SHAN_DONG:
+                        return new ShanDongGF();
+                  default:
+                  case HE_BEI:
+                        return new HeBeiGF();
+            }
+      }
+}
+</code></pre>
 
-<h2 id="toc_7">28. Android IPC:Binder原理</h2>
+<hr/>
+
+<pre><code>// 这个就是神灯的创建女朋友的程序了
+public class Main {
+      public static void main(String[] args) {
+            BaseGF siChuanGirl = GFFactory.createGF(GFType.SI_CHUAN);
+            siChuanGirl.eatFood();
+            siChuanGirl.shopping();
+
+//          BaseGF shanDongGirl = GFFactory.createGF(GFType.SHAN_DONG);
+//          shanDongGirl.eatFood();
+//          shanDongGirl.shopping();
+//          
+//          BaseGF heBeiGirl = GFFactory.createGF(GFType.HE_BEI);
+//          heBeiGirl.eatFood();
+//          heBeiGirl.shopping();
+      }
+}
+
+// 有了女朋友之后是这样的 -_-
+Eat sichuan food...
+Go shopping every day...
+// Eat shandong food...
+// Go shopping every day...
+// Eat hebei food...
+// Go shopping every day...
+</code></pre>
+
+<p>简单工厂模式: 专门定义一个类用来负责创建其他类的实例，被创建的实例通常都具有共同的父类.<br/>
+<img src="media/14871411019561/14871415118517.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<h2 id="toc_1">二、 工厂模式</h2>
+
+<ul>
+<li>因为我刚才还没决定，神灯就帮我把川妹子创建出来了，所以我嘟囔着，我这还没决定呢啊，大哥，你这手速有点快吧</li>
+<li>神灯: &quot;...你这个人真的是难伺候&quot;</li>
+<li>我: &quot;我能不能要一个彩云之南的妹子? &quot;</li>
+<li>神灯: &quot;彩云之南是哪? &quot;</li>
+<li>我: &quot;云南啊&quot;</li>
+<li>神灯: &quot;...你怎么这么麻烦，你知道我要改多少东西吗，我的enum(GFType)要改, GFFactory要增加case&quot;</li>
+<li>我: &quot;神灯大哥，好人做到底么，好不好? &quot;</li>
+<li>神灯: &quot;要不我给你一个接口好了，你自己想创建哪里的就创建那里的&quot;</li>
+<li>我的内心...嘿嘿嘿...</li>
+</ul>
+
+<p><strong>用代码展示就是:</strong></p>
+
+<pre><code>// 创建女朋友的接口，想要哪里的女朋友，实现这个接口就可以了
+public interface IGFFactory {
+      BaseGF createGF();
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 没有改变
+public abstract class BaseGF {
+      public abstract void eatFood();
+      public void shopping() {
+            System.out.println(&quot;Go shopping every day...&quot;);
+      };
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 创建川妹子的工厂
+public class SiChuanGFFactory implements IGFFactory {
+      @Override
+      public BaseGF createGF() {
+            return new SiChuanGF();
+      }
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 这个类也没有改变
+public class SiChuanGF extends BaseGF {
+      @Override
+      public void eatFood() {
+            System.out.println(&quot;Eat sichuan food...&quot;);
+      }
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 我想要的云南的妹子的创建工厂
+public class YunNanGFFactory implements IGFFactory {
+      @Override
+      public BaseGF createGF() {
+            return new YunNanGF();
+      }
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 云南妹子
+public class YunNanGF extends BaseGF {
+      @Override
+      public void eatFood() {
+            System.out.println(&quot;Eat 牛干巴, 炸土豆, 小锅米线, 卤米线...&quot;);
+      }
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 这个时候一切准备就绪，创建一个云南的妹子吧...嘿嘿嘿...嘭...
+public class Main {
+      public static void main(String[] args) {
+            IGFFactory yunNanGFFactory = new YunNanGFFactory();
+            BaseGF yunNanGF = yunNanGFFactory.createGF();
+            yunNanGF.eatFood();
+            yunNanGF.shopping();
+
+//          IGFFactory siChuanGFFactory = new SiChuanGFFactory();
+//          BaseGF siChuanGF = siChuanGFFactory.createGF();
+//          siChuanGF.eatFood();
+//          siChuanGF.shopping();
+      }
+}
+// 有了个云南妹子，然后就开始吃各种小吃了
+Eat 牛干巴, 炸土豆, 小锅米线, 卤米线...
+Go shopping every day...
+// Eat sichuan food...
+// Go shopping every day...
+</code></pre>
+
+<p>从此我和我的云南妹子过上了幸福的生活<br/>
+工厂模式： 定义一个用于创建对象的接口，让子类决定实例化哪一个类。工厂方法使一个类的实例化延迟到其子类.<br/>
+<img src="media/14871411019561/14871426106976.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<h2 id="toc_2">三、 抽象工厂模式</h2>
+
+<ul>
+<li>好多年以后，我准备和我的云南妹子准备结婚了. 但是我们发现好像少点什么，对，就是妹子的父母还没见啊. 然后我们去找神灯大哥帮忙.</li>
+<li>神灯说: &quot;小子，挺幸福呗&quot;</li>
+<li>我说: &quot;还得多谢神灯大哥啊，全都靠你&quot;</li>
+<li>神灯: &quot;来找我是不是有什么需求啊(内心: 是不是又特么改需求了)? &quot;</li>
+<li>我: &quot;我还没见过妹子的父母咧，帮帮忙啊&quot;</li>
+<li>神灯: &quot;...&quot;
+<strong>用代码展示(以妹子的父亲为例子):</strong></li>
+</ul>
+
+<pre><code>// IGFFactory增加一个创建妹子父亲的方法
+public interface IGFFactory {
+      BaseGF createGF();
+      IGFFather createGFFather();
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 父亲接口
+public interface IGFFather {
+      // 对于闺女和我的事情的建议
+      void suggestionToGirl();
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>public class SiChuanGFFactory implements IGFFactory {
+      @Override
+      public BaseGF createGF() {
+            return new SiChuanGF();
+      }
+
+      @Override
+      public IGFFather createGFFather() {
+            return new SiChuanGFFather();
+      }
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 四川妹子的父亲实现类
+public class SiChuanGFFather implements IGFFather {
+      @Override
+      public void suggestionToGirl() {
+            // 同意了
+            System.out.println(&quot;Agree ...&quot;);    
+      }
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>public class YunNanGFFactory implements IGFFactory {
+      @Override
+      public BaseGF createGF() {
+            return new YunNanGF();
+      }
+
+      @Override
+      public IGFFather createGFFather() {
+            return new YunNanGFFather();
+      }
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 云南妹子的父亲实现类
+public class YunNanGFFather implements IGFFather {
+      @Override
+      public void suggestionToGirl() {
+            // 不发表意见...
+            System.out.println(&quot;Silence ...&quot;);
+      }
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 我们又一次找到了神灯，满意了吧
+public class Main {
+      public static void main(String[] args) {
+            IGFFactory yunNanGFFactory = new YunNanGFFactory();
+            BaseGF yunNanGF = yunNanGFFactory.createGF();
+            yunNanGF.eatFood();
+            yunNanGF.shopping();
+
+            IGFFather yunNanGFFather = yunNanGFFactory.createGFFather();
+            yunNanGFFather.suggestionToGirl();
+
+//          IGFFactory siChuanGFFactory = new SiChuanGFFactory();
+//          BaseGF siChuanGF = siChuanGFFactory.createGF();
+//          siChuanGF.eatFood();
+//          siChuanGF.shopping();
+//          
+//          IGFFather siChuanGFFather = siChuanGFFactory.createGFFather();
+//          siChuanGFFather.suggestionToGirl();
+      }
+}
+
+// 结果是这样滴...
+Eat 牛干巴, 炸洋芋, 小锅米线, 卤米线...
+Go shopping every day...
+Silence ...
+// Eat sichuan food...
+// Go shopping every day...
+// Agree ...
+</code></pre>
+
+<p>抽象工厂模式: 提供一个创建一系列相关或者相互依赖对象的接口，而无需指定他们具体的类.<br/>
+<img src="media/14871411019561/14871428831254.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
 
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Android 常见面试题（三）]]></title>
-    <link href="m78snail.com/14870545331290.html"/>
-    <updated>2017-02-14T14:42:13+08:00</updated>
-    <id>m78snail.com/14870545331290.html</id>
+    <title type="html"><![CDATA[观察者模式 : 一支穿云箭，千军万马来相见]]></title>
+    <link href="m78snail.com/14871399438827.html"/>
+    <updated>2017-02-15T14:25:43+08:00</updated>
+    <id>m78snail.com/14871399438827.html</id>
     <content type="html"><![CDATA[
+<h2 id="toc_0">一. 举个栗子</h2>
+
+<p>假如你要加入斧头帮，做到一支穿云箭，千军万马来相见，响应大哥的号召，你要怎么做？</p>
+
+<ul>
+<li>首先我得加入斧头帮，成为斧头帮一份子</li>
+<li>然后去登记，有啥事方便通知</li>
+<li>等老大一发穿云箭</li>
+<li>我跟其他小弟就赶紧出现</li>
+</ul>
+
 <span id="more"></span><!-- more -->
 
-<h2 id="toc_0">16. 动画有哪几类，各有什么特点</h2>
+<h2 id="toc_1">二. 用代码实现一下：</h2>
 
-<p>如今Android的动画主要有三种，分别是：逐帧（Frame）动画，补间（Tween）动画，属性（Property）动画</p>
+<p>1.首先定义 斧头帮老大 AxeGangBoss:</p>
 
-<h2 id="toc_1">17. Handler、Looper消息队列模型，各部分的作用。</h2>
+<pre><code>/**
+ * description: 斧头帮老大，消息发布者，继承 Observable
+ * &lt;br/&gt;
+ * author: shixinzhang
+ * &lt;br/&gt;
+ * data: 9/20/2016
+ */
+public class AxeGangBoss extends Observable {
+    private String mName;
 
-<p>简单提提Handler、Looper模型中各部分的作用，主要有以下三部分：</p>
+    public AxeGangBoss(String name) {
+        mName = name;
+    }
+
+    /**
+     * 在需要通知小弟的时候调用 setChanged()方法，表明有更新
+     * 然后提醒所有小弟
+     * @param msg
+     */
+    public void sendMsg(String msg) {
+        //表示有更新
+        setChanged();
+        notifyObservers(msg);
+    }
+
+    public String getName() {
+        return mName;
+    }
+
+    public void setName(String name) {
+        mName = name;
+    }
+}
+</code></pre>
+
+<p>斧头帮老大是消息发布者，当有情况时就调用 sendMsg(…) 方法给小弟发消息。他继承自 Java 源代码提供的 Observable ：</p>
+
+<pre><code>public class Observable {
+
+    List&lt;Observer&gt; observers = new ArrayList&lt;Observer&gt;();
+
+    boolean changed = false;
+
+    public Observable() {
+    }
+
+    public void addObserver(Observer observer) {
+        if (observer == null) {
+            throw new NullPointerException(&quot;observer == null&quot;);
+        }
+        synchronized (this) {
+            if (!observers.contains(observer))
+                observers.add(observer);
+        }
+    }
+
+    protected void clearChanged() {
+        changed = false;
+    }
+
+    public int countObservers() {
+        return observers.size();
+    }
+
+    public synchronized void deleteObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    public synchronized void deleteObservers() {
+        observers.clear();
+    }
+
+    public boolean hasChanged() {
+        return changed;
+    }
+
+    public void notifyObservers() {
+        notifyObservers(null);
+    }
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public void notifyObservers(Object data) {
+        int size = 0;
+        Observer[] arrays = null;
+        synchronized (this) {
+            if (hasChanged()) {
+                clearChanged();
+                size = observers.size();
+                arrays = new Observer[size];
+                observers.toArray(arrays);
+            }
+        }
+        if (arrays != null) {
+            for (Observer observer : arrays) {
+                observer.update(this, data);
+            }
+        }
+    }
+
+    protected void setChanged() {
+        changed = true;
+    }
+}
+</code></pre>
+
+<p>Observable 里保存着一个 Observer 的集合，然后提供了添加、删除、提醒等方法。其中重要的是 notifyObservers(…) 方法，当确定出事了（changed 为 true）时 ，挨个通知小弟。 <br/>
+Observer 是一个接口，规定了小弟收到消息的方法 update(…)：</p>
+
+<pre><code>public interface Observer {
+    void update(Observable observable, Object data);
+}
+</code></pre>
+
+<p>2.定义斧头帮小弟 AxeGangPeople，小弟需要按规矩来，实现 Observer 接口:</p>
+
+<pre><code>/**
+ * description: 斧头帮小弟，订阅者，实现 Observer 接口
+ * &lt;br/&gt;
+ * author: shixinzhang
+ * &lt;br/&gt;
+ * data: 9/20/2016
+ */
+public class AxeGangPeople implements Observer {
+    String mName;
+
+    public AxeGangPeople(String name){
+        mName = name;
+    }
+
+    /**
+     * 必须实现的方法，当消息发布者发出通知后，会调用这个方法
+     * @param observable
+     * @param data
+     */
+    @Override
+    public void update(Observable observable, Object data) {
+        AxeGangBoss writer;
+        if (observable instanceof AxeGangBoss) {
+            writer = (AxeGangBoss) observable;
+            System.out.println(getName() + &quot; 收到来自 &quot; + writer.getName() + &quot; 的消息: &quot; + data.toString());
+        }
+    }
+
+    public String getName() {
+        return mName;
+    }
+
+    public void setName(String name) {
+        mName = name;
+    }
+}
+</code></pre>
+
+<p>3.然后小弟去老大那登记，老大有消息了就射穿云箭：</p>
+
+<pre><code>@Test
+    public void testSendMsg() throws Exception {
+        //创建一个斧头帮老大
+        AxeGangBoss shixinzhang = new AxeGangBoss(&quot;张拭心&quot;);
+        //创建两个小弟
+        AxeGangPeople niefeng = new AxeGangPeople(&quot;聂风&quot;);
+        AxeGangPeople bujingyun = new AxeGangPeople(&quot;步惊云&quot;);
+        //老大觉得可以，收入麾下
+        shixinzhang.addObserver(niefeng);
+        shixinzhang.addObserver(bujingyun);
+        //老大出事了，赶紧射箭！
+        shixinzhang.sendMsg(&quot;我有难了，快来救我！&quot;);
+    }
+</code></pre>
+
+<p>4.运行结果：<br/>
+<img src="media/14871399438827/14871405286614.jpg" alt=""/><br/>
+这种 一对多的通知场景 就是传说中的观察者模式。</p>
+
+<h2 id="toc_2">三. 观察者模式</h2>
+
+<p>1.定义：</p>
+
+<blockquote>
+<p>又称“发布-订阅模式”，定义了一种一对多的依赖关系，一个被观察者持有多个观察者对象的引用，当被观察者状态发生改变时，通知所有观察者进行更新。</p>
+</blockquote>
+
+<p>2.UML 图<br/>
+<img src="media/14871399438827/14871406528084.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
 
 <ul>
-<li>MessageQueue：消息队列，存储待处理的消息</li>
-<li>Looper：封装了消息队列与Handler，线程绑定，使用loop方法循环处理消息</li>
-<li>Handler：消息处理的辅助类，里面封装了消息的投递、处理和获取等一系列操作</li>
+<li><p>其中 Subject 是被观察者接口，即上文提到的 Observable ，持有一个观察者接口集合的引用，定义了观察者的添加、删除以及提醒；</p></li>
+<li><p>ConcreteSubject 实现了被观察者接口，即上文的斧头帮老大 AxeGangBoss，在一定情况下提醒观察者更新；</p></li>
+<li><p>Observer 是观察者抽象类，定义了更新 update 方法；</p></li>
+<li><p>ConcreteObserver 是具体观察者，即上文的小弟 AxeGangPeople，重写 update 方法，进行触发操作。里面有时需要持有一个 Subject 的引用。<br/>
+3.场景：<br/>
+有的时候一个状态值会影响许多逻辑，比如电商类软件的位置信息，如果用户切换位置，需要显示对应城市的商品信息、活动、附件的人等等，这时使用观察者模式可以减少对应模块的代码逻辑，直接写好回调方法，等待被回调就好，耦合度降低很多。</p></li>
 </ul>
 
-<h2 id="toc_2">18. 怎样退出终止App</h2>
-
-<p>测试：<br/>
-依次打开3个Activity（ActivityA，ActivityB，ActivityC），并在第3个Activity中终止App<br/>
-System.exit（0）<br/>
-重写Application方法：</p>
-
-<pre><code>public class MyApplication extends Application {  
-  
-    public void exit() {  
-        System.exit(0);  
-    }  
-      
-}  
-</code></pre>
-
-<p>切记在AndroidManifest中修改使用的Application</p>
-
-<p>在第三个Activity中调用该方法：</p>
-
-<pre><code>public class ActivityC extends Activity {  
-  
-    @Override  
-    protected void onCreate(Bundle savedInstanceState) {  
-        super.onCreate(savedInstanceState);  
-        setContentView(R.layout.activity);  
-        Button button = (Button)findViewById(R.id.btn);  
-        button.setText(&quot;Finish app&quot;);  
-        button.setOnClickListener(new OnClickListener() {  
-              
-            @Override  
-            public void onClick(View v) {  
-                // 退出App  
-                ((MyApplication)getApplication()).exit();  
-            }  
-        });  
-    }  
-}  
-</code></pre>
-
-<p>失败，应用进程被杀死，然而过会应用重启了……并且ActivityA和ActivityB都被“复活了”，只杀死了ActivityC。</p>
-
-<p><strong>android.os.Process.killProcess(android.os.Process.myPid())</strong><br/>
-失败，与System.exit（0）一样，虽然杀死了进程，但过会就被重启了，并且ActivityA和ActivityB都被“复活了”。</p>
-
-<p><strong>ActivityManager am= (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);<br/>
-am.killBackgroundProcesses(this.getPackageName());</strong><br/>
-失败，毫无反应。</p>
-
-<p><strong>自定义BaseActivity维护Activity列表</strong><br/>
-自定义一个BaseActivity：</p>
-
-<pre><code>public class BaseActivity extends Activity {  
-  
-    // 维护一个Activity软引用的列表  
-    private static List&lt;SoftReference&lt;Activity&gt;&gt; list = new ArrayList&lt;SoftReference&lt;Activity&gt;&gt;();  
-  
-    @Override  
-    protected void onCreate(Bundle savedInstanceState) {  
-        super.onCreate(savedInstanceState);  
-        list.add(new SoftReference&lt;Activity&gt;(this));  
-    }  
-  
-    @Override  
-    protected void onDestroy() {  
-        super.onDestroy();  
-        list.remove(new SoftReference&lt;Activity&gt;(this));  
-    }  
-  
-    /** 
-     * 关闭所有的Activity 
-     */  
-    public void finishAll() {  
-        for (SoftReference&lt;Activity&gt; sr : list) {  
-            if (sr.get() != null) {  
-                sr.get().finish();  
-            }  
-        }  
-    }  
-  
-}  
-</code></pre>
-
-<p>对于ActivityA、ActivityB和ActivityC继承BaseActivity而不是Activity，在ActivityC中调用finishAll方法即可关闭所有Activity进而退出App。</p>
-
-<p><strong>finishAffinity</strong>()<br/>
-直接关闭相同任务栈中的所用Activity，与上一个方法效果差不多，但是是Android自带的，方便多了。</p>
-
-<p>综上所述，测试结果如下：<br/>
-　　1. System.exit（0）：只能关闭当前Activity，关闭进程可能导致数据存储问题，不推荐<br/>
-　　2. Android.os.Process.killProcess(android.os.Process.myPid())：同上<br/>
-　　3. ActivityManager am= (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);<br/>
-am.killBackgroundProcesses(this.getPackageName())：测试无效<br/>
-　　4. 自定义BaseActivity维护Activity列表：可以关闭依次启动的所用Activity，进而退出整个App<br/>
-　　5. finishAffinity()：可以关闭同一个任务栈中的所有Activity，Android自带方法，比较方便</p>
-
-<h2 id="toc_3">19. Asset目录与res目录的区别</h2>
-
-<p>Asset目录和res目录均为Android中用来存放资源的目录，其中：</p>
-
-<ul>
-<li>asset目录下存放的资源代表应用无法直接访问的原生资源，应用程序需要通过AssetManager以二进制流的形式来读取资源</li>
-<li>res目录下的资源可通过R资源清单类访问，Android SDK会在编译时在R类中为他们创建对应的索引项</li>
-</ul>
-
-<h2 id="toc_4">20. Android怎么加速启动Activity</h2>
-
-<p>个人认为，影响Activity启动时间的主要有两个地方：<br/>
-　　1. onCreate、onStart、onResume等回调方法的执行时间<br/>
-　　2. Activity对应的界面的inflate时间<br/>
-对于第一点，我们应该尽量减少在这些回调方法中执行耗时操作（涉及数据库，图片等），如果一定要执行耗时操作，可以考虑新开子线程处理。<br/>
-对于第二点，我们应该合理使用各种xml的优化标签，并界面上减少View的嵌套层数与绘制时间。</p>
+<p>转载自：<a href="http://blog.csdn.net/u011240877/article/details/52683558">http://blog.csdn.net/u011240877/article/details/52683558</a></p>
 
 ]]></content>
   </entry>

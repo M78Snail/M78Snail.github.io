@@ -1,0 +1,703 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  找女朋友之简单工厂模式，工厂模式，抽象工厂模式 - m78snail
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="m78snail" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:m78snail.com ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="_self" href="index.html">主页</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">文章</a></li>
+        
+        <li id=""><a target="_self" href="about.html">关于</a></li>
+        
+        <li id=""><a target="_self" href="project.html">项目</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="http://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; m78snail</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="_self" href="index.html">主页</a></li>
+        
+        <li><a target="_self" href="archives.html">文章</a></li>
+        
+        <li><a target="_self" href="about.html">关于</a></li>
+        
+        <li><a target="_self" href="project.html">项目</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html">心情日记</a></li>
+        
+            <li><a href="Android.html">Android</a></li>
+        
+            <li><a href="%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html">工具使用</a></li>
+        
+            <li><a href="Mac.html">Mac</a></li>
+        
+            <li><a href="%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html">开源框架</a></li>
+        
+            <li><a href="Rx%E5%AE%B6%E6%97%8F.html">Rx家族</a></li>
+        
+            <li><a href="%E7%BD%91%E7%BB%9C.html">网络</a></li>
+        
+            <li><a href="Dagger2.html">Dagger2</a></li>
+        
+            <li><a href="%E9%9D%A2%E8%AF%95.html">面试</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>找女朋友之简单工厂模式，工厂模式，抽象工厂模式</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2016/2/15</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+              &nbsp;<a  class="ds-thread-count" data-thread-key="14871411019561.html" data-count-type="comments" href="14871411019561.html#ds-thread"></a>
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <h2 id="toc_0">一、 简单工厂模式</h2>
+
+<ul>
+<li>突然有一天，在梦里拥有了阿拉丁神灯.</li>
+<li>灯神说: &quot;我可以给你创造一个女朋友哦&quot;</li>
+<li>这时候我的心里...嘿嘿嘿...</li>
+<li>&quot;但是只能满足你一个地理条件，目前只有三个选项: 四川, 河北, 山东. 你挑一个? &quot; 灯神又说.</li>
+<li>&quot;那我选: 四川...或者...&quot;</li>
+<li>没等我说完，嘭的一下，出来个一个火辣的川妹子...</li>
+</ul>
+
+<span id="more"></span><!-- more -->
+
+<p><strong>用代码来展示就是:</strong></p>
+
+<pre><code>// 神灯拥有的三种选项
+public enum GFType {
+      SI_CHUAN,
+      HE_BEI,
+      SHAN_DONG
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 和女朋友吃什么由她的家乡口味来定，但是shopping是一定的了 -_-
+public abstract class BaseGF {
+      public abstract void eatFood();
+      public void shopping() {
+            System.out.println(&quot;Go shopping every day...&quot;);
+      };
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>public class SiChuanGF extends BaseGF {
+      @Override
+      public void eatFood() {
+            System.out.println(&quot;Eat sichuan food...&quot;);
+      }
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>public class ShanDongGF extends BaseGF {
+      @Override
+      public void eatFood() {
+            System.out.println(&quot;Eat shandong food...&quot;);
+      }
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 神灯为我们创建女朋友的工厂
+public class GFFactory {
+      public static BaseGF createGF(GFType gFType) {
+            switch (gFType) {
+                  case SI_CHUAN:
+                        return new SiChuanGF();
+                  case SHAN_DONG:
+                        return new ShanDongGF();
+                  default:
+                  case HE_BEI:
+                        return new HeBeiGF();
+            }
+      }
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 这个就是神灯的创建女朋友的程序了
+public class Main {
+      public static void main(String[] args) {
+            BaseGF siChuanGirl = GFFactory.createGF(GFType.SI_CHUAN);
+            siChuanGirl.eatFood();
+            siChuanGirl.shopping();
+
+//          BaseGF shanDongGirl = GFFactory.createGF(GFType.SHAN_DONG);
+//          shanDongGirl.eatFood();
+//          shanDongGirl.shopping();
+//          
+//          BaseGF heBeiGirl = GFFactory.createGF(GFType.HE_BEI);
+//          heBeiGirl.eatFood();
+//          heBeiGirl.shopping();
+      }
+}
+
+// 有了女朋友之后是这样的 -_-
+Eat sichuan food...
+Go shopping every day...
+// Eat shandong food...
+// Go shopping every day...
+// Eat hebei food...
+// Go shopping every day...
+</code></pre>
+
+<p>简单工厂模式: 专门定义一个类用来负责创建其他类的实例，被创建的实例通常都具有共同的父类.<br/>
+<img src="media/14871411019561/14871415118517.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<h2 id="toc_1">二、 工厂模式</h2>
+
+<ul>
+<li>因为我刚才还没决定，神灯就帮我把川妹子创建出来了，所以我嘟囔着，我这还没决定呢啊，大哥，你这手速有点快吧</li>
+<li>神灯: &quot;...你这个人真的是难伺候&quot;</li>
+<li>我: &quot;我能不能要一个彩云之南的妹子? &quot;</li>
+<li>神灯: &quot;彩云之南是哪? &quot;</li>
+<li>我: &quot;云南啊&quot;</li>
+<li>神灯: &quot;...你怎么这么麻烦，你知道我要改多少东西吗，我的enum(GFType)要改, GFFactory要增加case&quot;</li>
+<li>我: &quot;神灯大哥，好人做到底么，好不好? &quot;</li>
+<li>神灯: &quot;要不我给你一个接口好了，你自己想创建哪里的就创建那里的&quot;</li>
+<li>我的内心...嘿嘿嘿...</li>
+</ul>
+
+<p><strong>用代码展示就是:</strong></p>
+
+<pre><code>// 创建女朋友的接口，想要哪里的女朋友，实现这个接口就可以了
+public interface IGFFactory {
+      BaseGF createGF();
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 没有改变
+public abstract class BaseGF {
+      public abstract void eatFood();
+      public void shopping() {
+            System.out.println(&quot;Go shopping every day...&quot;);
+      };
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 创建川妹子的工厂
+public class SiChuanGFFactory implements IGFFactory {
+      @Override
+      public BaseGF createGF() {
+            return new SiChuanGF();
+      }
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 这个类也没有改变
+public class SiChuanGF extends BaseGF {
+      @Override
+      public void eatFood() {
+            System.out.println(&quot;Eat sichuan food...&quot;);
+      }
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 我想要的云南的妹子的创建工厂
+public class YunNanGFFactory implements IGFFactory {
+      @Override
+      public BaseGF createGF() {
+            return new YunNanGF();
+      }
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 云南妹子
+public class YunNanGF extends BaseGF {
+      @Override
+      public void eatFood() {
+            System.out.println(&quot;Eat 牛干巴, 炸土豆, 小锅米线, 卤米线...&quot;);
+      }
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 这个时候一切准备就绪，创建一个云南的妹子吧...嘿嘿嘿...嘭...
+public class Main {
+      public static void main(String[] args) {
+            IGFFactory yunNanGFFactory = new YunNanGFFactory();
+            BaseGF yunNanGF = yunNanGFFactory.createGF();
+            yunNanGF.eatFood();
+            yunNanGF.shopping();
+
+//          IGFFactory siChuanGFFactory = new SiChuanGFFactory();
+//          BaseGF siChuanGF = siChuanGFFactory.createGF();
+//          siChuanGF.eatFood();
+//          siChuanGF.shopping();
+      }
+}
+// 有了个云南妹子，然后就开始吃各种小吃了
+Eat 牛干巴, 炸土豆, 小锅米线, 卤米线...
+Go shopping every day...
+// Eat sichuan food...
+// Go shopping every day...
+</code></pre>
+
+<p>从此我和我的云南妹子过上了幸福的生活<br/>
+工厂模式： 定义一个用于创建对象的接口，让子类决定实例化哪一个类。工厂方法使一个类的实例化延迟到其子类.<br/>
+<img src="media/14871411019561/14871426106976.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<h2 id="toc_2">三、 抽象工厂模式</h2>
+
+<ul>
+<li>好多年以后，我准备和我的云南妹子准备结婚了. 但是我们发现好像少点什么，对，就是妹子的父母还没见啊. 然后我们去找神灯大哥帮忙.</li>
+<li>神灯说: &quot;小子，挺幸福呗&quot;</li>
+<li>我说: &quot;还得多谢神灯大哥啊，全都靠你&quot;</li>
+<li>神灯: &quot;来找我是不是有什么需求啊(内心: 是不是又特么改需求了)? &quot;</li>
+<li>我: &quot;我还没见过妹子的父母咧，帮帮忙啊&quot;</li>
+<li>神灯: &quot;...&quot;
+<strong>用代码展示(以妹子的父亲为例子):</strong></li>
+</ul>
+
+<pre><code>// IGFFactory增加一个创建妹子父亲的方法
+public interface IGFFactory {
+      BaseGF createGF();
+      IGFFather createGFFather();
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 父亲接口
+public interface IGFFather {
+      // 对于闺女和我的事情的建议
+      void suggestionToGirl();
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>public class SiChuanGFFactory implements IGFFactory {
+      @Override
+      public BaseGF createGF() {
+            return new SiChuanGF();
+      }
+
+      @Override
+      public IGFFather createGFFather() {
+            return new SiChuanGFFather();
+      }
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 四川妹子的父亲实现类
+public class SiChuanGFFather implements IGFFather {
+      @Override
+      public void suggestionToGirl() {
+            // 同意了
+            System.out.println(&quot;Agree ...&quot;);    
+      }
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>public class YunNanGFFactory implements IGFFactory {
+      @Override
+      public BaseGF createGF() {
+            return new YunNanGF();
+      }
+
+      @Override
+      public IGFFather createGFFather() {
+            return new YunNanGFFather();
+      }
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 云南妹子的父亲实现类
+public class YunNanGFFather implements IGFFather {
+      @Override
+      public void suggestionToGirl() {
+            // 不发表意见...
+            System.out.println(&quot;Silence ...&quot;);
+      }
+}
+</code></pre>
+
+<hr/>
+
+<pre><code>// 我们又一次找到了神灯，满意了吧
+public class Main {
+      public static void main(String[] args) {
+            IGFFactory yunNanGFFactory = new YunNanGFFactory();
+            BaseGF yunNanGF = yunNanGFFactory.createGF();
+            yunNanGF.eatFood();
+            yunNanGF.shopping();
+
+            IGFFather yunNanGFFather = yunNanGFFactory.createGFFather();
+            yunNanGFFather.suggestionToGirl();
+
+//          IGFFactory siChuanGFFactory = new SiChuanGFFactory();
+//          BaseGF siChuanGF = siChuanGFFactory.createGF();
+//          siChuanGF.eatFood();
+//          siChuanGF.shopping();
+//          
+//          IGFFather siChuanGFFather = siChuanGFFactory.createGFFather();
+//          siChuanGFFather.suggestionToGirl();
+      }
+}
+
+// 结果是这样滴...
+Eat 牛干巴, 炸洋芋, 小锅米线, 卤米线...
+Go shopping every day...
+Silence ...
+// Eat sichuan food...
+// Go shopping every day...
+// Agree ...
+</code></pre>
+
+<p>抽象工厂模式: 提供一个创建一系列相关或者相互依赖对象的接口，而无需指定他们具体的类.<br/>
+<img src="media/14871411019561/14871428831254.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="14779858228757.html" 
+          title="Previous Post: 谈谈新买的Mac和最近的生活">&laquo; 谈谈新买的Mac和最近的生活</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="14871399438827.html" 
+          title="Next Post: 观察者模式 : 一支穿云箭，千军万马来相见">观察者模式 : 一支穿云箭，千军万马来相见 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+              <div class="ds-thread" data-thread-key="14871411019561.html" data-url="m78snail.com/14871411019561.html" data-title="找女朋友之简单工厂模式，工厂模式，抽象工厂模式"></div>
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <div class="site-a-logo"><img src="icon2.jpeg" /></div>
+            
+                <h1>m78snail</h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+<a target="_blank" class="weibo" href="http://www.weibo.com/2811618257/profile?topnav=1&wvr=6&is_all=1" title="weibo">Weibo</a>
+
+<a target="_blank" class="github" target="_blank" href="https://github.com/M78Snail" title="GitHub">GitHub</a>
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html"><strong>心情日记</strong></a>
+        
+            <a href="Android.html"><strong>Android</strong></a>
+        
+            <a href="%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html"><strong>工具使用</strong></a>
+        
+            <a href="Mac.html"><strong>Mac</strong></a>
+        
+            <a href="%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html"><strong>开源框架</strong></a>
+        
+            <a href="Rx%E5%AE%B6%E6%97%8F.html"><strong>Rx家族</strong></a>
+        
+            <a href="%E7%BD%91%E7%BB%9C.html"><strong>网络</strong></a>
+        
+            <a href="Dagger2.html"><strong>Dagger2</strong></a>
+        
+            <a href="%E9%9D%A2%E8%AF%95.html"><strong>面试</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html"><strong>设计模式</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="14871457028090.html">装饰模式之女朋友系列之化妆篇</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14829144540758.html">Https完全解析 与 okHttp的结合</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14779864279806.html">用力的人跑不远</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14779861870049.html">Git 常用方法</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14779864962440.html">xUtils框架中HttpUtils模块源码剖析</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+
+
+<script type="text/javascript">
+var duoshuoQuery = {short_name:'m78snail'};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+
+
+
+  </body>
+</html>

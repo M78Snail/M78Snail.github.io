@@ -1,0 +1,592 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  观察者模式 : 一支穿云箭，千军万马来相见 - m78snail
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="m78snail" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:m78snail.com ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="_self" href="index.html">主页</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">文章</a></li>
+        
+        <li id=""><a target="_self" href="about.html">关于</a></li>
+        
+        <li id=""><a target="_self" href="project.html">项目</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="http://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; m78snail</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="_self" href="index.html">主页</a></li>
+        
+        <li><a target="_self" href="archives.html">文章</a></li>
+        
+        <li><a target="_self" href="about.html">关于</a></li>
+        
+        <li><a target="_self" href="project.html">项目</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html">心情日记</a></li>
+        
+            <li><a href="Android.html">Android</a></li>
+        
+            <li><a href="%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html">工具使用</a></li>
+        
+            <li><a href="Mac.html">Mac</a></li>
+        
+            <li><a href="%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html">开源框架</a></li>
+        
+            <li><a href="Rx%E5%AE%B6%E6%97%8F.html">Rx家族</a></li>
+        
+            <li><a href="%E7%BD%91%E7%BB%9C.html">网络</a></li>
+        
+            <li><a href="Dagger2.html">Dagger2</a></li>
+        
+            <li><a href="%E9%9D%A2%E8%AF%95.html">面试</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>观察者模式 : 一支穿云箭，千军万马来相见</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2016/2/15</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+              &nbsp;<a  class="ds-thread-count" data-thread-key="14871399438827.html" data-count-type="comments" href="14871399438827.html#ds-thread"></a>
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <h2 id="toc_0">一. 举个栗子</h2>
+
+<p>假如你要加入斧头帮，做到一支穿云箭，千军万马来相见，响应大哥的号召，你要怎么做？</p>
+
+<ul>
+<li>首先我得加入斧头帮，成为斧头帮一份子</li>
+<li>然后去登记，有啥事方便通知</li>
+<li>等老大一发穿云箭</li>
+<li>我跟其他小弟就赶紧出现</li>
+</ul>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_1">二. 用代码实现一下：</h2>
+
+<p>1.首先定义 斧头帮老大 AxeGangBoss:</p>
+
+<pre><code>/**
+ * description: 斧头帮老大，消息发布者，继承 Observable
+ * &lt;br/&gt;
+ * author: shixinzhang
+ * &lt;br/&gt;
+ * data: 9/20/2016
+ */
+public class AxeGangBoss extends Observable {
+    private String mName;
+
+    public AxeGangBoss(String name) {
+        mName = name;
+    }
+
+    /**
+     * 在需要通知小弟的时候调用 setChanged()方法，表明有更新
+     * 然后提醒所有小弟
+     * @param msg
+     */
+    public void sendMsg(String msg) {
+        //表示有更新
+        setChanged();
+        notifyObservers(msg);
+    }
+
+    public String getName() {
+        return mName;
+    }
+
+    public void setName(String name) {
+        mName = name;
+    }
+}
+</code></pre>
+
+<p>斧头帮老大是消息发布者，当有情况时就调用 sendMsg(…) 方法给小弟发消息。他继承自 Java 源代码提供的 Observable ：</p>
+
+<pre><code>public class Observable {
+
+    List&lt;Observer&gt; observers = new ArrayList&lt;Observer&gt;();
+
+    boolean changed = false;
+
+    public Observable() {
+    }
+
+    public void addObserver(Observer observer) {
+        if (observer == null) {
+            throw new NullPointerException(&quot;observer == null&quot;);
+        }
+        synchronized (this) {
+            if (!observers.contains(observer))
+                observers.add(observer);
+        }
+    }
+
+    protected void clearChanged() {
+        changed = false;
+    }
+
+    public int countObservers() {
+        return observers.size();
+    }
+
+    public synchronized void deleteObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    public synchronized void deleteObservers() {
+        observers.clear();
+    }
+
+    public boolean hasChanged() {
+        return changed;
+    }
+
+    public void notifyObservers() {
+        notifyObservers(null);
+    }
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public void notifyObservers(Object data) {
+        int size = 0;
+        Observer[] arrays = null;
+        synchronized (this) {
+            if (hasChanged()) {
+                clearChanged();
+                size = observers.size();
+                arrays = new Observer[size];
+                observers.toArray(arrays);
+            }
+        }
+        if (arrays != null) {
+            for (Observer observer : arrays) {
+                observer.update(this, data);
+            }
+        }
+    }
+
+    protected void setChanged() {
+        changed = true;
+    }
+}
+</code></pre>
+
+<p>Observable 里保存着一个 Observer 的集合，然后提供了添加、删除、提醒等方法。其中重要的是 notifyObservers(…) 方法，当确定出事了（changed 为 true）时 ，挨个通知小弟。 <br/>
+Observer 是一个接口，规定了小弟收到消息的方法 update(…)：</p>
+
+<pre><code>public interface Observer {
+    void update(Observable observable, Object data);
+}
+</code></pre>
+
+<p>2.定义斧头帮小弟 AxeGangPeople，小弟需要按规矩来，实现 Observer 接口:</p>
+
+<pre><code>/**
+ * description: 斧头帮小弟，订阅者，实现 Observer 接口
+ * &lt;br/&gt;
+ * author: shixinzhang
+ * &lt;br/&gt;
+ * data: 9/20/2016
+ */
+public class AxeGangPeople implements Observer {
+    String mName;
+
+    public AxeGangPeople(String name){
+        mName = name;
+    }
+
+    /**
+     * 必须实现的方法，当消息发布者发出通知后，会调用这个方法
+     * @param observable
+     * @param data
+     */
+    @Override
+    public void update(Observable observable, Object data) {
+        AxeGangBoss writer;
+        if (observable instanceof AxeGangBoss) {
+            writer = (AxeGangBoss) observable;
+            System.out.println(getName() + &quot; 收到来自 &quot; + writer.getName() + &quot; 的消息: &quot; + data.toString());
+        }
+    }
+
+    public String getName() {
+        return mName;
+    }
+
+    public void setName(String name) {
+        mName = name;
+    }
+}
+</code></pre>
+
+<p>3.然后小弟去老大那登记，老大有消息了就射穿云箭：</p>
+
+<pre><code>@Test
+    public void testSendMsg() throws Exception {
+        //创建一个斧头帮老大
+        AxeGangBoss shixinzhang = new AxeGangBoss(&quot;张拭心&quot;);
+        //创建两个小弟
+        AxeGangPeople niefeng = new AxeGangPeople(&quot;聂风&quot;);
+        AxeGangPeople bujingyun = new AxeGangPeople(&quot;步惊云&quot;);
+        //老大觉得可以，收入麾下
+        shixinzhang.addObserver(niefeng);
+        shixinzhang.addObserver(bujingyun);
+        //老大出事了，赶紧射箭！
+        shixinzhang.sendMsg(&quot;我有难了，快来救我！&quot;);
+    }
+</code></pre>
+
+<p>4.运行结果：<br/>
+<img src="media/14871399438827/14871405286614.jpg" alt=""/><br/>
+这种 一对多的通知场景 就是传说中的观察者模式。</p>
+
+<h2 id="toc_2">三. 观察者模式</h2>
+
+<p>1.定义：</p>
+
+<blockquote>
+<p>又称“发布-订阅模式”，定义了一种一对多的依赖关系，一个被观察者持有多个观察者对象的引用，当被观察者状态发生改变时，通知所有观察者进行更新。</p>
+</blockquote>
+
+<p>2.UML 图<br/>
+<img src="media/14871399438827/14871406528084.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<ul>
+<li><p>其中 Subject 是被观察者接口，即上文提到的 Observable ，持有一个观察者接口集合的引用，定义了观察者的添加、删除以及提醒；</p></li>
+<li><p>ConcreteSubject 实现了被观察者接口，即上文的斧头帮老大 AxeGangBoss，在一定情况下提醒观察者更新；</p></li>
+<li><p>Observer 是观察者抽象类，定义了更新 update 方法；</p></li>
+<li><p>ConcreteObserver 是具体观察者，即上文的小弟 AxeGangPeople，重写 update 方法，进行触发操作。里面有时需要持有一个 Subject 的引用。<br/>
+3.场景：<br/>
+有的时候一个状态值会影响许多逻辑，比如电商类软件的位置信息，如果用户切换位置，需要显示对应城市的商品信息、活动、附件的人等等，这时使用观察者模式可以减少对应模块的代码逻辑，直接写好回调方法，等待被回调就好，耦合度降低很多。</p></li>
+</ul>
+
+<p>转载自：<a href="http://blog.csdn.net/u011240877/article/details/52683558">http://blog.csdn.net/u011240877/article/details/52683558</a></p>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="14871411019561.html" 
+          title="Previous Post: 找女朋友之简单工厂模式，工厂模式，抽象工厂模式">&laquo; 找女朋友之简单工厂模式，工厂模式，抽象工厂模式</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="14871297446968.html" 
+          title="Next Post: 代理模式（动）：1 个经纪人如何代理 N 个明星">代理模式（动）：1 个经纪人如何代理 N 个明星 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+              <div class="ds-thread" data-thread-key="14871399438827.html" data-url="m78snail.com/14871399438827.html" data-title="观察者模式 : 一支穿云箭，千军万马来相见"></div>
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <div class="site-a-logo"><img src="icon2.jpeg" /></div>
+            
+                <h1>m78snail</h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+<a target="_blank" class="weibo" href="http://www.weibo.com/2811618257/profile?topnav=1&wvr=6&is_all=1" title="weibo">Weibo</a>
+
+<a target="_blank" class="github" target="_blank" href="https://github.com/M78Snail" title="GitHub">GitHub</a>
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="%E5%BF%83%E6%83%85%E6%97%A5%E8%AE%B0.html"><strong>心情日记</strong></a>
+        
+            <a href="Android.html"><strong>Android</strong></a>
+        
+            <a href="%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html"><strong>工具使用</strong></a>
+        
+            <a href="Mac.html"><strong>Mac</strong></a>
+        
+            <a href="%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6.html"><strong>开源框架</strong></a>
+        
+            <a href="Rx%E5%AE%B6%E6%97%8F.html"><strong>Rx家族</strong></a>
+        
+            <a href="%E7%BD%91%E7%BB%9C.html"><strong>网络</strong></a>
+        
+            <a href="Dagger2.html"><strong>Dagger2</strong></a>
+        
+            <a href="%E9%9D%A2%E8%AF%95.html"><strong>面试</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html"><strong>设计模式</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="14871457028090.html">装饰模式之女朋友系列之化妆篇</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14829144540758.html">Https完全解析 与 okHttp的结合</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14779864279806.html">用力的人跑不远</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14779861870049.html">Git 常用方法</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14779864962440.html">xUtils框架中HttpUtils模块源码剖析</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+
+
+<script type="text/javascript">
+var duoshuoQuery = {short_name:'m78snail'};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+
+
+
+  </body>
+</html>
