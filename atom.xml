@@ -4,13 +4,1985 @@
   <title><![CDATA[m78snail]]></title>
   <link href="m78snail.com/atom.xml" rel="self"/>
   <link href="m78snail.com/"/>
-  <updated>2017-02-16T14:38:52+08:00</updated>
+  <updated>2017-03-21T21:38:03+08:00</updated>
   <id>m78snail.com/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[数据结构与算法[三]·排序算法]]></title>
+    <link href="m78snail.com/14901034610182.html"/>
+    <updated>2017-03-21T21:37:41+08:00</updated>
+    <id>m78snail.com/14901034610182.html</id>
+    <content type="html"><![CDATA[
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">9. 二分查找，与变种二分查找。</h2>
+
+<blockquote>
+<p>二分搜索（binary search），也称折半搜索（half-interval search）、对数搜索（logarithmic search），是一种在有序数组中查找某一特定元素的搜索算法。搜索过程从数组的中间元素开始，如果中间元素正好是要查找的元素，则搜索过程结束；如果某一特定元素大于或者小于中间元素，则在数组大于或小于中间元素的那一半中查找，而且跟开始一样从中间元素开始比较。如果在某一步骤数组为空，则代表找不到。这种搜索算法每一次比较都使搜索范围缩小一半。</p>
+
+<p>　　除直接在一个数组中查找元素外，可用在插入排序中。</p>
+</blockquote>
+
+<p><strong>复杂度分析</strong></p>
+
+<p><img src="media/14900925568521/14901005309904.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<ul>
+<li><p>时间复杂度<br/>
+　　折半搜索每次把搜索区域减少一半，时间复杂度为Ｏ(Log n) 。（n代表集合中元素的个数）</p></li>
+<li><p>空间复杂度<br/>
+　　  迭代：O(1)　　递归：O(log n)<br/>
+　　<br/>
+<strong>示例代码</strong></p></li>
+</ul>
+
+<pre><code>// 递归版本
+int binary_search(const int arr[], int start, int end, int key) {
+    if (start &gt; end)
+        return -1;
+
+    int mid = start + (end - start) / 2; //直接平均可能会溢位
+    if (arr[mid] &gt; key)
+        return binary_search(arr, start, mid - 1, key);
+    if (arr[mid] &lt; key)
+        return binary_search(arr, mid + 1, end, key);
+    return mid; 
+}
+</code></pre>
+
+<pre><code>// while循环
+int binary_search(const int arr[], int start, int end, int key) {
+    int mid;
+    while (start &lt;= end) {
+        mid = start + (end - start) / 2; //直接平均可能会溢位
+        if (arr[mid] &lt; key)
+            start = mid + 1;
+        else if (arr[mid] &gt; key)
+            end = mid - 1;
+        else
+            return mid; 
+    }
+    return -1;
+}
+</code></pre>
+
+<p><strong>变种二分查找</strong><br/>
+<strong>改变数组</strong></p>
+
+<p>　　升序数组a经过循环右移后，二分查找给定元素x的位置。</p>
+
+<p>如a={1,2,3,4,5,6,7}，循环移动后a={5,6,7,1,2,3,4}</p>
+
+<p><strong>思路</strong><br/>
+移动后的数组分为两部分，两部分内部都是升序排列的，中值mid必然属于这两部分之一。然后根据下标判断查找值是否属于这一部分，循环缩小mid值，直到arr[mid]等于查找值就返回。</p>
+
+<p><strong>代码实现</strong></p>
+
+<pre><code>public static void main(String[] args){
+          int arr[]={5,6,7,1,2,3,4};
+          int out = VariantBinaryFind(arr,arr.length-1,1);
+          System.out.println(&quot;下标为： &quot;+ out);
+      }
+      /**
+       * @param a  数组
+       * @param len 数组长度
+       * @param x 查找的元素
+       * @return 返回查找值得下标，不存在返回 -1
+       */
+      public static int VariantBinaryFind(int arr[],int len,int x){
+          int left = 0;
+          int right = len;
+          while(left&lt;=right){
+              int mid = left + (right -left)/2;
+              if(arr[mid]==x){
+                  return mid;
+              }
+              if(arr[mid] &gt;= arr[left]) //mid在左边序列
+                {  
+                    if(arr[left] &gt; x || arr[mid] &lt; x)  
+                        left = mid + 1;  //x在右边序列
+                    else  
+                        right = mid - 1;  //x在左边序列
+                }  
+                else //mid在右边序列
+                {  
+                    if(arr[right] &lt; x || arr[mid] &gt; x)  
+                        right = mid - 1;  //x在左边序列
+                    else  
+                        left = mid + 1;  //x在右边序列
+                }  
+            }  
+            return -1;  
+      }
+</code></pre>
+
+<p>运行结果：<br/>
+<img src="media/14900925568521/14901007638798.jpg" alt="" class="mw_img_center" style="width:100px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<h2 id="toc_1">10. 二叉树、B+树、AVL树、红黑树、哈夫曼树。</h2>
+
+<h2 id="toc_2"><strong>二叉树</strong></h2>
+
+<p>　　二叉树（Binary tree）是每个节点最多有两个子树的树结构。二叉树的子树有左右之分，次序不能颠倒。</p>
+
+<p>　　二叉树的第i层至多有 这里写图片描述个结点； 　　深度为k的二叉树至多共有这里写图片描述个结点； 　　对任何一棵二叉树T，如果其终端结点数为这里写图片描述，度为2的节点数为 这里写图片描述，则 这里写图片描述。</p>
+
+<p>　　与树不同，树的节点个数至少为1，而二叉树的节点个数可以为0；树中节点的最大度数没有限制，而二叉树节点的最大度数为2；树的节点无左、右之分，而二叉树的结点有左、右之分。</p>
+
+<p><strong>B+树</strong></p>
+
+<hr/>
+
+<p>　　B+ 树是一种树数据结构，是一个<strong>n叉树</strong>，每个节点通常有多个孩子，一颗B+树包含<strong>根节点</strong>、<strong>内部节点</strong>和<strong>叶子节点</strong>。根节点可能是一个叶子节点，也可能是一个包含两个或两个以上孩子节点的节点。</p>
+
+<p>　　B+ 树通常用于<strong>数据库</strong>和<strong>操作系统的文件系统</strong>中。NTFS, ReiserFS, NSS, XFS, JFS, ReFS 和BFS等文件系统都在使用B+树作为<strong>元数据索引</strong>。B+ 树的特点是能够保持<strong>数据稳定有序</strong>，其插入与修改拥有较稳定的对数时间复杂度。B+ 树元素自底向上插入。<br/>
+　　</p>
+
+<p><strong>AVL树</strong></p>
+
+<hr/>
+
+<p>　　AVL树中任何节点的两个子树的高度最大差别为一，所以它也被称为高度平衡树。查找、插入和删除在平均和最坏情况下都是O（log n）。增加和删除可能需要通过一次或多次树旋转来重新平衡这个树。</p>
+
+<p>　　节点的平衡因子是它的左子树的高度减去它的右子树的高度（有时相反）。带有平衡因子1、0或 -1的节点被认为是平衡的。带有平衡因子 -2或2的节点被认为是不平衡的，并需要重新平衡这个树。平衡因子可以直接存储在每个节点中，或从可能存储在节点中的子树高度计算出来。<br/>
+　　</p>
+
+<p><strong>红黑树</strong></p>
+
+<hr/>
+
+<p>　　红黑树（Red Black Tree） 是一种自平衡二叉查找树，红黑树和AVL树类似，都是在进行插入和删除操作时通过特定操作保持二叉查找树的平衡，从而获得较高的查找性能。</p>
+
+<p>　　它虽然是复杂的，但它的最坏情况运行时间也是非常良好的，并且在实践中是高效的： 它可以在O(log n)时间内做查找，插入和删除，这里的n 是树中元素的数目。<a href="https://github.com/Mr-YangCheng/ForAndroidInterview/blob/master/data%20structure/%5B%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%5D%20%E7%BA%A2%E9%BB%91%E6%A0%91.md">详情</a><br/>
+　　<br/>
+<strong>哈夫曼树</strong></p>
+
+<hr/>
+
+<p>　　哈夫曼树又称最优二叉树，是一种带权路径长度最短的二叉树。所谓树的带权路径长度，就是树中所有的叶结点的权值乘上其到根结点的 路径长度（若根结点为0层，叶结点到根结点的路径长度为叶结点的层数）。</p>
+
+<p>　　树的带权路径长度记为WPL= (W1L1+W2L2+W3L3+...+WnLn)，N个权值Wi(i=1,2,...n)构成一棵有N个叶结点的二叉树，相应的叶结点的路径长度为Li(i=1,2,...n)。可以证明哈夫曼树的WPL是最小的。<br/>
+　　<br/>
+<strong>哈夫曼树的构造</strong></p>
+
+<p>　　假设有n个权值，则构造出的哈夫曼树有n个叶子结点。 n个权值分别设为 w1、w2、…、wn，则哈夫曼树的构造规则为： 　　 <br/>
+①　将w1、w2、…，wn看成是有n 棵树的森林(每棵树仅有一个结点)；</p>
+
+<p>②在森林中选出两个根结点的权值最小的树合并，作为一棵新树的左、右子树，且新树的根结点权值为其左、右子树根结点权值之和；</p>
+
+<p>③从森林中删除选取的两棵树，并将新树加入森林；</p>
+
+<p>④重复②、③步，直到森林中只剩一棵树为止，该树即为所求得的哈夫曼树。</p>
+
+<p><strong>哈夫曼编码</strong><br/>
+　　哈夫曼编码是可变字长编码(VLC)的一种。该方法完全依据字符出现概率来构造异字头的平均长度最短的码字，有时称之为最佳编码。</p>
+
+<blockquote>
+<p>　　有A,B,C,D,E五个字符，出现的频率（即权值）分别为5,4,3,2,1，对其进行哈夫曼编码。</p>
+</blockquote>
+
+<p>首先把A,B,C,D,E构造成一棵哈夫曼树（２.１有说明）；</p>
+
+<p>通过从哈夫曼树根结点开始，对左子树分配代码“0”，右子树分配代码“1”，一直到达叶子结点为止，然后将从树根沿每条路径到达叶子结点的代码排列起来，便得到了哈夫曼编码。<br/>
+<img src="media/14900925568521/14901015619752.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+所以各字符对应的编码为：A-&gt;11,B-&gt;10,C-&gt;00,D-&gt;011,E-&gt;010</p>
+
+<p>霍夫曼编码是一种无前缀编码。解码时不会混淆。其主要应用在数据压缩，加密解密等场合。</p>
+
+<h2 id="toc_3">11. 二叉树的前中后续遍历：递归与非递归写法，层序遍历算法。</h2>
+
+<p>　　遍历二叉树：L、D、R分别表示遍历左子树、访问根结点和遍历右子树，则先(根)序遍历二叉树的顺序是DLR，中(根)序遍历二叉树的顺序是LDR，后(根)序遍历二叉树的顺序是LRD。还有按层遍历二叉树。这些方法的时间复杂度都是O(n)，n为结点个数。<br/>
+　　<img src="media/14900925568521/14901016474922.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+用二叉树表示上述表达式：a+b*(c-d)-e/f</p>
+
+<ul>
+<li>先序遍历的序列是：-+a*b-cd/ef</li>
+<li>中序遍历的序列是：a+b*c-d-e/f</li>
+<li>后序遍历的序列是：abcd-*+ef/-
+<strong>二叉树的存储</strong></li>
+</ul>
+
+<p><strong>1顺序存储</strong><br/>
+　　二叉树可以用数组或线性表来存储，而且如果这是满二叉树，这种方法不会浪费空间。用这种紧凑排列，如果一个结点的索引为i，它的子结点能在索引2i+1和2i+2找到，并且它的父节点（如果有）能在索引floor((i-1)/2)找到（假设根节点的索引为0）。<br/>
+　　<img src="media/14900925568521/14901017243395.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p><strong>２二叉链表存储</strong><br/>
+　　二叉树通常用树结点结构来存储。有时也包含指向唯一的父节点的指针。如果一个结点的子结点个数小于2，一些子结点指针可能为空值，或者为特殊的哨兵结点。 使用链表能避免顺序储存浪费空间的问题，算法和结构相对简单，但使用二叉链表，由于缺乏父链的指引，在找回父节点时需要重新扫描树得知父节点的节点地址。<br/>
+<img src="media/14900925568521/14901018033160.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p><strong>３三叉链表存储</strong><br/>
+改进于二叉链表，增加父节点的指引，能更好地实现节点间的访问，不过算法相对复杂。 当二叉树用三叉链表表示时，有N个结点，就会有N+2个空指针。<br/>
+<img src="media/14900925568521/14901018694156.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p><strong>前中后续遍历（递归）</strong></p>
+
+<pre><code>    /* 
+     *前序遍历二叉树 
+     * */  
+    public void preOrder(Node node){  
+        if(node != null){  
+            System.out.print(node.data);  
+            preOrder(node.leftChild);  
+            preOrder(node.rightChild);  
+        }  
+    }  
+    /* 
+     *中序遍历二叉树 
+     * */  
+    public void inOrder(Node node){  
+        if(node != null){  
+            inOrder(node.leftChild);  
+            System.out.print(node.data);  
+            inOrder(node.rightChild);  
+        }  
+    }  
+    /* 
+     *后序遍历二叉树 
+     * */  
+    public void postOrder(Node node){  
+        if(node != null){  
+            postOrder(node.leftChild);  
+            postOrder(node.rightChild);  
+            System.out.print(node.data);              
+    }  
+</code></pre>
+
+<p><strong>前中后续遍历（非递归）</strong></p>
+
+<pre><code>   /** 
+     *  
+     * 【前序】
+     * 利用栈实现循环先序遍历二叉树 
+     * 这种实现类似于图的深度优先遍历（DFS） 
+     * 维护一个栈，将根节点入栈，然后只要栈不为空，出栈并访问，接着依次将访问节点的右节点、左节点入栈。 
+     * 这种方式应该是对先序遍历的一种特殊实现（看上去简单明了），但是不具备很好的扩展性，在中序和后序方式中不适用 
+     */  
+    public static void preOrderStack(Node root){  
+        if(root==null)return;  
+        Stack&lt;Node&gt; s=new Stack&lt;Node&gt;();  
+        s.push(root);  
+        while(!s.isEmpty()){  
+            Node temp=s.pop();  
+            System.out.println(temp.value);  
+            if(temp.right!=null) s.push(temp.right);  
+            if(temp.left!=null) s.push(temp.left);  
+        }  
+    } 
+     /** 
+     *  
+     * 【中序】
+     * 利用栈模拟递归过程实现循环中序遍历二叉树 
+     * 访问的时间是在左子树都处理完直到null的时候出栈并访问。 
+     */  
+    public static void inOrderStack(Node root){  
+        if(root==null)return;  
+        Stack&lt;Node&gt; s=new Stack&lt;Node&gt;();  
+        while(root!=null||!s.isEmpty()){  
+            while(root!=null){  
+                s.push(root);//先访问再入栈  
+                root=root.left;  
+            }  
+            root=s.pop();  
+            System.out.println(root.value);  
+            root=root.right;//如果是null，出栈并处理右子树  
+        }  
+    }  
+    /** 
+     *  
+     * 【后续】
+     * 后序遍历不同于先序和中序，它是要先处理完左右子树，然后再处理根(回溯)，所以需要一个记录哪些节点已经被访问的结构(可以在树结构里面加一个标记)，这里可以用map实现 
+     */  
+    public static void postOrderStack(Node root){  
+        if(root==null)return;  
+        Stack&lt;Node&gt; s=new Stack&lt;Node&gt;();  
+        Map&lt;Node,Boolean&gt; map=new HashMap&lt;Node,Boolean&gt;();   
+        s.push(root);  
+        while(!s.isEmpty()){  
+            Node temp=s.peek();  
+            if(temp.left!=null&amp;&amp;!map.containsKey(temp.left)){  
+                temp=temp.left;  
+                while(temp!=null){  
+                    if(map.containsKey(temp))break;  
+                    else s.push(temp);  
+                    temp=temp.left;  
+                }  
+                continue;  
+            }  
+            if(temp.right!=null&amp;&amp;!map.containsKey(temp.right)){  
+                s.push(temp.right);  
+                continue;  
+            }  
+            Node t=s.pop();  
+            map.put(t,true);  
+            System.out.println(t.value);  
+        }  
+    }  
+</code></pre>
+
+<p><strong>广度优先遍历（层次遍历）</strong></p>
+
+<pre><code>   /** 
+     * @param root 树根节点 
+     * 层序遍历二叉树，用队列实现，先将根节点入队列，只要队列不为空，然后出队列，并访问，接着讲访问节点的左右子树依次入队列 
+     */  
+    public static void levelTravel(Node root){  
+        if(root==null)return;  
+        Queue&lt;Node&gt; q=new LinkedList&lt;Node&gt;();  
+        q.add(root);  
+        while(!q.isEmpty()){  
+            Node temp =  q.poll();  
+            System.out.println(temp.value);  
+            if(temp.left!=null)q.add(temp.left);  
+            if(temp.right!=null)q.add(temp.right);  
+        }  
+    } 
+</code></pre>
+
+<h2 id="toc_4">12. 图的BFS与DFS算法，最小生成树prim算法与最短路径Dijkstra算法。</h2>
+
+<p>图G是由顶点的有穷集合，以及顶点之间的关系组成，顶点的集合记为V，顶点之间的关系构成边的集合E，G=(V,E).</p>
+
+<p>　　如果给图的每条边规定一个方向，那么得到的图称为有向图，其边也称为有向边。在有向图中，与一个节点相关联的边有出边和入边之分，而与一个有向边关联的两个点也有始点和终点之分。相反，边没有方向的图称为无向图。<br/>
+<strong>图的遍历</strong></p>
+
+<p>　　①　DFS（Depth First Search）深度优先搜索，为每个顶点设立一个“访问标志”。首先将图中每个顶点的访问标志设为 FALSE, 之后搜索图中每个顶点，如果未被访问，则以该顶点为起始点，进行遍历。</p>
+
+<p>　　若当前访问的顶点的邻接顶点有未被访问的，则任选一个访问之。反之，退回到最近访问过的顶点；直到与起始顶点相通的全部顶点都访问完毕；</p>
+
+<blockquote>
+<p>　　遍历图的过程实质上是对每个顶点查找其邻接点的过程，所耗费的时间取决于所采用的存储结构。 对图中的每个顶点至多调用1次DFS算法，因为一旦某个顶点已访问过，则不再从它出发进行搜索。</p>
+</blockquote>
+
+<hr/>
+
+<blockquote>
+<p>邻接链表表示：查找每个顶点的邻接点所需时间为O(e)，e为边(弧)数，算法时间复杂度为O(n+e)</p>
+</blockquote>
+
+<hr/>
+
+<blockquote>
+<p>数组表示：查找每个顶点的邻接点所需时间为O(n2)，n为顶点数，算法时间复杂度为O(n2)</p>
+</blockquote>
+
+<p>②　BFS（Breadth First Search）广度优先遍历，从图的某一结点出发，首先依次访问该结点的所有邻接顶点 Vi1, Vi2, …, Vin 再按这些顶点被访问的先后次序依次访问与它们相邻接的所有未被访问的顶点，重复此过程，直至所有顶点均被访问为止。</p>
+
+<p><strong>遍历代码（邻接矩阵）</strong></p>
+
+<pre><code>// 邻接矩阵存储图
+public class Graph {
+    // 顶点数
+    private int number = 9;
+    // 记录顶点是否被访问
+    private boolean[] flag;
+    // 顶点
+    private String[] vertexs = { &quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;, &quot;G&quot;, &quot;H&quot;, &quot;I&quot; };
+    // 边
+    private int[][] edges = { 
+            { 0, 1, 0, 0, 0, 1, 1, 0, 0 }, 
+            { 1, 0, 1, 0, 0, 0, 1, 0, 1 }, 
+            { 0, 1, 0, 1, 0, 0, 0, 0, 1 },
+            { 0, 0, 1, 0, 1, 0, 1, 1, 1 },
+            { 0, 0, 0, 1, 0, 1, 0, 1, 0 }, 
+            { 1, 0, 0, 0, 1, 0, 1, 0, 0 },
+            { 0, 1, 0, 1, 0, 1, 0, 1, 0 },
+            { 0, 0, 0, 1, 1, 0, 1, 0, 0 }, 
+            { 0, 1, 1, 1, 0, 0, 0, 0, 0 } 
+            };
+
+    // 图的深度遍历操作(递归)
+    void DFSTraverse() {
+        flag = new boolean[number];
+        for (int i = 0; i &lt; number; i++) {
+            if (flag[i] == false) {// 当前顶点没有被访问
+                DFS(i);
+            }
+        }
+    }
+
+    // 图的深度优先递归算法
+    void DFS(int i) {
+        flag[i] = true;// 第i个顶点被访问
+        System.out.print(vertexs[i] + &quot; &quot;);
+        for (int j = 0; j &lt; number; j++) {
+            if (flag[j] == false &amp;&amp; edges[i][j] == 1) {
+                DFS(j);
+            }
+        }
+    }
+
+    // 图的广度遍历操作
+    void BFSTraverse() {
+        flag = new boolean[number];
+        Queue&lt;Integer&gt; queue = new LinkedList&lt;Integer&gt;();
+        for (int i = 0; i &lt; number; i++) {
+            if (flag[i] == false) {
+                flag[i] = true;
+                System.out.print(vertexs[i] + &quot; &quot;);
+                queue.add(i);
+                while (!queue.isEmpty()) {
+                    int j = queue.poll();
+                    for (int k = 0; k &lt; number; k++) {
+                        if (edges[j][k] == 1 &amp;&amp; flag[k] == false) {
+                            flag[k] = true;
+                            System.out.print(vertexs[k] + &quot; &quot;);
+                            queue.add(k);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Graph graph = new Graph();
+        System.out.println(&quot;-----------DFS-----------------&quot;);
+        graph.DFSTraverse();
+        System.out.println();
+        System.out.println(&quot;-----------BFS-----------------&quot;);
+        graph.BFSTraverse();
+    }
+}
+</code></pre>
+
+<p>运行结果：<br/>
+<img src="media/14900925568521/14901023008899.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+**最小生成树prim算法<br/>
+**<br/>
+　　从单一顶点开始，普里姆算法按照以下步骤逐步扩大树中所含顶点的数目，直到遍及连通图的所有顶点。</p>
+
+<ol>
+<li><p>输入：一个加权连通图，其中顶点集合为V，边集合为E；</p></li>
+<li><p>初始化：Vnew = {x}，其中x为集合V中的任一节点（起始点），Enew = {}；</p></li>
+<li><p>重复下列操作，直到Vnew = V：</p></li>
+</ol>
+
+<p>3.1 在集合E中选取权值最小的边（u, v），其中u为集合Vnew中的元素，而v则是V中没有加入Vnew的顶点（如果存在有多条满足前述条件即具有相同权值的边，则可任意选取其中之一）； 3.2 将v加入集合Vnew中，将（u, v）加入集合Enew中；<br/>
+4. 输出：使用集合Vnew和Enew来描述所得到的最小生成树。</p>
+
+<blockquote>
+<p>此为原始的加权连通图。每条边一侧的数字代表其权值。</p>
+</blockquote>
+
+<p><img src="media/14900925568521/14901023734630.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<blockquote>
+<p>顶点D被任意选为起始点。顶点A、B、E和F通过单条边与D相连。A是距离D最近的顶点，因此将A及对应边AD以高亮表示。<br/>
+<img src="media/14900925568521/14901024582721.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>下一个顶点为距离D或A最近的顶点。B距D为9，距A为7，E为15，F为6。因此，F距D或A最近，因此将顶点F与相应边DF以高亮表示。<br/>
+<img src="media/14900925568521/14901024899486.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>算法继续重复上面的步骤。距离A为7的顶点B被高亮表示。<br/>
+<img src="media/14900925568521/14901025100075.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>在当前情况下，可以在C、E与G间进行选择。C距B为8，E距B为7，G距F为11。E最近，因此将顶点E与相应边BE高亮表示。<br/>
+<img src="media/14900925568521/14901025319584.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+这里，可供选择的顶点只有C和G。C距E为5，G距E为9，故选取C，并与边EC一同高亮表示。<br/>
+<img src="media/14900925568521/14901025655571.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+顶点G是唯一剩下的顶点，它距F为11，距E为9，E最近，故高亮表示G及相应边EG。<br/>
+<img src="media/14900925568521/14901025837779.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+现在，所有顶点均已被选取，图中绿色部分即为连通图的最小生成树。在此例中，最小生成树的权值之和为39。<br/>
+<img src="media/14900925568521/14901025988208.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+</blockquote>
+
+<p><strong>Java代码实现</strong></p>
+
+<pre><code>public class Prim {
+    //结点集
+    public static List&lt;Vertex&gt; vertexList = new ArrayList&lt;Vertex&gt;();
+    //边集
+    public static List&lt;Edge&gt; EdgeList = new ArrayList&lt;Edge&gt;();
+    //已经访问过的结点集
+    public static List&lt;Vertex&gt; containVertexList = new ArrayList&lt;Vertex&gt;();
+    
+    public static void main(String[] args) {
+        primTree();
+    }
+    public static void primTree(){
+        //初始化图
+        buildGraph();
+        //起始点
+        Vertex start = vertexList.get(0);
+        containVertexList.add(start);
+        for(int n=0;n&lt;vertexList.size()-1;n++){
+            //临时节点a
+            Vertex temp = new Vertex(start.key);
+            Edge tempedge = new Edge(start,start,1000);
+            
+            for(Vertex v : containVertexList){
+                for(Edge e : EdgeList){
+                    //找出相邻最小边
+                    if(e.start==v &amp;&amp; !containVertex(e.end)){
+                        if(e.Len&lt;tempedge.Len){
+                            temp = e.end;
+                            tempedge = e;
+                        }
+                    }
+                }
+            }
+            //把该点加入
+            containVertexList.add(temp);
+        }
+        
+        //打印输出
+        Iterator it = containVertexList.iterator();
+        while(it.hasNext()){
+            Vertex v =(Vertex) it.next();
+            System.out.println(v.key);
+        }
+    }
+    
+    public static void buildGraph() {
+        Vertex v1 = new Vertex(&quot;a&quot;);
+        Prim.vertexList.add(v1);
+        Vertex v2 = new Vertex(&quot;b&quot;);
+        Prim.vertexList.add(v2);
+        Vertex v3 = new Vertex(&quot;c&quot;);
+        Prim.vertexList.add(v3);
+        Vertex v4 = new Vertex(&quot;d&quot;);
+        Prim.vertexList.add(v4);
+        Vertex v5 = new Vertex(&quot;e&quot;);
+        Prim.vertexList.add(v5);
+        addEdge(v1, v2, 6);
+        addEdge(v1, v3, 7);
+        addEdge(v2, v3, 8);
+        addEdge(v2, v5, 4);
+        addEdge(v2, v4, 5);
+        addEdge(v3, v4, 3);
+        addEdge(v3, v5, 9);
+        addEdge(v5, v4, 7);
+        addEdge(v5, v1, 2);
+        addEdge(v4, v2, 2);
+    }
+    public static void addEdge(Vertex a, Vertex b, int w) {
+        Edge e = new Edge(a, b, w);
+        Prim.EdgeList.add(e);
+    }
+    public static boolean containVertex(Vertex vte){
+        for(Vertex v : containVertexList){
+            if(v.key.equals(vte.key))
+                return true;
+        }
+        return false;
+    }
+}
+class Vertex {
+    String key;
+    Vertex(String key){
+        this.key = key;
+    }
+}
+class Edge{
+    Vertex start;
+    Vertex end;
+    int Len;
+    Edge(Vertex start,Vertex end,int key){
+        this.start = start;
+        this.end  = end;
+        this.Len = key;
+        
+    }
+}
+</code></pre>
+
+<p><strong>Dijkstra算法</strong></p>
+
+<blockquote>
+<p>　　使用了广度优先搜索解决非负权有向图的单源最短路径问题，算法最终得到一个最短路径树（一个节点到其他所有节点的最短路径）。该算法常用于路由算法或者作为其他图算法的一个子模块。主要特点是以起始点为中心向外层层扩展，直到扩展到终点为止。<br/>
+算法思想：</p>
+
+<p>　　设G=(V,E)是一个带权有向图，把图中顶点集合V分成两组，第一组为已求出最短路径的顶点集合（用S表示，初始时S中只有一个源点，以后每求得一条最短路径 , 就将加入到集合S中，直到全部顶点都加入到S中，算法就结束了）</p>
+
+<p>　　第二组为其余未确定最短路径的顶点集合（用U表示），按最短路径长度的递增次序依次把第二组的顶点加入S中。在加入的过程中，总保持从源点v到S中各顶点的最短路径长度不大于从源点v到U中任何顶点的最短路径长度。此外，每个顶点对应一个距离，S中的顶点的距离就是从v到此顶点的最短路径长度，U中的顶点的距离，是从v到此顶点只包括S中的顶点为中间顶点的当前最短路径长度。<br/>
+　　</p>
+</blockquote>
+
+<p>算法步骤：</p>
+
+<p>a.　初始时，S只包含源点，即S＝{v}，v的距离为0。U包含除v外的其他顶点，即:U={其余顶点}，若v与U中顶点u有边，则（u,v）正常有权值，若u不是v的出边邻接点，则（u,v）权值为∞。</p>
+
+<p>b.　从U中选取一个距离v最小的顶点k，把k，加入S中（该选定的距离就是v到k的最短路径长度）。</p>
+
+<p>c.　以k为新考虑的中间点，修改U中各顶点的距离；若从源点v到顶点u的距离（经过顶点k）比原来距离（不经过顶点k）短，则修改顶点u的距离值，修改后的距离值的顶点k的距离加上边上的权。</p>
+
+<p>d.　重复步骤b和c直到所有顶点都包含在S中。</p>
+
+<p><img src="media/14900925568521/14901028040054.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p><strong>Dijkstra算法（Java实现）</strong></p>
+
+<pre><code>public class Dijkstra {
+     private static int M = 10000; //此路不通
+     public static void main(String[] args) {
+    //邻接矩阵 
+        int[][] weight = { 
+            {0,10,M,30,100}, 
+            {M,0,50,M,M}, 
+            {M,M,0,M,10}, 
+            {M,M,20,0,60}, 
+            {M,M,M,M,0} 
+        };
+         
+        int start=0; 
+        int[] shortPath = dijkstra(weight,start); 
+          
+        for(int i = 0;i &lt; shortPath.length;i++) 
+           System.out.println(&quot;从&quot;+start+&quot;出发到&quot;+i+&quot;的最短距离为：&quot;+shortPath[i]); 
+     }
+      
+     public static int[] dijkstra(int[][] weight, int start) {
+     //接受一个有向图的权重矩阵，和一个起点编号start（从0编号，顶点存在数组中） 
+     //返回一个int[] 数组，表示从start到它的最短路径长度 
+     int n = weight.length;      //顶点个数
+     int[] shortPath = new int[n];  //保存start到其他各点的最短路径
+     String[] path = new String[n];  //保存start到其他各点最短路径的字符串表示
+     for(int i=0;i&lt;n;i++) 
+           path[i]=new String(start+&quot;--&gt;&quot;+i); 
+     int[] visited = new int[n];   //标记当前该顶点的最短路径是否已经求出,1表示已求出 
+      
+     //初始化，第一个顶点已经求出
+     shortPath[start] = 0;
+     visited[start] = 1;
+      
+     for(int count = 1; count &lt; n; count++) {   //要加入n-1个顶点
+      int k = -1;        //选出一个距离初始顶点start最近的未标记顶点 
+      int dmin = Integer.MAX_VALUE;
+      for(int i = 0; i &lt; n; i++) {
+      if(visited[i] == 0 &amp;&amp; weight[start][i] &lt; dmin) {
+       dmin = weight[start][i];
+       k = i;
+      }
+      }
+       
+      //将新选出的顶点标记为已求出最短路径，且到start的最短路径就是dmin 
+      shortPath[k] = dmin;
+      visited[k] = 1;
+       
+      //以k为中间点，修正从start到未访问各点的距离 
+      for(int i = 0; i &lt; n; i++) {
+      if(visited[i] == 0 &amp;&amp; weight[start][k] + weight[k][i] &lt; weight[start][i]) {
+       weight[start][i] = weight[start][k] + weight[k][i];
+       path[i] = path[k] + &quot;--&gt;&quot; + i; 
+      }
+      }
+     }
+     for(int i = 0; i &lt; n; i++) {
+      System.out.println(&quot;从&quot;+start+&quot;出发到&quot;+i+&quot;的最短路径为：&quot;+path[i]);
+     }
+     System.out.println(&quot;=====================================&quot;); 
+     return shortPath;
+     }
+    }
+</code></pre>
+
+<p>运行结果：</p>
+
+<pre><code>从0出发到0的最短路径为：0--&gt;0
+从0出发到1的最短路径为：0--&gt;1
+从0出发到2的最短路径为：0--&gt;3--&gt;2
+从0出发到3的最短路径为：0--&gt;3
+从0出发到4的最短路径为：0--&gt;3--&gt;2--&gt;4
+=====================================
+从0出发到0的最短距离为：0
+从0出发到1的最短距离为：10
+从0出发到2的最短距离为：50
+从0出发到3的最短距离为：30
+从0出发到4的最短距离为：60
+</code></pre>
+
+<h2 id="toc_5">13. KMP算法。</h2>
+
+<p>　　KMP算法的关键是利用匹配失败后的信息，尽量减少模式串与主串的匹配次数以达到快速匹配的目的。</p>
+
+<p>　　给定两个字符串T和W，长度分别为m和n，判断W是否在T中出现，如果出现则返回出现的位置。常规方法是遍历T的每一个位置，然后从该位置开始和W进行匹配，但是这种方法的复杂度是O(mn)。kmp算法通过一个O(n)的预处理，使匹配的复杂度降为O(m+n)。<br/>
+　　</p>
+
+<blockquote>
+<p>　　我们要在 字符串<strong>Ｔ＝“ＡＢＣＤＡＢＣＤＡＢＤＥ”中查找 字符串Ｗ＝＂ＡＢＣＤＡＢＤ＂</strong>出现的位置。</p>
+</blockquote>
+
+<p><img src="media/14900925568521/14901029816301.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>　　很明显可以看出前６位都是匹配的，然而第７位不匹配，一般的做法就是从Ｔ[i]（i从1到9）开始和W开始循环比较。直到i=4，也就是图2，比较成功返回下标4。<br/>
+　　<img src="media/14900925568521/14901030013399.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+　　这样比较无异效率很低，然而我们发现在字符串&quot;ABCDAB&quot;之中有两个&quot;AB&quot;，第一次比较失败之后，又循环比较了四次，把W字符串从第一个&quot;AB&quot;的位置移动到了第二个&quot;AB&quot;处（显然这四次比较毫无意义）。于是Knuth、Morris、Pratt这三个人就想了个办法去掉了这些无意义的比较。</p>
+
+<p>　　然而是怎么实现的呢？就要从Ｗ字符串的部分匹配值（相等的前缀和后缀）说起。</p>
+
+<p><strong>部分匹配值</strong></p>
+
+<pre><code>&quot;前缀&quot;指除了最后一个字符以外，一个字符串的全部头部组合；
+&quot;后缀&quot;指除了第一个字符以外，一个字符串的全部尾部组合。
+</code></pre>
+
+<p>　　&quot;部分匹配值&quot;就是&quot;前缀&quot;和&quot;后缀&quot;的最长的共有元素的长度。以Ｗ字符串&quot;ABCDABD&quot;为例：<br/>
+　　</p>
+
+<blockquote>
+<p>　　&quot;A&quot;的前缀和后缀都为空集，共有元素的长度为0；</p>
+</blockquote>
+
+<p>&quot;AB&quot;的前缀为[A]，后缀为[B]，共有元素的长度为0；　</p>
+
+<blockquote>
+<p>&quot;ABC&quot;的前缀为[A, AB]，后缀为[BC, C]，共有元素的长度0；　</p>
+</blockquote>
+
+<p>&quot;ABCD&quot;的前缀为[A, AB, ABC]，后缀为[BCD, CD, D]，共有元素的长度为0；</p>
+
+<blockquote>
+<p>&quot;ABCDA&quot;的前缀为[A, AB, ABC, ABCD]，后缀为[BCDA, CDA, DA, A]，共有元素为&quot;A&quot;，长度为1；</p>
+</blockquote>
+
+<p>&quot;ABCDAB&quot;的前缀为[A, AB, ABC, ABCD, ABCDA]，后缀为[BCDAB, CDAB, DAB, AB, B]，共有元素为&quot;AB&quot;，长度为2；</p>
+
+<blockquote>
+<p>&quot;ABCDABD&quot;的前缀为[A, AB, ABC, ABCD, ABCDA, ABCDAB]，后缀为[BCDABD, CDABD, DABD, ABD, BD, D]，共有元素的长度为0。</p>
+</blockquote>
+
+<p>从上面我们就得出了字符串Ｗ的部分匹配表：<br/>
+<img src="media/14900925568521/14901031630439.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>我们把部分匹配表存放在一个next[]数组中，那部分匹配值究竟怎么用呢？ 我们可以根据部分匹配值计算出向后移动的位数，避免了一位位的比较：</p>
+
+<blockquote>
+<p>移动位数 = 已匹配的字符数 - 对应的部分匹配值</p>
+</blockquote>
+
+<p>以图１中为例：</p>
+
+<p>　前６位已经匹配<strong>（已匹配的字符数 ＝６）</strong>； 　next[5] = 2 (对应的部分匹配值 = 2); 　 我们可以得出移动位数为 6-2=4位。</p>
+
+<blockquote>
+<p>　　 可以看出next数组的作用，就是在我们匹配失败的时候，确定我们子串需要往后移动的距离，而避免我们的主串指针进行回退。这样可以保证主串在只遍历一遍的情况下找到子串。因此KMP算法的重点就是如何快速的求出这个next数组。<br/>
+<strong>2 求next数组</strong></p>
+</blockquote>
+
+<p>　　next数组是只与子串有关与主串无关的，它记录的是子串到每个字符处那个公共前缀（或后缀）的最大长度。<br/>
+　　<img src="media/14900925568521/14901032526710.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+　　 假设我们已经求出的next[i-1] = ｊ，即Ｗ从０到i-1处这段字符串中，最大的相等的前缀和后缀长度为ｊ。 　　 那如何求得next[i]呢？</p>
+
+<p>这是后就要分为两种情况了：</p>
+
+<p>①、如果Ｗ[i]==W[j]</p>
+
+<p>　　显然前缀往后再加上一个字符之后依然会和后缀往后加上一个字符相等，此时</p>
+
+<blockquote>
+<p>next[i] = next[i-1] + 1，即next[i] = ｊ+1</p>
+</blockquote>
+
+<p>②、如果Ｗ[i]！=W[j]</p>
+
+<p>　　那么 Ｗ[0-i]这段字符串 中，最大的相等的前缀和后缀的长度必然小于等于ｊ。 （以前是j，现在加了一个不同字符，所以不可能大于j）。</p>
+
+<p>　　从上面的Ｗ字符串的前缀分析可以看出，短字符串的前缀必是长字符串前缀的子集。</p>
+
+<p>　　既然长的匹配值不行了，我们只能回溯到短的匹配。把ｊ下标循环向前（下标０方向）移动，直到W[j]<mark>W[i]或者j</mark>0为止（回到第一种情况）。</p>
+
+<p>　　那么ｊ怎么移动呢？当前Ｗ[i]！=W[j]，那么就求0到j-1的最长匹配值（next[j - 1]），再比较这个最长匹配串的末尾字符的下一位是否等于w[i]，不相等再循环。 　　 上代码：</p>
+
+<pre><code>private static int[] getNextArray(String s){  
+           char[] ch = s.toCharArray();
+           int i,j;
+           int[] next = new int[ch.length];  
+           for(i = 1,j = 0; i &lt; ch.length; i++){  
+               while(j &gt; 0 &amp;&amp; ch[i] != ch[j]){   
+                   j = next[j - 1];      //j &lt;next[j - 1],所以向前移动
+               }
+               if(ch[i] == ch[j]){  
+                   j++;  
+               }  
+               next[i] = j;  
+           }  
+           return next;  
+       } 
+</code></pre>
+
+<p>Ｗ字符串&quot;ABCDABD&quot;为例，运行结果如下：<br/>
+<img src="media/14900925568521/14901033346371.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+<strong>KMP</strong><br/>
+　　其实进行next数组求解的过程，类似于主串和子串进行匹配的过程，只不过是在next数组求解过程中，是子串和子串自己进行比较而已。　</p>
+
+<p>因此整个KMP算法的代码过程如下：</p>
+
+<pre><code>/**
+      * @param str1 被匹配的字符串
+      * @param str2  子串
+      * @return 布尔值
+      */
+     public static boolean kmp(String str1,String str2){  
+            char[] strA = str1.toCharArray();  
+            char[] strB = str2.toCharArray();  
+            int[] next = getNextArray(str2);  
+            int i,j;  //这里i是从0开始的
+            for(i = 0,j = 0; i &lt; strA.length; i++){  
+                while(j &gt; 0 &amp;&amp; strA[i] != strB[j])  
+                    j = next[j-1];  
+                if(strA[i] == strB[j]){  
+                    j++;  
+                }  
+               //匹配成功
+                if(j == strB.length){  
+                    return true;  
+                }  
+            }  
+            return false;  
+        } 
+     private static int[] getNextArray(String s){  
+           char[] ch = s.toCharArray();
+           int i,j;
+           //数组初始全部为0，所以next[0]=0
+           int[] next = new int[ch.length];  
+           for(i = 1,j = 0; i &lt; ch.length; i++){  
+               while(j &gt; 0 &amp;&amp; ch[i] != ch[j]){   
+                   //j &lt;next[j - 1],所以向前移动
+                   j = next[j - 1];    
+               }
+               if(ch[i] == ch[j]){  
+                   j++;  
+               }  
+               next[i] = j;  
+           }  
+           return next;  
+       } 
+     public static void main(String[] args) {
+          String T =&quot;ＡＢＣＤＡＢＣＤＡＢＤＥ&quot;;
+          String W = &quot;ＡＢＣＤＡＢＤ&quot;;
+              System.out.println(kmp(T,W));
+         }
+</code></pre>
+
+<p>运行结果：<br/>
+<img src="media/14900925568521/14901033759445.jpg" alt=""/></p>
+
+<h2 id="toc_6">14. 排列组合问题。</h2>
+
+<h2 id="toc_7">15. 动态规划、贪心算法、分治算法。（一般不会问到）</h2>
+
+<h2 id="toc_8">16. 大数据处理：类似10亿条数据找出最大的1000个数.........等等</h2>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[数据结构与算法[二]·排序算法]]></title>
+    <link href="m78snail.com/14901034592021.html"/>
+    <updated>2017-03-21T21:37:39+08:00</updated>
+    <id>m78snail.com/14901034592021.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">6. 各种排序：冒泡、选择、插入、希尔、归并、快排、堆排、桶排、基数的原理、平均时间复杂度、最坏时间复杂度、空间复杂度、是否稳定。</h2>
+
+<span id="more"></span><!-- more -->
+
+<h3 id="toc_1">6.1 对比分析图</h3>
+
+<p><img src="media/14900756453783/14900799660150.jpg" alt="" class="mw_img_center" style="width:800px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<ul>
+<li><p>均按从小到大排列</p></li>
+<li><p>k代表数值中的&quot;数位&quot;个数</p></li>
+<li><p>n代表数据规模</p></li>
+<li><p>m代表数据的最大值减最小值　</p>
+
+<h3 id="toc_2">6.2 冒泡排序</h3></li>
+</ul>
+
+<blockquote>
+<p>冒泡排序通过重复地走访过要排序的数列，一次比较两个元素，如果他们的顺序错误就把他们交换过来，直到没有再需要交换的元素为止对n个项目需要 <strong>O( n<sup>2</sup> )</strong>的比较次数。这个算法的名字由来是因为越小的元素会经由交换慢慢“浮”到数列的顶端。</p>
+</blockquote>
+
+<p><strong>实现步骤</strong></p>
+
+<ol>
+<li><p>比较相邻的元素。如果第一个比第二个大，就交换他们两个。　</p></li>
+<li><p>对每一对相邻元素做同样的工作，从开始第一对到结尾的最后一对。这步做完后，最后的元素会是最大的数。</p></li>
+<li><p>针对所有的元素重复以上的步骤，除了最后一个。</p></li>
+<li><p>持续每次对越来越少的元素重复上面的步骤，直到没有任何一对数字需要比较。</p></li>
+</ol>
+
+<p><strong>Java实现</strong></p>
+
+<pre><code>public static void main(String[] args) {
+        int[] number = {95,45,15,78,84,51,24,12};
+        bubble_sort(number);
+        for(int i = 0; i &lt; number.length; i++) {
+            System.out.print(number[i] + &quot; &quot;);
+            }
+    }
+    public static void bubble_sort(int[] arr) {
+            int  temp, len = arr.length;
+            for (int i = 0; i &lt; len - 1; i++)
+                for (int j = 0; j &lt; len - 1 - i; j++)
+                    if (arr[j] &gt; arr[j + 1]) {
+                        temp = arr[j];
+                        arr[j] = arr[j + 1];
+                        arr[j + 1] = temp;
+                }
+        }
+</code></pre>
+
+<h3 id="toc_3">6.3 选择排序</h3>
+
+<blockquote>
+<p>常用的选择排序方法有简单选择排序和堆排序，这里只说简单选择排序，堆排序后面再说。</p>
+</blockquote>
+
+<p><strong>简单选择排序</strong></p>
+
+<blockquote>
+<p>设所排序序列的记录个数为n，i　取　1,2,…,n-1　。 　　从所有n-i+1个记录（Ri,Ri+1,…,Rn）中找出排序码最小（或最大）的记录，与第i个记录交换。执行n-1趟 后就完成了记录序列的排序。</p>
+</blockquote>
+
+<p>以排序数组｛3，2，1，4，6，5｝为例<br/>
+<img src="media/14900815164786/14900829452388.jpg" alt="" class="mw_img_center" style="width:200px;display: block; clear:both; margin: 0 auto;"/><br/>
+<img src="media/14900815164786/14900829644258.jpg" alt="" class="mw_img_center" style="width:200px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p><strong>简单选择排序性能</strong></p>
+
+<p>　　在简单选择排序过程中，所需移动记录的次数比较少。最好情况下，即待排序记录初始状态就已经是正序排列了，则不需要移动记录。　 　　最坏情况下，即待排序记录初始状态是按第一条记录最大，之后的记录从小到大顺序排列，则需要移动记录的次数最多为3（n-1）。</p>
+
+<p>　　简单选择排序过程中需要进行的比较次数与初始状态下待排序的记录序列的排列情况无关。 　　当i=1时，需进行n-1次比较；当i=2时，需进行n-2次比较；依次类推，共需要进行的比较次数是(n-1)+(n-2)+…+2+1=n(n-1)/2，即进行比较操作的时间复杂度为O( n<sup>2</sup> )，进行移动操作的时间复杂度为O(n)。　</p>
+
+<p>　　简单选择排序是不稳定排序<br/>
+<strong>简单选择排序Java实现</strong></p>
+
+<pre><code>public static void main(String[] args) {
+        int[] number = {3,1,2,8,4,5,24,12};
+        SimpleSort(number);
+        for(int i = 0; i &lt; number.length; i++) {
+            System.out.print(number[i] + &quot; &quot;);
+            }
+    }
+public static void SimpleSort(int[] arr) {
+            int length=arr.length;
+            int temp;
+            for(int i=0;i&lt;length-1;i++){
+                int min=i;
+                for(int j=i+1;j&lt;length;j++){ //寻找最小的数
+                    if(arr[j]&lt;arr[min]){
+                        min =j;
+                    }
+                }
+                if(min!=i){
+                     temp = arr[min];
+                     arr[min]=arr[i];
+                     arr[i]=temp;
+                }
+            }
+        }   
+</code></pre>
+
+<h3 id="toc_4">6.4 希尔排序</h3>
+
+<blockquote>
+<p>希尔排序法(缩小增量法) 属于插入类排序，是将整个无序列分割成若干小的子序列分别进行插入排序的方法。</p>
+
+<p>　　把记录按下标的一定增量分组，对每组使用直接插入排序算法排序；随着增量逐渐减少，每组包含的关键词越来越多，当增量减至1时，整个文件恰被分成一组，算法便终止。</p>
+</blockquote>
+
+<p>希尔排序是基于插入排序的以下两点性质而提出改进方法的：</p>
+
+<ul>
+<li>插入排序在对几乎已经排好序的数据操作时，效率高，即可以达到线性排序的效率。</li>
+<li>但插入排序一般来说是低效的，因为插入排序每次只能将数据移动一位。
+实现过程</li>
+</ul>
+
+<p>　　先取一个正整数d1小于n，把所有序号相隔d1的数组元素放一组，组内进行直接插入排序；然后取d2小于d1，重复上述分组和排序操作；直至di=1，即所有记录放进一个组中排序为止。</p>
+
+<p>　　例如，假设有这样一组数[ 13 14 94 33 82 25 59 94 65 23 45 27 73 25 39 10 ]，如果我们以步长为5开始进行排序，我们可以通过将这列表放在有5列的表中来更好地描述算法，这样他们就应该看起来是这样：</p>
+
+<p><strong>13 14 94 33 82 25 59 94 65 23 45 27 73 25 39 10</strong><br/>
+然后我们对每列进行排序：</p>
+
+<p><strong>10 14 73 25 23 13 27 94 33 39 25 59 94 65 82 45</strong><br/>
+　　将上述四行数字，依序接在一起时我们得到：[ 10 14 73 25 23 13 27 94 33 39 25 59 94 65 82 45 ].这时10已经移至正确位置了，然后再以3为步长进行排序：</p>
+
+<p><strong>10 14 73 25 23 13 27 94 33 39 25 59 94 65 82 45</strong><br/>
+排序之后变为：</p>
+
+<p><strong>10 14 13 25 23 33 27 25 59 39 65 73 45 94 82 94</strong><br/>
+最后以1步长进行排序（此时就是简单的插入排序了）。<br/>
+<strong>Java实现</strong></p>
+
+<pre><code>public static void shellSort(int[] a) {
+        int gap = 1, i, j, len = a.length;
+        int temp;//插入排序交换值的暂存
+        //确定初始步长
+        while (gap &lt; len / 3){
+            gap = gap * 3 + 1;
+        }
+        for (; gap &gt; 0; gap /= 3){//循环遍历步长，最后必为1
+            for (i = gap; i &lt; len; i++) {//每一列依次向前做插入排序
+                temp = a[i];
+                //每一列中在a[i]上面且比a[i]大的元素依次向下移动
+                for (j = i - gap; j &gt;= 0 &amp;&amp; a[j] &gt; temp; j -= gap){
+                    a[j + gap] = a[j];
+                }
+                //a[i]填补空白，完成一列中的依次插入排序
+                a[j + gap] = temp;
+            }
+        }   
+    }
+</code></pre>
+
+<h3 id="toc_5">6.5 归并排序</h3>
+
+<blockquote>
+<p>归并排序，是创建在归并操作上的一种有效的排序算法该算法是采用分治法（Divide and Conquer）的一个非常典型的应用，且各层分治递归可以同时进行。</p>
+
+<p>　　即先使每个子序列有序，再将两个已经排序的序列合并成一个序列的操作。若将两个有序表合并成一个有序表，称为二路归并。</p>
+</blockquote>
+
+<hr/>
+
+<blockquote>
+<p>设有数列{6，202，100，301，38，8，1} 初始状态：6,202,100,301,38,8，1 第一次归并后：{6,202},{100,301},{8,38},{1}，比较次数：3； 第二次归并后：{6,100,202,301}，{1,8,38}，比较次数：4； 第三次归并后：{1,6,8,38,100,202,301},比较次数：4； 总的比较次数为：3+4+4=11,； 逆序数为14；</p>
+</blockquote>
+
+<p><strong>迭代实现的实现原理</strong></p>
+
+<p>①申请空间，使其大小为两个已经排序序列之和，该空间用来存放合并后的序列</p>
+
+<p>②设定两个指针，最初位置分别为两个已经排序序列的起始位置</p>
+
+<p>③比较两个指针所指向的元素，选择相对小的元素放入到合并空间，并移动指针到下一位置</p>
+
+<p>④重复步骤③直到某一指针到达序列尾</p>
+
+<p>⑤将另一序列剩下的所有元素直接复制到合并序列尾</p>
+
+<p><strong>Java代码</strong></p>
+
+<pre><code>public static void main(String[] args) {
+        int [] arr ={6,5,3,1,8,7,2,4};
+        merge_sort(arr);
+        for(int i : arr){
+            System.out.println(i);
+        }
+    }
+public static void merge_sort(int[] arr) {
+        int len = arr.length;
+      //用于合并的临时数组
+        int[] result = new int[len];
+        int block, start;
+        
+      //两两合并后块大小变大两倍 (注意最后一次block等于len)
+        for(block = 1; block &lt;=len ; block *= 2) {
+            //把整个数组分成很多个块，每次合并处理两个块
+            for(start = 0; start &lt;len; start += 2 * block) {
+                int low = start;
+                int mid = (start + block) &lt; len ? (start + block) : len;
+                int high = (start + 2 * block) &lt; len ? (start + 2 * block) : len;
+                //两个块的起始下标及结束下标
+                int start1 = low, end1 = mid;
+                int start2 = mid, end2 = high;
+                //开始对两个block进行归并排序
+                while (start1 &lt; end1 &amp;&amp; start2 &lt; end2) {
+                result[low++] = arr[start1] &lt; arr[start2] ? arr[start1++] : arr[start2++];
+                }
+                while(start1 &lt; end1) {
+                result[low++] = arr[start1++];
+                }
+                while(start2 &lt; end2) {
+                result[low++] = arr[start2++];
+                }
+            }
+         //每次归并后把结果result存入arr中，以便进行下次归并
+        int[] temp = arr;
+        arr = result;
+        result = temp;
+        }
+    }
+</code></pre>
+
+<p><strong>递归实现的实现原理</strong></p>
+
+<p>假设序列共有n个元素</p>
+
+<p>①将序列每相邻两个数字进行归并操作，形成floor(n/2)个序列，排序后每个序列包含两个元素。</p>
+
+<p>②将上述序列再次归并，形成floor(n/4)个序列，每个序列包含四个元素</p>
+
+<p>③重复步骤②，直到所有元素排序完毕</p>
+
+<p><strong>Java代码</strong></p>
+
+<pre><code>public static void main(String[] args) {
+        int [] arr ={6,5,3,1,8,7,2,4};
+        int len = arr.length;
+        int[] reg = new int[len];
+        merge_sort_recursive(arr,reg,0,len-1);
+        for(int i : arr){
+            System.out.println(i);
+        }
+    }
+static void merge_sort_recursive(int[] arr, int[] reg, int start, int end) {
+        if (start &gt;= end)
+            return;
+        int len = end - start, mid = (len &gt;&gt; 1) + start;
+        int start1 = start, end1 = mid;
+        int start2 = mid + 1, end2 = end;
+        //递归到子序列只有一个数的时候，开始逐个返回
+        merge_sort_recursive(arr, reg, start1, end1);
+        merge_sort_recursive(arr, reg, start2, end2);       
+        //-------合并操作，必须在递归之后（子序列有序的基础上）----
+        int k = start;
+        while (start1 &lt;= end1 &amp;&amp; start2 &lt;= end2)
+reg[k++] = arr[start1] &lt; arr[start2] ? arr[start1++] : arr[start2++];
+        while (start1 &lt;= end1)
+            reg[k++] = arr[start1++];
+        while (start2 &lt;= end2)
+            reg[k++] = arr[start2++];
+        //借用reg数组做合并，然后把数据存回arr中
+        for (k = start; k &lt;= end; k++)
+            arr[k] = reg[k];
+    }
+</code></pre>
+
+<h3 id="toc_6">6.6 快速排序</h3>
+
+<blockquote>
+<p>快速排序（Quicksort）是对冒泡排序的一种改进，又称划分交换排序（partition-exchange sort。</p>
+
+<p>　　快速排序使用分治法（Divide and conquer）策略来把一个序列（list）分为两个子序列（sub-lists）</p>
+</blockquote>
+
+<p><strong>排序效率</strong></p>
+
+<p>　　在平均状况下，排序n个项目要Ο(n log n)次比较。在最坏状况下则需要Ο(n2)次比较，但这种状况并不常见。事实上，快速排序通常明显比其他Ο(n log n)算法更快，因为它的内部循环（inner loop）可以在大部分的架构上很有效率地被实现出来。</p>
+
+<p>最差时间复杂度 Ο(n<sup>2)　</sup></p>
+
+<p>最优时间复杂度 Ο(n log n)　</p>
+
+<p>平均时间复杂度Ο(n log n)　</p>
+
+<p>最差空间复杂度 根据实现的方式不同而不同</p>
+
+<pre><code>public static void main(String[] args) {
+        int [] arr = {8,1,0,4,6,2,7,9,5,3};
+        quickSort(arr,0,arr.length-1);
+        for(int i :arr){
+            System.out.println(i);
+        }
+    }
+    public static void quickSort(int[]arr,int low,int high){
+         if (low &lt; high) {     
+             int middle = getMiddle(arr, low, high);     
+              quickSort(arr, low, middle - 1);            
+             quickSort(arr, middle + 1, high);            
+          }  
+    }
+    public static int getMiddle(int[] list, int low, int high) {     
+        int tmp = list[low];    
+        while (low &lt; high) {     
+            while (low &lt; high &amp;&amp; list[high] &gt;= tmp) {     
+                high--;     
+            }     
+            list[low] = list[high];   
+            while (low &lt; high &amp;&amp; list[low] &lt;= tmp) {     
+                low++;     
+            }     
+            list[high] = list[low];   
+        }     
+       list[low] = tmp;           
+       return low;                   
+    } 
+</code></pre>
+
+<p><img src="media/14900815164786/14900866551731.jpg" alt="" class="mw_img_center" style="width:500px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>取８为中值，红色箭头表示low，绿色箭头表示high<br/>
+①从high开始向前扫描到第一个比８小的值与８交换。</p>
+
+<p>②从low向后扫描第一比8大的值与8交换。</p>
+
+<p>③重复①②过程只到，high=low完成一次快速排序，然后递归子序列。</p>
+
+<h3 id="toc_7">6.7 堆排序</h3>
+
+<blockquote>
+<p>堆排序(Heapsort)是指利用堆这种数据结构所设计的一种排序算法，它是选择排序的一种。可以利用数组的特点快速定位指定索引的元素。堆分为大根堆和小根堆，是完全二叉树。大根堆的要求是每个节点的值都不大于其父节点的值。</p>
+
+<p>　　由于堆中每次都只能删除第0个数据，通过　取出第０个数据再执行堆的删除操作、重建堆（实际的操作是将最后一个数据的值赋给根结点，然后再从根结点开始进行一次从上向下的调整。），然后再取，如此重复实现排序。</p>
+</blockquote>
+
+<p><strong>堆的操作：</strong><br/>
+<img src="media/14900815164786/14900869026460.jpg" alt="" class="mw_img_center" style="width:500px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>在堆的数据结构中，堆中的最大值总是位于根节点。堆中定义以下几种操作：</p>
+
+<ul>
+<li><p>最大堆调整（Max_Heapify）：将堆的末端子节点作调整，使得子节点永远小于父节点</p></li>
+<li><p>创建最大堆（Build_Max_Heap）：将堆所有数据重新排序</p></li>
+<li><p>堆排序（HeapSort）：移除位在第一个数据的根节点，并做最大堆调整的递归运算<br/>
+<strong>堆的存储：</strong></p></li>
+</ul>
+
+<p><img src="media/14900815164786/14900870316370.jpg" alt="" class="mw_img_center" style="width:500px;display: block; clear:both; margin: 0 auto;"/><br/>
+通常堆是通过一维数组来实现的。在数组起始位置为0的情形中：</p>
+
+<ul>
+<li><p>父节点i的左子节点在位置(2*i+1);　</p></li>
+<li><p>父节点i的右子节点在位置(2*i+2);</p></li>
+<li><p>子节点i的父节点在位置floor((i-1)/2);　</p></li>
+</ul>
+
+<p><strong>Java代码实现</strong></p>
+
+<pre><code>public class HeapSort {
+    private static int[] sort = new int[]{1,0,10,20,3,5,6,4,9,8,12,17,34,11};
+    public static void main(String[] args) {
+        buildMaxHeapify(sort);
+        heapSort(sort);
+        print(sort);
+    }
+
+    private static void buildMaxHeapify(int[] data){
+        //没有子节点的才需要创建最大堆，从最后一个的父节点开始
+        int startIndex = getParentIndex(data.length - 1);
+        //从尾端开始创建最大堆，每次都是正确的堆
+        for (int i = startIndex; i &gt;= 0; i--) {
+            maxHeapify(data, data.length, i);
+        }
+    }
+    
+    /**
+     * 创建最大堆
+     * @param data
+     * @param heapSize需要创建最大堆的大小，一般在sort的时候用到，因为最多值放在末尾，末尾就不再归入最大堆了
+     * @param index当前需要创建最大堆的位置
+     */
+    private static void maxHeapify(int[] data, int heapSize, int index){
+        // 当前点与左右子节点比较
+        int left = getChildLeftIndex(index);
+        int right = getChildRightIndex(index);
+        
+        int largest = index;
+        if (left &lt; heapSize &amp;&amp; data[index] &lt; data[left]) {
+            largest = left;
+        }
+        if (right &lt; heapSize &amp;&amp; data[largest] &lt; data[right]) {
+            largest = right;
+        }
+        //得到最大值后可能需要交换，如果交换了，其子节点可能就不是最大堆了，需要重新调整
+        if (largest != index) {
+            int temp = data[index];
+            data[index] = data[largest];
+            data[largest] = temp;
+            maxHeapify(data, heapSize, largest);
+        }
+    }
+    
+    /**
+     * 排序，最大值放在末尾，data虽然是最大堆，在排序后就成了递增的
+     * @param data
+     */
+    private static void heapSort(int[] data) {
+        //末尾与头交换，交换后调整最大堆
+        for (int i = data.length - 1; i &gt; 0; i--) {
+            int temp = data[0];
+            data[0] = data[i];
+            data[i] = temp;
+            maxHeapify(data, i, 0);
+        }
+    }
+    
+    /**
+     * 父节点位置
+     * @param current
+     * @return
+     */
+    private static int getParentIndex(int current){
+        return (current - 1) &gt;&gt; 1;
+    }
+    
+    /**
+     * 左子节点position注意括号，加法优先级更高
+     * @param current
+     * @return
+     */
+    private static int getChildLeftIndex(int current){
+        return (current &lt;&lt; 1) + 1;
+    }
+    
+    /**
+     * 右子节点position
+     * @param current
+     * @return
+     */
+    private static int getChildRightIndex(int current){
+        return (current &lt;&lt; 1) + 2;
+    }
+    
+    private static void print(int[] data){
+        for (int i = 0; i &lt; data.length; i++) {
+            System.out.print(data[i] + &quot; |&quot;);
+        }
+    }
+}
+
+</code></pre>
+
+<h3 id="toc_8">6.8 桶排序</h3>
+
+<blockquote>
+<p>桶排序（Bucket sort）或所谓的箱排序，是一个排序算法。</p>
+
+<p>　　假设有一组长度为N的待排关键字序列K[1....n]。首先将这个序列划分成M个的子区间(桶) 。然后基于某种映射函数 ，将待排序列的关键字k映射到第i个桶中(即桶数组B的下标 i) ，那么该关键字k就作为B[i]中的元素。接着对每个桶B[i]中的所有元素进行比较排序(可以使用快排)。然后依次枚举输出B[0]....B[M]中的全部内容即是一个有序序列。</p>
+</blockquote>
+
+<p>桶排序的步骤：</p>
+
+<p>①设置一个定量的数组当作空桶子。</p>
+
+<p>②寻访序列，并且把项目一个一个放到对应的桶子去。</p>
+
+<p>③对每个不是空的桶子进行排序。</p>
+
+<p>④从不是空的桶子里把项目再放回原来的序列中。<br/>
+<strong>性能</strong><br/>
+数据结构    数组　 最差时间复杂度 　 O(n<sup>2)</sup> 平均时间复杂度    　O(n+k) 最差空间复杂度　O(n*k)</p>
+
+<p>　　平均情况下桶排序以线性时间运行，桶排序是稳定的，排序非常快,但是同时也非常耗空间,基本上是最耗空间的一种排序算法。</p>
+
+<p>　　对N个关键字进行桶排序的时间复杂度分为两个部分：</p>
+
+<p>①循环计算每个关键字的桶映射函数，这个时间复杂度是O(N)。</p>
+
+<p>②利用先进的比较排序算法对每个桶内的所有数据进行排序，其时间复杂度为 ∑ O(Ni*logNi) 。其中Ni 为第i个桶的数据量。</p>
+
+<p>　　很显然，第②部分是桶排序性能好坏的决定因素。尽量减少桶内数据的数量是提高效率的唯一办法(因为基于比较排序的最好平均时间复杂度只能达到O(N*logN)了)。因此，我们需要尽量做到下面两点：　</p>
+
+<blockquote>
+<p>① 映射函数f(k)能够将N个数据平均的分配到M个桶中，这样每个桶就有[N/M]个数据量。　 　　 <br/>
+②尽量的增大桶的数量。极限情况下每个桶只能得到一个数据，这样就完全避开了桶内数据的“比较”排序操作。 当然，做到这一点很不容易，数据量巨大的情况下，f(k)函数会使得桶集合的数量巨大，空间浪费严重。这就是一个时间代价和空间代价的权衡问题了。</p>
+</blockquote>
+
+<p>Java实现 </p>
+
+<pre><code>public class BucketSort  {
+    /** 
+     * 对arr进行桶排序，排序结果仍放在arr中 
+     */  
+    public static void bucketSort(double arr[]){  
+  //-------------------------------------------------分桶-----------------------------------------------      
+        int n = arr.length;  
+        //存放桶的链表
+        ArrayList bucketList[] = new ArrayList [n];  
+        //每个桶是一个list，存放此桶的元素   
+        for(int i =0;i&lt;n;i++){  
+            //下取等
+            int temp = (int) Math.floor(n*arr[i]);  
+            //若不存在该桶，就新建一个桶并加入到桶链表中
+            if(null==bucketList[temp])  
+                bucketList[temp] = new ArrayList();  
+            //把当前元素加入到对应桶中
+            bucketList[temp].add(arr[i]);            
+        }  
+//-------------------------------------------------桶内排序-----------------------------------------------    
+        //对每个桶中的数进行插入排序   
+        for(int i = 0;i&lt;n;i++){  
+            if(null!=bucketList[i])  
+                insert(bucketList[i]);  
+        }  
+//-------------------------------------------------合并桶内数据-----------------------------------------------    
+        //把各个桶的排序结果合并   
+        int count = 0; 
+        for(int i = 0;i&lt;n;i++){  
+            if(null!=bucketList[i]){  
+                Iterator iter = bucketList[i].iterator();  
+                while(iter.hasNext()){  
+                    Double d = (Double)iter.next();  
+                    arr[count] = d;  
+                    count++;  
+                }  
+            }  
+        }  
+    }  
+    
+    /** 
+     * 用插入排序对每个桶进行排序 
+     * 从小到大排序
+     */  
+    public static void insert(ArrayList list){  
+        
+        if(list.size()&gt;1){  
+            for(int i =1;i&lt;list.size();i++){  
+                if((Double)list.get(i)&lt;(Double)list.get(i-1)){  
+                    double temp = (Double) list.get(i);  
+                    int j = i-1;  
+                    for(;j&gt;=0&amp;&amp;((Double)list.get(j)&gt;(Double)list.get(j+1));j--)  
+                        list.set(j+1, list.get(j));  //后移
+                    list.set(j+1, temp);  
+                }  
+            }  
+        } 
+    }
+}
+测试代码：
+
+public static void main(String[] args) {
+        double arr [] ={0.21,0.23,0.76,0.12,0.89};
+        BucketSort.bucketSort(arr);
+        for(double a:arr){
+            System.out.println(a);
+        }
+    }
+</code></pre>
+
+<h3 id="toc_9">6.9 基数排序</h3>
+
+<blockquote>
+<p>基数排序（Radix sort）是一种非比较型整数排序算法，其原理是将整数按位数切割成不同的数字，然后按每个位数分别比较。由于整数也可以表达字符串（比如名字或日期）和特定格式的浮点数，所以基数排序也不是只能使用于整数。</p>
+
+<p>　　将所有待比较数值（正整数）统一为同样的数位长度，数位较短的数前面补零。然后，从最低位开始，依次进行一次排序。这样从最低位排序一直到最高位排序完成以后，数列就变成一个有序序列。</p>
+</blockquote>
+
+<p><strong>效率</strong></p>
+
+<p>　　基数排序的时间复杂度是O(k·n)，其中n是排序元素个数，k是数字位数。注意这不是说这个时间复杂度一定优于O(n·log(n))，k的大小取决于数字位的选择和待排序数据所属数据类型的全集的大小；k决定了进行多少轮处理，而n是每轮处理的操作数目。</p>
+
+<p>　　基数排序基本操作的代价较小，k一般不大于logn，所以基数排序一般要快过基于比较的排序，比如快速排序。</p>
+
+<p>　　最差空间复杂度是O(k·n)</p>
+
+<p>现在有数组：278，109，63,930,589,184,505,269,8,83　。根据各位数将数组划分为10个链表(当然其中的某些链表可能不含有元素) 　　 第一次分配：</p>
+
+<p><strong>0:930 1: 2: 3:63,83 4:184 5:505 6： 7: 8:278,8 9:109,589,269</strong><br/>
+第一次收集后的数组：</p>
+
+<p><strong>930,63,83,184,505，278,8,109,589,269</strong><br/>
+第二次分配：</p>
+
+<p><strong>0:505,8,109 1: 2: 3:930 4: 5: 6：63,269 7:278 8:83,184，589 9:</strong><br/>
+第二次收集后的数组：</p>
+
+<p><strong>505,8,109，930，63,269，278，83,184，589</strong><br/>
+第三次分配：</p>
+
+<p><strong>0:8,63,83 1:109,184 2:278,269 3: 4: 5:505,589 6: 7: 8: 9:930</strong><br/>
+最后得到序列：</p>
+
+<p><strong>8,63,83,109,184，269,278,505,589,930</strong><br/>
+基数排序其实是利用多关键字先达到局部有序，再调整达到全局有序。</p>
+
+<p>代码实现：</p>
+
+<pre><code>public class Test {
+    public static void main(String[] args) {
+
+        int[] array = {278,109,63,930,589,184,505,269,8,83};  
+        radixSort(array);  
+        for(double a : array){
+            System.out.println(a);
+        }
+    }
+public static void radixSort(int[] array){
+        
+        //------------------------------------------确定排序的趟数----------------------------------
+        int max=array[0];
+        for(int i=1;i&lt;array.length;i++){
+            if(array[i]&gt;max){
+                max=array[i];
+            }
+        }
+        int time=0;
+        while(max&gt;0){
+            max/=10;
+            time++;
+        }
+        //----------------------------------------初始化10个链表用户分配时暂存-------------------------------
+        List&lt;List&lt;Integer&gt;&gt; list=new ArrayList&lt;List&lt;Integer&gt;&gt;();
+        for(int i=0;i&lt;10;i++){
+            List&lt;Integer&gt; item=new ArrayList&lt;Integer&gt;();
+            list.add(item);
+        }
+        
+        //-----------------------------------------进行time次分配和收集-------------------------------------
+      for(int i=0;i&lt;time;i++){
+            //分配元素;
+            for(int j=0;j&lt;array.length;j++){
+                int index = array[j]%(int)Math.pow(10, i+1)/(int)Math.pow(10, i);
+                list.get(index).add(array[j]);
+            }
+            //收集元素;
+            int count=0;
+            for(int k=0;k&lt;10;k++){
+                if(list.get(k).size()&gt;0){
+                    for(int a : list.get(k)){
+                        array[count]=a;
+                        count++;
+                    }
+                    //清除数据，以便下次收集
+                    list.get(k).clear();
+                }
+            }
+        }
+    }
+}
+</code></pre>
+
+<h3 id="toc_10">6.10 插入排序</h3>
+
+<blockquote>
+<p>将一个数据插入到已经排好序的有序数据中，从而得到一个新的、个数加一的有序数据，算法适用于少量数据的排序，是稳定的排序方法。</p>
+
+<p>　　插入排序又分为　直接插入排序　和 折半插入排序。</p>
+</blockquote>
+
+<p><strong>直接插入排序</strong></p>
+
+<p>　　把待排序的纪录按其关键码值的大小逐个插入到一个已经排好序的有序序列中，直到所有的纪录插入完为止，得到一个新的有序序列。</p>
+
+<p><strong>Java实现</strong></p>
+
+<pre><code>public static void insertSort(int a[]){  
+        int j;       //当前要插入值的位置  
+        int preJ;     //依次指向j前的位置  
+        int key;       //后移时来暂存要插入的值
+        
+        //从数组的第二个位置开始遍历值  
+        for(j=1;j&lt;a.length;j++){  
+            key=a[j];  
+            preJ=j-1;  
+            //a[preJ]比当前值大时，a[preJ]后移一位  
+            while(preJ&gt;=0 &amp;&amp; a[preJ]&gt;key){  
+                a[preJ+1]=a[preJ]; //将a[preJ]值后移   
+                
+     //这里注意:  a[preJ+1]=a[j]=key,把插入值已经存在了 key中
+    //等于说, 留出来一个空白位置来实现依次后移（不会造成数据丢失问题）
+                
+                preJ--;         //preJ前移  
+            }
+            //找到要插入的位置或已遍历完成（(preJ=0）
+            a[preJ+1]=key;    //将当前值插入 空白位置
+        }  
+    } 
+</code></pre>
+
+<p><strong>效率分析</strong></p>
+
+<p>　　空间复杂度O(1) 　 　　 　　平均时间复杂度O(n<sup>2)</sup></p>
+
+<p>　　</p>
+
+<blockquote>
+<p>最差情况：反序，需要移动n*(n-1)/2个元素 ，运行时间为O(n<sup>2)。</sup> 　　 最好情况：正序，不需要移动元素，运行时间为O(n)．</p>
+</blockquote>
+
+<p><strong>折半插入排序</strong>　</p>
+
+<blockquote>
+<p>　　直接插入排序中要把插入元素与已有序序列元素依次进行比较，效率非常低。　 　　 　<br/>
+　　折半插入排序,使用使用折半查找的方式寻找插入点的位置, 可以减少比较的次数,但移动的次数不变, 时间复杂度和空间复杂度和直接插入排序一样，在元素较多的情况下能提高查找性能。</p>
+</blockquote>
+
+<p><strong>Java实现</strong></p>
+
+<pre><code>private static void binaryInsertSort(int[] a)  
+    {  
+        //从数组的第二个位置开始遍历值    
+        for(int i = 1; i &lt; a.length; i++)  {  
+            int key = a[i];           //暂存要插入的值    
+            int pre = 0;              //有序序列开始和结尾下标申明
+            int last = i - 1;       
+        // 折半查找出插入位置 a[pre]
+            while(pre &lt;= last)  {  
+                int mid = (pre + last) / 2;                
+                if(key &lt; a[mid])  {  
+                    last = mid - 1;  
+                } else {  
+                    pre = mid + 1;  
+                }  
+            }  
+     //a[i]已经取出来存放在key中，把下标从pre + 1到 i-1的元素依次后移
+            for(int j = i; j &gt;= pre + 1; j--)  {  
+                a[j] = a[j - 1];  
+            }  
+            //把值插入空白位置
+            a[pre] = key;            
+        }  
+    } 
+</code></pre>
+
+<p>直接插入排序是，比较一个后移一个； 折半插入排序是，先找到位置，然后一起移动；</p>
+
+<h2 id="toc_11">7. 快排的partition函数与归并的Merge函数。</h2>
+
+<blockquote>
+<p>快排的partition函数</p>
+
+<p>　　作用：给定一个数组arr[]和数组中任意一个元素a，重排数组使得a左边都小于它，右边都不小于它。</p>
+</blockquote>
+
+<pre><code>// A[]为数组，start、end分别为数组第一个元素和最后一个元素的索引
+ // povitIndex为数组中任意选中的数的索引
+static int partition(int A[], int start, int end, int pivotIndex){
+    int i = start, j = end, pivot = A[pivotIndex];
+    swap&lt;int&gt;(A[end], A[pivotIndex]);
+    while(i &lt; j){
+        while(i &lt; j &amp;&amp; A[i] &lt;= pivot) ++i;
+        while(i &lt; j &amp;&amp; A[j] &gt;= pivot) --j;
+        if(i &lt; j) swap&lt;int&gt;(A[i], A[j]);
+    }
+    swap&lt;int&gt;(A[end], A[i]);
+    return i;
+}
+</code></pre>
+
+<blockquote>
+<p>归并的Merge函数<br/>
+思想：分治原则，合的时候进行排序，稳定排序。 <br/>
+需要用到两个函数，merge函数负责将有序的两个数组进行进行合并，mergeSort函数负责递归实现分组处理，</p>
+</blockquote>
+
+<p><strong>Java代码如下</strong>：</p>
+
+<pre><code>public class MergeSort {
+
+    public static void main(String[] args) {
+        int a[]={3,2,5,4,7,9};
+        int tmp[]=new int[a.length];
+        new MergeSort().mergeSort(a, 0, a.length-1, tmp);
+        for (int i : a) {
+            System.out.println(i);
+        }
+    }
+    //将有序数组a[first..mid] a[mid+1,last]合并
+    void merge(int a[],int first,int mid,int last,int tmp[]){
+        int i=first;//前一个数组的开始下标
+        int j=mid+1;//后一个数组的开始下标
+        int m=mid;//前一个数组的最后下标
+        int n=last;//后一个数组的最后下标
+        int k=0;//存放临时数组到tmp
+        while(i&lt;=m&amp;&amp;j&lt;=n){
+            if(a[i]&lt;=a[j]){
+                tmp[k++]=a[i];
+                i++;
+            }else {
+                tmp[k++]=a[j];
+                j++;
+            }
+        }
+        while(i&lt;=m){
+            tmp[k++]=a[i++];
+        }
+        while(j&lt;=n){
+            tmp[k++]=a[j++];
+        }
+        //复制tmp到a数组
+        for(i=0;i&lt;k;i++){
+            a[first+i]=tmp[i];
+        }
+
+    }
+    void mergeSort(int a[],int first,int last,int tmp[]){
+        if(first&lt;last){
+            int mid=(first+last)/2;
+            mergeSort(a, first, mid, tmp);//左边有序
+            mergeSort(a, mid+1, last, tmp);//右边有序
+            merge(a, first, mid, last, tmp);//合并
+        }
+    }
+
+}
+</code></pre>
+
+<h2 id="toc_12">8. 对冒泡与快排的改进。</h2>
+
+<p><strong>冒泡排序的改进</strong><br/>
+①、加一个标志位，当某一趟冒泡排序没有元素交换时，则冒泡结束，元素已经有序，可以有效的减少冒泡次数。</p>
+
+<pre><code>/** 
+     * 引入标志位，默认为true 
+     * 如果前后数据进行了交换，则为true，否则为false。如果没有数据交换，则排序完成。 
+     */  
+    public static int[] bubbleSort(int[] arr){  
+        boolean flag = true;  
+        int n = arr.length;  
+        while(flag){  
+            flag = false;  
+            for(int j=0;j&lt;n-1;j++){  
+                if(arr[j] &gt;arr[j+1]){  
+                    //数据交换  
+                    int temp = arr[j];  
+                    arr[j] = arr[j+1];  
+                    arr[j+1] = temp;  
+                    //设置标志位  
+                    flag = true;  
+                }  
+            }  
+            n--;  
+        }  
+        return arr;  
+    }  
+</code></pre>
+
+<p>②、记录每一次元素交换的位置，当元素交换的位置在第0个元素时，则排序结束。</p>
+
+<p><strong>快排优化</strong><br/>
+① 快速排序在处理小规模数据时的表现不好，这个时候可以改用插入排序。</p>
+
+<p>②对于一个每个元素都完全相同的一个序列来讲，快速排序也会退化到 O(n<sup>2</sup> )。要将这种情况避免到，可以这样做：</p>
+
+<p>　　在分区的时候，将序列分为 3 堆，一堆小于中轴元素，一堆等于中轴元素，一堆大于中轴元素，下次递归调用快速排序的时候，只需对小于和大于中轴元素的两堆数据进行排序，中间等于中轴元素的一堆已经放好。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[数据结构与算法[一]·数据结构]]></title>
+    <link href="m78snail.com/14900756453783.html"/>
+    <updated>2017-03-21T13:54:05+08:00</updated>
+    <id>m78snail.com/14900756453783.html</id>
+    <content type="html"><![CDATA[
+<p>算法的话其实是个重点，因为最后都是要你写代码，所以算法还是需要花不少时间准备，这里有太多算法题，写不全，我的建议是没事多在OJ上刷刷题（牛客网、leetcode等），剑指offer上的算法要能理解并自己写出来，编程之美也推荐看一看。<br/>
+推荐书籍：《大话数据结构》《剑指offer》《编程之美》</p>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">1. 链表与数组。</h2>
+
+<h3 id="toc_1">1.1 概述</h3>
+
+<p>　　<strong>数组</strong>　是将元素在内存中连续存放，由于每个元素占用内存相同，可以通过下标迅速访问数组中任何元素。但是如果要在数组中增加一个元素，需要移动大量元素，在内存中空出一个元素的空间，然后将要增加的元素放在其中。同样的道理，如果想删除一个元素，同样需要移动大量元素去填掉被移动的元素。如果应用需要快速访问数据，很少插入和删除元素，就应该用数组。</p>
+
+<p>　　<strong>链表</strong>　中的元素在内存中不是顺序存储的，而是通过存在元素中的指针联系到一起，每个结点包括两个部分：一个是存储 数据元素 的　数据域，另一个是存储下一个结点地址的 指针。 　　如果要访问链表中一个元素，需要从第一个元素开始，一直找到需要的元素位置。但是增加和删除一个元素对于链表数据结构就非常简单了，只要修改元素中的指针就可以了。如果应用需要经常插入和删除元素你就需要用链表。</p>
+
+<h3 id="toc_2">1.2 内存存储区别</h3>
+
+<ul>
+<li><p>数组从栈中分配空间, 对于程序员方便快速,但自由度小。</p></li>
+<li><p>链表从堆中分配空间, 自由度大但申请管理比较麻烦.</p>
+
+<h3 id="toc_3">1.3 逻辑结构区别</h3></li>
+<li><p>数组必须事先定义固定的长度（元素个数），不能适应数据动态地增减的情况。当数据增加时，可能超出原先定义的元素个数；当数据减少时，造成内存浪费。　</p></li>
+<li><p>链表动态地进行存储分配，可以适应数据动态地增减的情况，且可以方便地插入、删除数据项。（数组中插入、删除数据项时，需要移动其它数据项）</p>
+
+<h3 id="toc_4">1.4 总结</h3></li>
+</ul>
+
+<p>1、存取方式上，数组可以顺序存取或者随机存取，而链表只能顺序存取；　</p>
+
+<p>2、存储位置上，数组逻辑上相邻的元素在物理存储位置上也相邻，而链表不一定；　</p>
+
+<p>3、存储空间上，链表由于带有指针域，存储密度不如数组大；　</p>
+
+<p>4、按序号查找时，数组可以随机访问，时间复杂度为O(1)，而链表不支持随机访问，平均需要O(n)；　</p>
+
+<p>5、按值查找时，若数组无序，数组和链表时间复杂度均为O(1)，但是当数组有序时，可以采用折半查找将时间复杂度降为O(logn)；　</p>
+
+<p>6、插入和删除时，数组平均需要移动n/2个元素，而链表只需修改指针即可；　</p>
+
+<p>7、空间分配方面： 　　数组在静态存储分配情形下，存储元素数量受限制，动态存储分配情形下，虽然存储空间可以扩充，但需要移动大量元素，导致操作效率降低，而且如果内存中没有更大块连续存储空间将导致分配失败； 　　链表存储的节点空间只在需要的时候申请分配，只要内存中有空间就可以分配，操作比较灵活高效；</p>
+
+<h2 id="toc_5">2. 队列和栈，出栈与入栈。</h2>
+
+<h3 id="toc_6">2.1 队列</h3>
+
+<p>　　队列是一种操作受限制的线性表，它只允许在表的前端（front）进行删除操作，而在表的后端（rear）进行插入操作。进行插入操作的端称为队尾，进行删除操作的端称为队头。 　　队列中没有元素时，称为空队列。在队列这种数据结构中，最先插入的元素将是最先被删除的元素；反之最后插入的元素将是最后被删除的元素，因此队列又称为“先进先出”（FIFO—first in first out）的线性表。</p>
+
+<p>队列空的条件：front=rear</p>
+
+<p>队列满的条件： rear = MAXSIZE</p>
+
+<h3 id="toc_7">2.2 顺序队列</h3>
+
+<p>　　建立顺序队列结构必须为其静态分配或动态申请一片连续的存储空间，并设置两个指针进行管理。一个是队头指针front，它指向队头元素；另一个是队尾指针rear，它指向下一个入队元素的存储位置．<br/>
+　　<img src="media/14900756453783/14900764195404.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+顺序队列中的溢出现象：</p>
+
+<ul>
+<li><p>下溢：当队列为空时，做出队运算产生的溢出现象。“下溢”是正常现象，常用作程序控制转移的条件。　</p></li>
+<li><p>真上溢：当队列满时，做进栈运算产生空间溢出的现象。“真上溢”是一种出错状态，应设法避免。　</p></li>
+<li><p>假上溢：由于入队和出队操作中，头尾指针只增加不减小，致使被删元素的空间永远无法重新利用。当队列中实际的元素个数远远小于向量空间的规模时，也可能由于尾指针已超越向量空间的上界而不能做入队操作。该现象称为&quot;假上溢&quot;现象。</p>
+
+<h3 id="toc_8">2.3 Java中Queue</h3></li>
+</ul>
+
+<p>　　Queue继承于Collection，除了基本的 Collection 操作外，队列还提供其他的插入、提取和检查操作。每个方法都存在两种形式：一种抛出异常（操作失败时），另一种返回一个特殊值（null 或 false，具体取决于操作）。<br/>
+　　<img src="media/14900756453783/14900764938927.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<ul>
+<li><p>add()和offer()都是将指定的元素插入队列 　　　add() 在成功时返回 true，如果当前没有可用的空间，则抛出 IllegalStateException。 offer()当使用有容量限制的队列时,无法插入元素，而只是抛出一个异常。</p></li>
+<li><p>element() 和 peek() 返回但不移除队列的头，如果队列为空，peek()返回 null，element()抛出异常。</p></li>
+<li><p>remove() 和 poll() 方法可移除和返回队列的头，它们仅在队列为空时其行为有所不同：remove() 方法抛出一个异常，而 poll() 方法则返回 null。</p>
+
+<h3 id="toc_9">2.4 栈和队列的区别：</h3>
+
+<p>队列是FIFO的（先进先出），堆栈是FILO的（现今后出）</p></li>
+</ul>
+
+<p>　 栈是限定只能在表的一端进行插入和删除操作的线性表。 队列是限定只能在表的一端进行插入和在另一端进行删除操作的线性表</p>
+
+<p>　 栈只能从头部取数据，也就最先放入的需要遍历整个栈最后才能取出来，而且在遍历数据的时候还得为数据开辟临时空间； 队列基于地址指针进行遍历，而且可以从头或尾部开始遍历，但不能同时遍历，无需开辟临时空间，因为在遍历的过程中不影像数据结构，速度要快的多。</p>
+
+<h2 id="toc_10">3. 链表的删除、插入、反向。</h2>
+
+<h2 id="toc_11">4. 字符串操作。</h2>
+
+<blockquote>
+<p>在JAVA语言中，字符串数据实际上由String类所实现的。Java字符串类分为两类：一类是在程序中不会被改变长度的不变字符串；二类是在程序中会被改变长度的可变字符串。Java环境为了存储和维护这两类字符串提供了 String和StringBuffer两个类。</p>
+</blockquote>
+
+<h3 id="toc_12">4.1String的一些常用操作</h3>
+
+<h4 id="toc_13"><1>字符串创建</h4>
+
+<pre><code>String　str=&quot;This is a String&quot;;
+</code></pre>
+
+<p>或者</p>
+
+<pre><code>String　str=new String（&quot;This is a String&quot;);
+</code></pre>
+
+<h4 id="toc_14"><2>字符串长度</h4>
+
+<pre><code>String str= &quot;This is a String&quot;;
+int len =str.length();
+</code></pre>
+
+<h4 id="toc_15"><3>指定字符或子字符串的位置</h4>
+
+<pre><code>String str=&quot;Thisis a String&quot;;
+Int index1 =str.indexOf(&quot;i&quot;);   //2
+Int index２＝str.lastIndexOf(&quot;i&quot;)； //12
+</code></pre>
+
+<h4 id="toc_16"><4>判断两个字符串是否相等</h4>
+
+<pre><code>String str=&quot;This　is a String&quot;;
+Boolean result=str.equals(&quot;This is another String&quot;);
+</code></pre>
+
+<h4 id="toc_17"><5>得到指定位置的字符</h4>
+
+<pre><code>String str=&quot;This　is a String&quot;;
+char chr=str.charAt(3);
+</code></pre>
+
+<h4 id="toc_18"><6>截取子字符串</h4>
+
+<pre><code>str＝str.substring(int beginIndex);
+</code></pre>
+
+<p>截取掉str从首字母起长度为beginIndex的字符串，将剩余字符串赋值给str；</p>
+
+<pre><code>str＝str.substring(int beginIndex，int endIndex);
+</code></pre>
+
+<h4 id="toc_19"><6>字符串合并</h4>
+
+<pre><code>String str=&quot;This　is a String&quot;;
+String str1=str.concat(&quot;Test&quot;); //str1=&quot;This　is a String Test&quot;
+</code></pre>
+
+<h2 id="toc_20">5. Hash表的hash函数，冲突解决方法有哪些。</h2>
+
+<h3 id="toc_21">5.１Hash表</h3>
+
+<p>　　哈希表（Hash table，也叫散列表），是根据key而直接进行访问的数据结构。也就是说，它通过把key映射到表中一个位置来访问记录，以加快查找的速度。这个映射函数叫做散列函数，存放记录的数组叫做散列表。</p>
+
+<p>　　以数据中每个元素的关键字K为自变量，通过散列函数H（k）计算出函数值，以该函数值作为一块连续存储空间的的单元地址，将该元素存储到函数值对应的单元中。</p>
+
+<p>　　哈希表存储的是键值对，其查找的时间复杂度与元素数量多少无关，哈希表在查找元素时是通过计算哈希码值来定位元素的位置从而直接访问元素的，因此，哈希表查找的时间复杂度为O（1）。</p>
+
+<h3 id="toc_22">5.2 哈希表的构造方法</h3>
+
+<h4 id="toc_23">5.2.1 直接定址法</h4>
+
+<p>　　取关键字或者关键字的某个线性函数值作为哈希地址,即　 　　 　　H(Key)=Key或者H(Key)=a*Key+b(a,b为整数)　 　　 　　这种散列函数也叫做自身函数.如果H(Key)的哈希地址上已经有值了,那么就往下一个位置找,直到找到H(Key)的位置没有值了就把元素放进去.　 　　此法仅适合于：地址集合的大小 等于 关键字集合的大小</p>
+
+<h4 id="toc_24">5.2.2 数字分析法</h4>
+
+<p>　　分析一组数据,比如一组员工的出生年月,这时我们发现出生年月的前几位数字一般都相同,因此,出现冲突的概率就会很大,但是我们发现年月日的后几位表示月份和具体日期的数字差别很大,如果利用后面的几位数字来构造散列地址,则冲突的几率则会明显降低. 　　因此数字分析法就是找出数字的规律,尽可能利用这些数据来构造冲突几率较低的散列地址.　　 　　此法适于:能预先估计出全体关键字的每一位上各种数字出现的频度。</p>
+
+<h4 id="toc_25">5.2.3 平方取中法　</h4>
+
+<p>　　以关键字的平方值的中间几位作为存储地址（哈希地址）。求“关键字的平方值” 的目的是“扩大差别” ，同时平方值的中间各位又能受到整个关键字中各位的影响。　</p>
+
+<p>　　此法适于:关键字中的每一位都有某些数字重复出现频度很高的现象。</p>
+
+<h4 id="toc_26">5.2.4 折叠法　</h4>
+
+<p>　　 将关键字分割成若干部分，然后取它们的叠加和为哈希地址。两种叠加处理的方法：移位叠加:将分 割后的几部分低位对齐相加；间界叠加:从一端沿分割界来回折叠，然后对齐相加。 　　 　　此法适于：关键字的数字位数特别多。</p>
+
+<h4 id="toc_27">5.2.5 随机数法</h4>
+
+<p>　　设定哈希函数为:H(key) = Random(key)其中，Random 为伪随机函数 此法适于：对长度不等的关键字构造哈希函数。</p>
+
+<h4 id="toc_28">5.2.6 除留余数法</h4>
+
+<p>　　取关键字被某个不大于散列表表长m的数p除后所得的余数为散列地址.即 　　哈希函数为:H(key) = key MOD p ( p≤m )，其中， m为表长，p 为不大于 m 的素数。</p>
+
+<h3 id="toc_29">5.3 哈希表冲突解决方法</h3>
+
+<p>　　哈希表处理冲突主要有<strong>开放寻址法</strong>、<strong>再散列法</strong>、<strong>链地址法（拉链法）</strong>和建立一个<strong>公共溢出区</strong>四种方法。 　　通过构造性能良好的哈希函数，可以减少冲突，但一般不可能完全避免冲突，因此解决冲突是哈希法的另一个关键问题。 　“处理冲突” 的实际含义是：为产生冲突的关键字寻找下一个哈希地址。 </p>
+
+<h3 id="toc_30">5.3.1 开放定址法</h3>
+
+<p>一旦发生了冲突，就去寻找下一个空的散列地址，只要散列表足够大，空的散列地址总能找到，并将记录存入。</p>
+
+<h4 id="toc_31"><1> 线性探测</h4>
+
+<p>　　冲突发生时，顺序查看表中下一单元，直到找出一个空单元或查遍全表。</p>
+
+<p>　　公式： </p>
+
+<pre><code>　　fi(key) = (f(key)+di) MOD m (di=1,2,3,......,m-1)
+</code></pre>
+
+<h4 id="toc_32"><2> 二次探测法</h4>
+
+<p>　　冲突发生时，在表的左右进行跳跃式探测，双向寻找到可能的空位置。</p>
+
+<p>公式：</p>
+
+<pre><code>fi(key) = (f(key)+di) MOD m (di = 12, -12, 22, -22,……, q2, -q2, q &lt;= m/2)
+
+</code></pre>
+
+<h4 id="toc_33"><3> 随机探测法</h4>
+
+<p>在冲突时，对于位移量 di 采用随机函数计算得到，我们称之为随机探测法。</p>
+
+<p>　公式： 　</p>
+
+<pre><code>fi(key) = (f(key)+di) MOD m (di是一个随机数列)
+</code></pre>
+
+<p>线性探测再散列容易产生“二次聚集”，即在处理同义词的冲突时又导致非同义词的冲突。 　　线性探测再散列的优点是：只要哈希表不满，就一定能找到一个不冲突的哈希地址，而二次探测再散列和伪随机探测再散列则不一定。</p>
+
+<h3 id="toc_34">5.3.2链地址法</h3>
+
+<p>将所有哈希地址相同的记录都链接在同一链表中。各链表上的结点空间是动态申请的，故它更适合于造表前无法确定表长的情况。 　　 处理冲突简单，且无堆积现象，即非同义词决不会发生冲突，因此平均查找长度较短；</p>
+
+<h3 id="toc_35">5.3.3 再哈希法</h3>
+
+<p>这种方法是同时构造多个不同的哈希函数：</p>
+
+<pre><code>Hi=RH1（key），i=1，2,3，…,n.
+
+</code></pre>
+
+<p>当哈希地址Hi=RH1（key）发生冲突时，再计算Hi=RH2（key）……，直到冲突不再产生。这种方法不易产生聚集，但增加了计算时间。</p>
+
+<h3 id="toc_36">5.3.4 建立公共溢出区</h3>
+
+<p>　　这种方法的基本思想是：将哈希表分为基本表和溢出表两部分，凡是和基本表发生冲突的元素，一律填入溢出表.(注意：在这个方法里面是把元素分开两个表来存储)</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[操作系统]]></title>
@@ -2659,461 +4631,6 @@ class JsInteration {
 <p>关于WebView的四个基本用法就介绍到这里，再下一章会介绍WebView的优化。<br/>
 欢迎留言讨论。<br/>
 项目示例代码在：<a href="https://github.com/M78Snail/WebViewStudy">https://github.com/M78Snail/WebViewStudy</a></p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Android Studio快捷键－Mac版]]></title>
-    <link href="m78snail.com/14779858991590.html"/>
-    <updated>2016-11-01T15:38:19+08:00</updated>
-    <id>m78snail.com/14779858991590.html</id>
-    <content type="html"><![CDATA[
-<p>从windows转到mac需要改变很多，以前在Android Studio培养的操作习惯也要跟着改变。为了以后工作方便打算总结一下Mac下的Android Studio的一些快捷键。</p>
-
-<span id="more"></span><!-- more -->
-
-<h2 id="toc_0">Mac下快捷键的符号所对应的按键</h2>
-
-<p><code>⌥</code> —&gt; option|alt<br/>
-<code>⇧</code> —&gt; shift<br/>
-<code>⌃</code> —&gt; control<br/>
-<code>⌘</code> —&gt; command<br/>
-<code>⎋</code> —&gt; esc</p>
-
-<pre><code>注: 与F6/F7/F12等F功能键开头的组合的快捷键需要按住fn开启功能键
-如：快捷键 ⌘F12 的按键组合为：fn + command + F12
-</code></pre>
-
-<h2 id="toc_1">Android Studio 常用快捷键 for mac</h2>
-
-<p><strong>查找／查看相关</strong><br/>
-<code>⌘O</code>:  全局查找class类名&lt;使用率非常高&gt;</p>
-
-<p><code>⌘F</code>: 在当前编辑文件中查找&lt;使用率非常高&gt; ｜ 对应window中的Ctrl + F</p>
-
-<p><code>⌘F12</code>：当前编辑的文件中结构快速导航 | 对应window中的 Ctrl + F12</p>
-
-<p><code>⌘E</code>: 打开最近访问的文件列表 | 对应window中的Ctrl + E</p>
-
-<p><code>⌥⌘O</code>: 输入类名／方法名／字段名来查找任何匹配的类／方法／字段&lt;使用率非常高&gt;</p>
-
-<p><code>⇧⌘O</code>: 全局项目查找文件（类／资源文件／布局文件都通过该快捷键查找）&lt;使用率非常高&gt;</p>
-
-<p><code>⌃H</code>: 查看当前编辑class类的hierarchy结构 | 对应window中的Ctrl + H</p>
-
-<p><code>⌥F7</code>: 列出全局项目中该类／方法 被引用／调用的情况&lt;使用率非常高&gt;[比<code>⌥⌘F7</code>显示效果好] | 对应window中的Alt + F7</p>
-
-<p><code>⌃⌥H</code>: 方法被调用结构［method’s Call Hierarchy］| 对应window中的ctrl + alt + h</p>
-
-<p><code>⌘P</code>: 列出函数方法一系列的有效参数，如果光标是一个方法调用的括号之间 | 对应window中的Ctrl + P</p>
-
-<p><code>⌃J</code>: 查看类／方法的注释文档</p>
-
-<p><code>⌥L</code>:代码提示功能</p>
-
-<p><strong>控制操作相关</strong></p>
-
-<p><code>⌘/</code>: 注释与取消注释，注释效果 //... | 对应window中的Ctrl + /</p>
-
-<p><code>⌥⌘/</code>: 注释与取消注释，注释效果 /<em>...</em>/ | 对应window中的Ctrl+Shift+/</p>
-
-<p><code>⇧⌥up/down</code>: 移动行上下移动 | 对应window中的alt + shift + up/down</p>
-
-<p><code>⌘delete</code>: 删除行 ｜ 对应window中的ctrl + y</p>
-
-<p><code>⌘d</code>: 复制行 ｜ 对应window中的 ctrl + d</p>
-
-<p><code>⌘J</code>: 快速生成模版代码块，如if,while,return等&lt;使用频率非常高，高效率编写代码&gt; | 对应window中的Ctrl + J</p>
-
-<p><code>⌘N</code>: 快速生成getter／setter方法，构造方法，toString()方法等 &lt;使用率非常高&gt; | 对应window中的Alt + Insert</p>
-
-<p><code>⌃O</code>: 引入重写父类的方法［Override Methods］&lt;使用率非常高&gt;</p>
-
-<p><code>⌃I</code>: 引入实现接口或抽象类方法［Implement Methods］&lt;使用率非常高&gt;</p>
-
-<p><code>⌃Space</code>: 当申明一个变量时，根据变量类型提示给出建议的变量名称，等还有其他很多智能提示作用&lt;使用率非常高&gt;</p>
-
-<p><code>⌥⌘L</code>: 代码格式化 &lt;使用率非常高&gt; | 对应window中的Ctrl+Alt+L</p>
-
-<p><code>⌘⇧U</code>: 切换选中内容的大小写 &lt;使用率非常高&gt; | 对应window中的Ctrl+Shift+U</p>
-
-<p><code>⌃L</code>:翻译</p>
-
-<p>参考 <a href="http://blog.csdn.net/janice0529/article/details/45322871">http://blog.csdn.net/janice0529/article/details/45322871</a></p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[谈谈新买的Mac和最近的生活]]></title>
-    <link href="m78snail.com/14779858228757.html"/>
-    <updated>2016-11-01T15:37:02+08:00</updated>
-    <id>m78snail.com/14779858228757.html</id>
-    <content type="html"><![CDATA[
-<p>大学毕业也快一个月了，脱离了学生的身份，我也正式进入了社会为了生计而打拼。从学生变成打工仔，对于我来说其实影响不是多么大，也许是因为自己本来就不是什么循规蹈矩的好学生吧。<br/>
-    在公司实习的时候我就知道公司给每个人办公配的电脑是笔记本，说实话我挺失望的，不过公司有另外一个福利就是自己买电脑公司可以报销4000，前提是3年不能离开公司，这一点倒是挺爽的，因为我所属于的部门出差比较多，所以我打算入手一台MacBook Pro。下面是我用了3天的使用体验。</p>
-
-<span id="more"></span><!-- more -->
-
-<h2 id="toc_0">Mac</h2>
-
-<p>三天的使用带给我以下5点，最直观的使用感受：</p>
-
-<ul>
-<li>1. 超细致的屏幕视觉</li>
-<li>2. 精致的外观感受</li>
-<li>3. 超强的电池续航</li>
-<li>4. 秒杀一切电脑厂商的触摸板</li>
-<li>5. 良好的苹果生态</li>
-</ul>
-
-<p><img src="media/14690075075215/14690892264815.jpg" alt="" class="mw_img_center" style="width:200px;display: block; clear:both; margin: 0 auto;"/></p>
-
-<p>有人说Mac 有什么好的，同样的电脑配置，别的牌子价格可能低3，4千，说实话我以前也是这么觉得，觉得Mac就是装逼而已，但是用了以后才会发现 苹果这家公司觉不是那些仅仅为追求表明上的性能数值的公司可以比的。细腻到每一个触控按键，超人性化的设计。真的是用过苹果的产品，你再也不会想要去用别家的产品了。</p>
-
-<h2 id="toc_1">贵阳出差</h2>
-
-<p>说完了Mac想谈几句贵阳出差的事情。公司是做大数据平台的，在贵阳这边有项目。才刚毕业没多久就要出差，也算是过上了四海为家的日子，不愿意去考虑太多的事情，做好眼前的事情吧。<br/>
-贵阳这里我是第二次来了，上一次还是冬天的时候过来实习，贵阳的冬天冷啊，山里的风又大，这一次正好是酷暑7月，全国很多地方都能把人热死，但是贵阳的夏天真的舒服，不是狠毒的太阳，凉爽的风拂过脸庞，还有那未被污染的蓝蓝的天空，这里真的像世外桃源。<br/>
-现在的我很快乐，来到贵阳，这里有脾气超好的鹏哥，有脾气相投的哥们，当然还有我最爱的女朋友，嘿嘿。</p>
-
-<hr/>
-
-<p><img src="media/14690075075215/14690892999707.jpg" alt="" class="mw_img_center" style="width:300px;display: block; clear:both; margin: 0 auto;"/></p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[找女朋友之简单工厂模式，工厂模式，抽象工厂模式]]></title>
-    <link href="m78snail.com/14871411019561.html"/>
-    <updated>2017-02-15T14:45:01+08:00</updated>
-    <id>m78snail.com/14871411019561.html</id>
-    <content type="html"><![CDATA[
-<h2 id="toc_0">一、 简单工厂模式</h2>
-
-<ul>
-<li>突然有一天，在梦里拥有了阿拉丁神灯.</li>
-<li>灯神说: &quot;我可以给你创造一个女朋友哦&quot;</li>
-<li>这时候我的心里...嘿嘿嘿...</li>
-<li>&quot;但是只能满足你一个地理条件，目前只有三个选项: 四川, 河北, 山东. 你挑一个? &quot; 灯神又说.</li>
-<li>&quot;那我选: 四川...或者...&quot;</li>
-<li>没等我说完，嘭的一下，出来个一个火辣的川妹子...</li>
-</ul>
-
-<span id="more"></span><!-- more -->
-
-<p><strong>用代码来展示就是:</strong></p>
-
-<pre><code>// 神灯拥有的三种选项
-public enum GFType {
-      SI_CHUAN,
-      HE_BEI,
-      SHAN_DONG
-}
-</code></pre>
-
-<hr/>
-
-<pre><code>// 和女朋友吃什么由她的家乡口味来定，但是shopping是一定的了 -_-
-public abstract class BaseGF {
-      public abstract void eatFood();
-      public void shopping() {
-            System.out.println(&quot;Go shopping every day...&quot;);
-      };
-}
-</code></pre>
-
-<hr/>
-
-<pre><code>public class SiChuanGF extends BaseGF {
-      @Override
-      public void eatFood() {
-            System.out.println(&quot;Eat sichuan food...&quot;);
-      }
-}
-</code></pre>
-
-<hr/>
-
-<pre><code>public class ShanDongGF extends BaseGF {
-      @Override
-      public void eatFood() {
-            System.out.println(&quot;Eat shandong food...&quot;);
-      }
-}
-</code></pre>
-
-<hr/>
-
-<pre><code>// 神灯为我们创建女朋友的工厂
-public class GFFactory {
-      public static BaseGF createGF(GFType gFType) {
-            switch (gFType) {
-                  case SI_CHUAN:
-                        return new SiChuanGF();
-                  case SHAN_DONG:
-                        return new ShanDongGF();
-                  default:
-                  case HE_BEI:
-                        return new HeBeiGF();
-            }
-      }
-}
-</code></pre>
-
-<hr/>
-
-<pre><code>// 这个就是神灯的创建女朋友的程序了
-public class Main {
-      public static void main(String[] args) {
-            BaseGF siChuanGirl = GFFactory.createGF(GFType.SI_CHUAN);
-            siChuanGirl.eatFood();
-            siChuanGirl.shopping();
-
-//          BaseGF shanDongGirl = GFFactory.createGF(GFType.SHAN_DONG);
-//          shanDongGirl.eatFood();
-//          shanDongGirl.shopping();
-//          
-//          BaseGF heBeiGirl = GFFactory.createGF(GFType.HE_BEI);
-//          heBeiGirl.eatFood();
-//          heBeiGirl.shopping();
-      }
-}
-
-// 有了女朋友之后是这样的 -_-
-Eat sichuan food...
-Go shopping every day...
-// Eat shandong food...
-// Go shopping every day...
-// Eat hebei food...
-// Go shopping every day...
-</code></pre>
-
-<p>简单工厂模式: 专门定义一个类用来负责创建其他类的实例，被创建的实例通常都具有共同的父类.<br/>
-<img src="media/14871411019561/14871415118517.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
-
-<h2 id="toc_1">二、 工厂模式</h2>
-
-<ul>
-<li>因为我刚才还没决定，神灯就帮我把川妹子创建出来了，所以我嘟囔着，我这还没决定呢啊，大哥，你这手速有点快吧</li>
-<li>神灯: &quot;...你这个人真的是难伺候&quot;</li>
-<li>我: &quot;我能不能要一个彩云之南的妹子? &quot;</li>
-<li>神灯: &quot;彩云之南是哪? &quot;</li>
-<li>我: &quot;云南啊&quot;</li>
-<li>神灯: &quot;...你怎么这么麻烦，你知道我要改多少东西吗，我的enum(GFType)要改, GFFactory要增加case&quot;</li>
-<li>我: &quot;神灯大哥，好人做到底么，好不好? &quot;</li>
-<li>神灯: &quot;要不我给你一个接口好了，你自己想创建哪里的就创建那里的&quot;</li>
-<li>我的内心...嘿嘿嘿...</li>
-</ul>
-
-<p><strong>用代码展示就是:</strong></p>
-
-<pre><code>// 创建女朋友的接口，想要哪里的女朋友，实现这个接口就可以了
-public interface IGFFactory {
-      BaseGF createGF();
-}
-</code></pre>
-
-<hr/>
-
-<pre><code>// 没有改变
-public abstract class BaseGF {
-      public abstract void eatFood();
-      public void shopping() {
-            System.out.println(&quot;Go shopping every day...&quot;);
-      };
-}
-</code></pre>
-
-<hr/>
-
-<pre><code>// 创建川妹子的工厂
-public class SiChuanGFFactory implements IGFFactory {
-      @Override
-      public BaseGF createGF() {
-            return new SiChuanGF();
-      }
-}
-</code></pre>
-
-<hr/>
-
-<pre><code>// 这个类也没有改变
-public class SiChuanGF extends BaseGF {
-      @Override
-      public void eatFood() {
-            System.out.println(&quot;Eat sichuan food...&quot;);
-      }
-}
-</code></pre>
-
-<hr/>
-
-<pre><code>// 我想要的云南的妹子的创建工厂
-public class YunNanGFFactory implements IGFFactory {
-      @Override
-      public BaseGF createGF() {
-            return new YunNanGF();
-      }
-}
-</code></pre>
-
-<hr/>
-
-<pre><code>// 云南妹子
-public class YunNanGF extends BaseGF {
-      @Override
-      public void eatFood() {
-            System.out.println(&quot;Eat 牛干巴, 炸土豆, 小锅米线, 卤米线...&quot;);
-      }
-}
-</code></pre>
-
-<hr/>
-
-<pre><code>// 这个时候一切准备就绪，创建一个云南的妹子吧...嘿嘿嘿...嘭...
-public class Main {
-      public static void main(String[] args) {
-            IGFFactory yunNanGFFactory = new YunNanGFFactory();
-            BaseGF yunNanGF = yunNanGFFactory.createGF();
-            yunNanGF.eatFood();
-            yunNanGF.shopping();
-
-//          IGFFactory siChuanGFFactory = new SiChuanGFFactory();
-//          BaseGF siChuanGF = siChuanGFFactory.createGF();
-//          siChuanGF.eatFood();
-//          siChuanGF.shopping();
-      }
-}
-// 有了个云南妹子，然后就开始吃各种小吃了
-Eat 牛干巴, 炸土豆, 小锅米线, 卤米线...
-Go shopping every day...
-// Eat sichuan food...
-// Go shopping every day...
-</code></pre>
-
-<p>从此我和我的云南妹子过上了幸福的生活<br/>
-工厂模式： 定义一个用于创建对象的接口，让子类决定实例化哪一个类。工厂方法使一个类的实例化延迟到其子类.<br/>
-<img src="media/14871411019561/14871426106976.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
-
-<h2 id="toc_2">三、 抽象工厂模式</h2>
-
-<ul>
-<li>好多年以后，我准备和我的云南妹子准备结婚了. 但是我们发现好像少点什么，对，就是妹子的父母还没见啊. 然后我们去找神灯大哥帮忙.</li>
-<li>神灯说: &quot;小子，挺幸福呗&quot;</li>
-<li>我说: &quot;还得多谢神灯大哥啊，全都靠你&quot;</li>
-<li>神灯: &quot;来找我是不是有什么需求啊(内心: 是不是又特么改需求了)? &quot;</li>
-<li>我: &quot;我还没见过妹子的父母咧，帮帮忙啊&quot;</li>
-<li>神灯: &quot;...&quot;
-<strong>用代码展示(以妹子的父亲为例子):</strong></li>
-</ul>
-
-<pre><code>// IGFFactory增加一个创建妹子父亲的方法
-public interface IGFFactory {
-      BaseGF createGF();
-      IGFFather createGFFather();
-}
-</code></pre>
-
-<hr/>
-
-<pre><code>// 父亲接口
-public interface IGFFather {
-      // 对于闺女和我的事情的建议
-      void suggestionToGirl();
-}
-</code></pre>
-
-<hr/>
-
-<pre><code>public class SiChuanGFFactory implements IGFFactory {
-      @Override
-      public BaseGF createGF() {
-            return new SiChuanGF();
-      }
-
-      @Override
-      public IGFFather createGFFather() {
-            return new SiChuanGFFather();
-      }
-}
-</code></pre>
-
-<hr/>
-
-<pre><code>// 四川妹子的父亲实现类
-public class SiChuanGFFather implements IGFFather {
-      @Override
-      public void suggestionToGirl() {
-            // 同意了
-            System.out.println(&quot;Agree ...&quot;);    
-      }
-}
-</code></pre>
-
-<hr/>
-
-<pre><code>public class YunNanGFFactory implements IGFFactory {
-      @Override
-      public BaseGF createGF() {
-            return new YunNanGF();
-      }
-
-      @Override
-      public IGFFather createGFFather() {
-            return new YunNanGFFather();
-      }
-}
-</code></pre>
-
-<hr/>
-
-<pre><code>// 云南妹子的父亲实现类
-public class YunNanGFFather implements IGFFather {
-      @Override
-      public void suggestionToGirl() {
-            // 不发表意见...
-            System.out.println(&quot;Silence ...&quot;);
-      }
-}
-</code></pre>
-
-<hr/>
-
-<pre><code>// 我们又一次找到了神灯，满意了吧
-public class Main {
-      public static void main(String[] args) {
-            IGFFactory yunNanGFFactory = new YunNanGFFactory();
-            BaseGF yunNanGF = yunNanGFFactory.createGF();
-            yunNanGF.eatFood();
-            yunNanGF.shopping();
-
-            IGFFather yunNanGFFather = yunNanGFFactory.createGFFather();
-            yunNanGFFather.suggestionToGirl();
-
-//          IGFFactory siChuanGFFactory = new SiChuanGFFactory();
-//          BaseGF siChuanGF = siChuanGFFactory.createGF();
-//          siChuanGF.eatFood();
-//          siChuanGF.shopping();
-//          
-//          IGFFather siChuanGFFather = siChuanGFFactory.createGFFather();
-//          siChuanGFFather.suggestionToGirl();
-      }
-}
-
-// 结果是这样滴...
-Eat 牛干巴, 炸洋芋, 小锅米线, 卤米线...
-Go shopping every day...
-Silence ...
-// Eat sichuan food...
-// Go shopping every day...
-// Agree ...
-</code></pre>
-
-<p>抽象工厂模式: 提供一个创建一系列相关或者相互依赖对象的接口，而无需指定他们具体的类.<br/>
-<img src="media/14871411019561/14871428831254.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
 
 ]]></content>
   </entry>
