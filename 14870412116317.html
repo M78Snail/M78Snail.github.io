@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Android 常见面试题（一） - m78snail
+  Android 常见面试题（一） ～ 四大组件 - m78snail
   
   </title>
   
@@ -126,7 +126,7 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Android 常见面试题（一）</h1>
+          <h1>Android 常见面试题（一） ～ 四大组件</h1>
      
         <div class="read-more clearfix">
           <span class="date">2016/2/14</span>
@@ -158,13 +158,28 @@
 
 <p><img src="media/14870412116317/14870420474230.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
 
+<blockquote>
+<p><strong>onCreate()</strong>:初始化操作；<br/>
+<strong>onStart()</strong>:这个函数在可见之前被调用<br/>
+<strong>onResume()</strong>:可见状态，位于栈顶<br/>
+<strong>onPause()</strong>：<br/>
+<1>c=处理一些消耗CPU资源；<br/>
+<2>保存一些关键数据</p>
+</blockquote>
+
 <h3 id="toc_2">（2）Fragment生命周期如下图所示：</h3>
 
 <p><img src="media/14870412116317/14870420815631.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
 
+<blockquote>
+<p><strong>onAttach()</strong>：当fragment被加入到activity调用此方法（在这个方法中可获得activity）<br/>
+<strong>onCreateView()</strong>：当activity要得到fragment的layout时，调用此方法，fragment在此方法中创建自己的layout<br/>
+<strong>onDestroyView()</strong>：当fragment中的视图被移除时。</p>
+</blockquote>
+
 <h2 id="toc_3">2. Acitivty的四种启动模式与特点</h2>
 
-<p>　　Android中的Activity由任务栈管理，当我们start一个新的Activity时，就往任务栈中新加入一个栈帧，而当我们finish一个Activity界面时，则往任务栈中移除一个栈帧。Activity具有四种启动模式，我们可以在配置文件中通过修改launchMode修改，启动模式分别是：standard、singleTop、singleTask和singleInstance<br/>
+<p>　　Android中的Activity由任务栈管理，当我们start一个新的Activity时，就往任务栈中新加入一个栈帧，而当我们finish一个Activity界面时，则往任务栈中移除一个栈帧。Activity具有四种启动模式，我们可以在配置文件中通过修改launchMode修改，启动模式分别是：standard、singleTop、singleTask和singleInstance。<br/>
 <strong>standard</strong><br/>
 standard为默认Activity的启动模式。在standard启动模式下，无论何时start一个Activity，系统都会往任务栈中加入一个新的栈帧。</p>
 
@@ -177,7 +192,16 @@ standard为默认Activity的启动模式。在standard启动模式下，无论�
 <p><strong>singleInstance</strong><br/>
 在singleInstance启动模式下，当我们start一个新的Activity时，该Activity会在一个新的任务栈中启动。</p>
 
-<h2 id="toc_4">4. Service的生命周期，两种启动方法，有什么区别</h2>
+<h2 id="toc_4">3. Activity缓存方法</h2>
+
+<blockquote>
+<p>锁定屏幕只会调用<strong>onPause()</strong>,开屏调用<strong>onResume()</strong><br/>
+异常终止：<br/>
+保存数据「<strong>onSaveInstanceState()方法{onStop之前，但不一定是在onPause()之后或之前}</strong>」<br/>
+恢复数据「<strong>onRestoreInstanceState()方法{在onStart()之后}</strong>」</p>
+</blockquote>
+
+<h2 id="toc_5">4. Service的生命周期，两种启动方法，有什么区别</h2>
 
 <p>　　Android中的Service组件可以通过startService和bindService两种方法来启动，其生命周期示意图如下：<br/>
 <img src="media/14870412116317/14870427132798.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
@@ -185,18 +209,195 @@ standard为默认Activity的启动模式。在standard启动模式下，无论�
 <p>如果一个Service同时被调用了startService和bindService方法，那么它的生命周期就变成如下图所示：<br/>
 <img src="media/14870412116317/14870427394623.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
 
-<h2 id="toc_5">5. 怎么保证service不被杀死</h2>
+<h3 id="toc_6">Service与Activity之间的通信问题</h3>
+
+<ul>
+<li>通过Binder对象</li>
+</ul>
+
+<blockquote>
+<p>当Activity通过调用bindService(Intent service, ServiceConnection conn,int flags),我们可以得到一个Service的一个对象实例，然后我们就可以访问Service中的方法</p>
+</blockquote>
+
+<p><strong>新建一个Service类</strong></p>
+
+<pre><code>public class MsgService extends Service {  
+    /** 
+     * 进度条的最大值 
+     */  
+    public static final int MAX_PROGRESS = 100;  
+    /** 
+     * 进度条的进度值 
+     */  
+    private int progress = 0;  
+  
+    /** 
+     * 增加get()方法，供Activity调用 
+     * @return 下载进度 
+     */  
+    public int getProgress() {  
+        return progress;  
+    }  
+  
+    /** 
+     * 模拟下载任务，每秒钟更新一次 
+     */  
+    public void startDownLoad(){  
+        new Thread(new Runnable() {  
+              
+            @Override  
+            public void run() {  
+                while(progress &lt; MAX_PROGRESS){  
+                    progress += 5;  
+                    try {  
+                        Thread.sleep(1000);  
+                    } catch (InterruptedException e) {  
+                        e.printStackTrace();  
+                    }  
+                      
+                }  
+            }  
+        }).start();  
+    }  
+  
+  
+    /** 
+     * 返回一个Binder对象 
+     */  
+    @Override  
+    public IBinder onBind(Intent intent) {  
+        return new MsgBinder();  
+    }  
+      
+    public class MsgBinder extends Binder{  
+        /** 
+         * 获取当前Service的实例 
+         * @return 
+         */  
+        public MsgService getService(){  
+            return MsgService.this;  
+        }  
+    }  
+}
+</code></pre>
+
+<pre><code>Intent intent = new Intent(&quot;com.example.communication.MSG_ACTION&quot;);    
+bindService(intent, conn, Context.BIND_AUTO_CREATE);
+</code></pre>
+
+<blockquote>
+<p>上面的代码我们就在Activity绑定了一个Service,上面需要一个ServiceConnection对象，它是一个接口，我们这里使用了匿名内部类</p>
+</blockquote>
+
+<pre><code>ServiceConnection conn = new ServiceConnection() {  
+          
+        @Override  
+        public void onServiceDisconnected(ComponentName name) {  
+              
+        }  
+          
+        @Override  
+        public void onServiceConnected(ComponentName name, IBinder service) {  
+            //返回一个MsgService对象  
+            msgService = ((MsgService.MsgBinder)service).getService();  
+              
+        }
+
+}
+</code></pre>
+
+<blockquote>
+<p>我们每次都要主动调用getProgress()来获取进度值，然后隔一秒在调用一次getProgress()方法，你会不会觉得很被动呢？可不可以有一种方法当Service中进度发生变化主动通知Activity，答案是肯定的，我们可以利用回调接口实现Service的主动通知</p>
+</blockquote>
+
+<pre><code>   /** 
+     * 注册回调接口的方法，供外部调用 
+     * @param onProgressListener 
+     */  
+    public void setOnProgressListener(OnProgressListener onProgressListener) {  
+        this.onProgressListener = onProgressListener;  
+    }  
+    
+    ...activity中
+   /** 
+     * 模拟下载任务，每秒钟更新一次 
+     */  
+    public void startDownLoad(){  
+        new Thread(new Runnable() {  
+              
+            @Override  
+            public void run() {  
+                while(progress &lt; MAX_PROGRESS){  
+                    progress += 5;  
+                      
+                    //进度发生变化通知调用方  
+                    if(onProgressListener != null){  
+                        onProgressListener.onProgress(progress);  
+                    }  
+                      
+                    try {  
+                        Thread.sleep(1000);  
+                    } catch (InterruptedException e) {  
+                        e.printStackTrace();  
+                    }  
+                      
+                }  
+            }  
+        }).start();  
+    }  
+    ...
+ServiceConnection conn = new ServiceConnection() {  
+        @Override  
+        public void onServiceDisconnected(ComponentName name) {  
+              
+        }  
+          
+        @Override  
+        public void onServiceConnected(ComponentName name, IBinder service) {  
+            //返回一个MsgService对象  
+            msgService = ((MsgService.MsgBinder)service).getService();  
+              
+            //注册回调接口来接收下载进度的变化  
+            msgService.setOnProgressListener(new OnProgressListener() {  
+                  
+                @Override  
+                public void onProgress(int progress) {  
+                    mProgressBar.setProgress(progress);  
+                      
+                }  
+            });  
+              
+        }  
+    };  
+</code></pre>
+
+<ul>
+<li>通过broadcast(广播)的形式</li>
+</ul>
+
+<blockquote>
+<p>Service向Activity发送消息，可以使用广播，当然Activity要注册相应的接收器。比如Service要向多个Activity发送同样的消息的话，用这种方法就更好</p>
+</blockquote>
+
+<h2 id="toc_7">5. 怎么保证service不被杀死</h2>
 
 <p>　　要想使Service存活下来，我们就必须保证Service所在的进程不被杀掉，一般来说有以下方法：<br/>
-1. 在onStartCommand回调方法中返回START_STICKY，那么该进程被杀掉后系统会试图重启它<br/>
-2. 设置配置文件中application的persistent属性，把应用提升为系统级别应用，免疫low memory killer<br/>
-3. 在Service的onDestroy方法中重启该Service，不过如果进程被直接杀掉这种方法就无效了<br/>
-4. 通过监听特殊的系统广播（如屏幕变化、电量变化、网络变化等）去不断重启Service<br/>
-5. 使用AlarmManager定时重复开启Service<br/>
-6. 通过设置Service的process属性，把Service放在子进程中，避免与主进程一起被回收<br/>
-7. 开启一个另外的进程与Service进程互相监视，双方要是有任意一方被杀掉则重启</p>
+　　　</p>
 
-<h2 id="toc_6">6. 广播的两种注册方法，有什么区别</h2>
+<blockquote>
+<ol>
+<li><p>在onStartCommand回调方法中返回START_STICKY，那么该进程被杀掉后系统会试图重启它</p></li>
+<li><p>设置配置文件中application的persistent属性，把应用提升为系统级别应用，免疫low memory killer<br/>
+<strong>前台进程&gt;可使进程&gt;次要服务进程&gt;后台进程&gt;内容供应节点&gt;空进程</strong></p></li>
+<li><p>在Service的onDestroy方法中重启该Service，不过如果进程被直接杀掉这种方法就无效了</p></li>
+<li><p>通过监听特殊的系统广播（如屏幕变化、电量变化、网络变化等）去不断重启Service</p></li>
+<li><p>使用AlarmManager定时重复开启Service</p></li>
+<li><p>通过设置Service的process属性，把Service放在子进程中，避免与主进程一起被回收</p></li>
+<li><p>开启一个另外的进程与Service进程互相监视，双方要是有任意一方被杀掉则重启</p></li>
+</ol>
+</blockquote>
+
+<h2 id="toc_8">6. 广播的两种注册方法，有什么区别</h2>
 
 <p>Android四大组件之一的broadcast（广播）拥有两种不同的注册方法：静态注册与动态注册<br/>
 <strong>静态注册</strong><br/>
@@ -223,7 +424,7 @@ unregisterReceiver(receiver);
 
 <p>动态广播的好处在于：程序适应系统变化做操作，但在程序运行状态才能接收到</p>
 
-<h2 id="toc_7">7. Intent的使用方法，可以传递哪些数据类型</h2>
+<h2 id="toc_9">7. Intent的使用方法，可以传递哪些数据类型</h2>
 
 <p>Intent即意图，是Android中连接四大组件的枢纽，Android中的Activity、Service和BroadcastReceiver都依靠Intent来启动。<br/>
 Intent对象的属性大致包含七种，分别是Component、Action、Category、Data、Type、Extra、Flag。<br/>
@@ -283,7 +484,33 @@ intent.putExtras(bundle);
 <p><strong>Flag</strong><br/>
 Intent的Flag属性用于为该Intent添加一些额外的控制旗标，Intent可调用addFlags方法来添加控制旗标。</p>
 
-<h2 id="toc_8">8.ContentProvider使用方法</h2>
+<p><strong>可以传递的数据类型</strong>：</p>
+
+<p><strong>Serializable</strong> :</p>
+
+<p>将 Java 对象序列化为二进制文件的 Java 序列化技术是 Java系列技术中一个较为重要的技术点，在大部分情况下，开发人员只需要了解被序列化的类需要实现 Serializable 接口，使用ObjectInputStream 和 ObjectOutputStream 进行对象的读写。</p>
+
+<p><strong>Charsequence</strong>  :</p>
+
+<p>在JDK1.4中，引入了CharSequence接口，实现了这个接口的类有：CharBuffer、String、StringBuffer、StringBuilder这个四个类。</p>
+
+<p>CharBuffer为nio里面用的一个类，String实现这个接口理所当然，StringBuffer也是一个CharSequence，StringBuilder是Java抄袭C#的一个类，基本和StringBuffer类一样，效率高，但是不保证线程安全，在不需要多线程的环境下可以考虑。</p>
+
+<p>提供这么一个接口，有些处理String或者StringBuffer的类就不用重载了。但是这个接口提供的方法有限，只有下面几个：charat、length、subSequence、toString这几个方法，感觉如果有必要，还是重载的比较好，避免用instaneof这个操作符。</p>
+
+<p><strong>Parcelable</strong>:</p>
+
+<p>Android提供了一种新的类型：Parcel。本类被用作封装数据的容器，封装后的数据可以通过Intent或IPC传递。 除了基本类型以</p>
+
+<p>外，只有实现了Parcelable接口的类才能被放入Parcel中。</p>
+
+<p>是GOOGLE在安卓中实现的另一种序列化,功能和Serializable相似,主要是序列化的方式不同</p>
+
+<p><strong>Bundle</strong>:</p>
+
+<p>Bundle是将数据传递到另一个上下文中或保存或回复你自己状态的数据存储方式。它的数据不是持久化状态。</p>
+
+<h2 id="toc_10">8.ContentProvider使用方法</h2>
 
 <p>为了在应用程序之间交换数据，Android提供了ContentProvider。当一个应用程序需要把自己的数据暴露给其他程序使用时，该应用程序就可以通过ContentProvider来实现，而其他程序则使用ContentResolver来操作ContentProvider暴露的数据。<br/>
 实现ContentProvider的Java代码如下：</p>
@@ -385,7 +612,7 @@ Intent的Flag属性用于为该Intent添加一些额外的控制旗标，Intent�
         <p class="text-left" style="padding:15px 0px;">
       
           <a href="14870442740078.html" 
-          title="Previous Post: Android 常见面试题（二）">&laquo; Android 常见面试题（二）</a>
+          title="Previous Post: Android 常见面试题（二） ～ 多线程，存储，View">&laquo; Android 常见面试题（二） ～ 多线程，存储，View</a>
       
         </p>
         </div>
@@ -405,7 +632,7 @@ Intent的Flag属性用于为该Intent添加一些额外的控制旗标，Intent�
           
 
           
-              <div class="ds-thread" data-thread-key="14870412116317.html" data-url="m78snail.com/14870412116317.html" data-title="Android 常见面试题（一）"></div>
+              <div class="ds-thread" data-thread-key="14870412116317.html" data-url="m78snail.com/14870412116317.html" data-title="Android 常见面试题（一） ～ 四大组件"></div>
           
         </div>
       </div>
@@ -486,6 +713,18 @@ Intent的Flag属性用于为该Intent添加一些额外的控制旗标，Intent�
 	      
 		      
 			      <li class="post">
+			        <a href="14903308917826.html">RxJava+Retrofit+MVP</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14903292400792.html">Android View绘制13问13答</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14901034610182.html">数据结构与算法[三]·树和图</a>
 			      </li>
 		     
@@ -499,18 +738,6 @@ Intent的Flag属性用于为该Intent添加一些额外的控制旗标，Intent�
 		      
 			      <li class="post">
 			        <a href="14900756453783.html">数据结构与算法[一]·数据结构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14872090613431.html">操作系统</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14871457028090.html">装饰模式之女朋友系列之化妆篇</a>
 			      </li>
 		     
 		  

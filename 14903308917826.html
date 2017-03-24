@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Git 常用方法 - m78snail
+  RxJava+Retrofit+MVP - m78snail
   
   </title>
   
@@ -126,21 +126,21 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Git 常用方法</h1>
+          <h1>RxJava+Retrofit+MVP</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/1/23</span>
+          <span class="date">2017/3/24</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.html'>工具使用</a></span>
+              <span class="posted-in"><a href='Rx%E5%AE%B6%E6%97%8F.html'>Rx家族</a></span>
            
          
           <span class="comments">
             
 
             
-              &nbsp;<a  class="ds-thread-count" data-thread-key="14779861870049.html" data-count-type="comments" href="14779861870049.html#ds-thread"></a>
+              &nbsp;<a  class="ds-thread-count" data-thread-key="14903308917826.html" data-count-type="comments" href="14903308917826.html#ds-thread"></a>
             
           </span>
 
@@ -148,115 +148,11 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>下面总结一下自己在学习Git时用到的一些语法<br/>
-更多详细内容请浏览：<a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000">Git教程 - 廖雪峰的官方网站</a></p>
+      <span id="more"></span><!-- more -->
 
-<h2 id="toc_0">一 . 修改文件</h2>
+<p><img src="media/14903308917826/14903308935667.jpg" alt="" class="mw_img_center" style="width:700px;display: block; clear:both; margin: 0 auto;"/></p>
 
-<pre><code>git init：创建git
-git add readme.txt ：将readme.txt变化提交到库
-git status ：获取修改的状态
-git diff readme.txt：获取我们与库中哪里不同
-git commit :将修改提交到库中
-</code></pre>
-
-<span id="more"></span><!-- more -->
-
-<h2 id="toc_1">二 . 回溯版本</h2>
-
-<pre><code>git log：显示从最近到最远的提交日志
-git log --pretty=oneline ：简化日志
-git reset --hard HEAD^ ：HEAD代表当前版本，一个代表上一版
-git reflog：获取记录的commit id
-git reset --hard (commit id) :回溯到指定id的版本
-</code></pre>
-
-<h2 id="toc_2">三 . 撤销修改</h2>
-
-<pre><code>git checkout -- file :撤销回到最近一次git commit或git add时的状态
-git reset HEAD file : 把暂存区的修改撤销掉
-</code></pre>
-
-<h2 id="toc_3">四 . 删除文件</h2>
-
-<pre><code>rm test.txt :删除test.txt
-git rm test.txt：将删除操作提交到暂存区，commit之后版本里的删除
-git checkout -- test.txt :用版本库里的版本替换工作区的版本
-</code></pre>
-
-<h2 id="toc_4">五 . 远程库</h2>
-
-<pre><code>git remote add origin git@github.com:username/name.git :添加远程库
-git push -u origin master :第一次将本地库传送到远程库
-git push origin master :将本地库传送到远程库 #### 2.从远程库克隆
-git clone git@github.com:username/name.git :克隆一个本地库
-</code></pre>
-
-<h2 id="toc_5">六 . 分支管理</h2>
-
-<h3 id="toc_6">1. 创建与合并分支</h3>
-
-<pre><code>git checkout -b dev :git checkout 命令加上-b参数表示创建分支并切换
-git branch : 查看当前分支,列出所有分支
-git checkout master :切换回主分支
-git merge dev ：合并指定分支dev到当前分支
-git branch -d dev ：删除分支dev
-</code></pre>
-
-<h3 id="toc_7">2. 解决冲突</h3>
-
-<pre><code>git log ：看到分支的合并情况
-git merge --no-ff -m &quot;merge with no-ff&quot; dev :加上--no-ff参数就可以用普通模式合并，合并后的历史有分支
-</code></pre>
-
-<h3 id="toc_8">3. Bug分支</h3>
-
-<pre><code>git stash :把当前工作现场“储藏”起来，以后恢复现场后继续工作
-git stash list :查看stash
-git stash apply :恢复工作，但是恢复后，stash内容并不删除
-git stash drop :删除stash
-git stash pop ：恢复的同时把stash内容也删了
-</code></pre>
-
-<h3 id="toc_9">4. Feature分支</h3>
-
-<h4 id="toc_10">(1). 多人协作</h4>
-
-<p>先用git pull把最新的提交从origin/dev抓下来,遇到错误的话<br/>
-git branch --set-upstream dev origin/dev :指定本地dev分支与远程origin/dev分支的链接，再pull<br/>
-合并冲突，需要手动解决<br/>
-解决后，提交，再push : git push origin dev。<br/>
-git clone只能clone远程库的master分支，无法clone所有分支，解决办法如下：</p>
-
-<pre><code>1. 找一个干净目录，假设是git_work
-2. cd git_work
-3. git clone http://myrepo.xxx.com/project/.git ,这样在git_work目录下得到一个project子目录
-4. cd project
-5. git branch -a，列出所有分支名称如下： remotes/origin/dev remotes/origin/release
-6. git checkout -b dev origin/dev，作用是checkout远程的dev分支，在本地起名为dev分支，并切换到本地的dev分支
-7. git checkout -b release origin/release，作用参见上一步解释
-8. git checkout dev，切换回dev分支，并开始开发。
-</code></pre>
-
-<h4 id="toc_11">(2). 多人协作的工作模式通常是这样：</h4>
-
-<p>　　首先，可以试图用git push origin branch-name推送自己的修改；</p>
-
-<p>　　如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；</p>
-
-<p>　　如果合并有冲突，则解决冲突，并在本地提交；没有冲突或者解决掉冲突后，再用git push origin branch-name推送就能成功！如果git pull提示“no tracking information”，则说明本地分支和远程分支的链接关系没有创建，用命令git branch --set-upstream branch-name origin/branch-name。</p>
-
-<p>　　这就是多人协作的工作模式，一旦熟悉了，就非常简单。</p>
-
-<h2 id="toc_12">七. Github 的使用</h2>
-
-<p>　　如何参与一个开源项目呢？比如人气极高的bootstrap项目，这是一个非常强大的CSS框架，你可以访问它的项目主页<a href="https://github.com/twbs/bootstrap">https://github.com/twbs/bootstrap</a><br/>
-点“Fork”就在自己的账号下克隆了一个bootstrap仓库，然后，从自己的账号下clone：</p>
-
-<p>git clone <a href="mailto:git@github.com">git@github.com</a>:michaelliao/bootstrap.git<br/>
-　　一定要从自己的账号下clone仓库，这样你才能推送修改。如果从bootstrap的作者的仓库地址<a href="mailto:git@github.com">git@github.com</a>:twbs/bootstrap.git克隆，因为没有权限，你将不能推送修改。<br/>
-　　如果你想修复bootstrap的一个bug，或者新增一个功能，立刻就可以开始干活，干完后，往自己的仓库推送。<br/>
-　　如果你希望bootstrap的官方库能接受你的修改，你就可以在GitHub上发起一个pull request。当然，对方是否接受你的pull request就不一定了。</p>
+<p><img src="media/14903308917826/14903311103847.jpg" alt="" class="mw_img_center" style="width:700px;display: block; clear:both; margin: 0 auto;"/></p>
 
 
     
@@ -267,16 +163,13 @@ git clone只能clone远程库的master分支，无法clone所有分支，解决�
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14779864279806.html" 
-          title="Previous Post: 用力的人跑不远">&laquo; 用力的人跑不远</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14779864962440.html" 
-          title="Next Post: xUtils框架中HttpUtils模块源码剖析">xUtils框架中HttpUtils模块源码剖析 &raquo;</a>
+          <a  href="14903292400792.html" 
+          title="Next Post: Android View绘制13问13答">Android View绘制13问13答 &raquo;</a>
       
       </p>
         </div>
@@ -288,7 +181,7 @@ git clone只能clone远程库的master分支，无法clone所有分支，解决�
           
 
           
-              <div class="ds-thread" data-thread-key="14779861870049.html" data-url="m78snail.com/14779861870049.html" data-title="Git 常用方法"></div>
+              <div class="ds-thread" data-thread-key="14903308917826.html" data-url="m78snail.com/14903308917826.html" data-title="RxJava+Retrofit+MVP"></div>
           
         </div>
       </div>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Android 常见面试题（三） - m78snail
+  Android 常见面试题（三） ～ 动画，Handler - m78snail
   
   </title>
   
@@ -126,7 +126,7 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Android 常见面试题（三）</h1>
+          <h1>Android 常见面试题（三） ～ 动画，Handler</h1>
      
         <div class="read-more clearfix">
           <span class="date">2016/2/14</span>
@@ -271,10 +271,16 @@ am.killBackgroundProcesses(this.getPackageName())：测试无效<br/>
 
 <h2 id="toc_4">20. Android怎么加速启动Activity</h2>
 
-<p>个人认为，影响Activity启动时间的主要有两个地方：<br/>
-　　1. onCreate、onStart、onResume等回调方法的执行时间<br/>
-　　2. Activity对应的界面的inflate时间<br/>
-对于第一点，我们应该尽量减少在这些回调方法中执行耗时操作（涉及数据库，图片等），如果一定要执行耗时操作，可以考虑新开子线程处理。<br/>
+<p>个人认为，影响Activity启动时间的主要有两个地方：</p>
+
+<blockquote>
+<ol>
+<li>onCreate、onStart、onResume等回调方法的执行时间</li>
+<li>Activity对应的界面的inflate时间</li>
+</ol>
+</blockquote>
+
+<p>对于第一点，我们应该尽量减少在这些回调方法中执行耗时操作（涉及数据库，图片等），如果一定要执行耗时操作，可以考虑新开子线程处理。<br/>
 对于第二点，我们应该合理使用各种xml的优化标签，并界面上减少View的嵌套层数与绘制时间。</p>
 
 
@@ -287,7 +293,7 @@ am.killBackgroundProcesses(this.getPackageName())：测试无效<br/>
         <p class="text-left" style="padding:15px 0px;">
       
           <a href="14870550376223.html" 
-          title="Previous Post: Android 常见面试题（四）">&laquo; Android 常见面试题（四）</a>
+          title="Previous Post: Android 常见面试题（四）～ 优化，网络">&laquo; Android 常见面试题（四）～ 优化，网络</a>
       
         </p>
         </div>
@@ -295,7 +301,7 @@ am.killBackgroundProcesses(this.getPackageName())：测试无效<br/>
       <p class="text-right" style="padding:15px 0px;">
       
           <a  href="14870442740078.html" 
-          title="Next Post: Android 常见面试题（二）">Android 常见面试题（二） &raquo;</a>
+          title="Next Post: Android 常见面试题（二） ～ 多线程，存储，View">Android 常见面试题（二） ～ 多线程，存储，View &raquo;</a>
       
       </p>
         </div>
@@ -307,7 +313,7 @@ am.killBackgroundProcesses(this.getPackageName())：测试无效<br/>
           
 
           
-              <div class="ds-thread" data-thread-key="14870545331290.html" data-url="m78snail.com/14870545331290.html" data-title="Android 常见面试题（三）"></div>
+              <div class="ds-thread" data-thread-key="14870545331290.html" data-url="m78snail.com/14870545331290.html" data-title="Android 常见面试题（三） ～ 动画，Handler"></div>
           
         </div>
       </div>
@@ -388,6 +394,18 @@ am.killBackgroundProcesses(this.getPackageName())：测试无效<br/>
 	      
 		      
 			      <li class="post">
+			        <a href="14903308917826.html">RxJava+Retrofit+MVP</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14903292400792.html">Android View绘制13问13答</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14901034610182.html">数据结构与算法[三]·树和图</a>
 			      </li>
 		     
@@ -401,18 +419,6 @@ am.killBackgroundProcesses(this.getPackageName())：测试无效<br/>
 		      
 			      <li class="post">
 			        <a href="14900756453783.html">数据结构与算法[一]·数据结构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14872090613431.html">操作系统</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14871457028090.html">装饰模式之女朋友系列之化妆篇</a>
 			      </li>
 		     
 		  

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Android 常见面试题（四） - m78snail
+  Android 常见面试题（四）～ 优化，网络 - m78snail
   
   </title>
   
@@ -126,7 +126,7 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Android 常见面试题（四）</h1>
+          <h1>Android 常见面试题（四）～ 优化，网络</h1>
      
         <div class="read-more clearfix">
           <span class="date">2016/2/14</span>
@@ -165,7 +165,7 @@
 <p><strong>4.listView的Adapter中注意convertView的使用</strong><br/>
 在Adapter的getView方法中，有一个重要的参数就是convertView。convertView是一个View参数，它代表了一个回收的View（如果没有就为null）。Android的ListView虽然看起来有很多项，但其实真正的ItemView的数目只有屏幕上显示的哪几个，当一个ItemView从可见变为不可见时，他就会被回收掉，在下次调用getView方法时传入的convertView就是某个被回收的View。因此在getView方法中，当convertView不为null时，我们应该使用convertView而不是重新创建一个View。更高效的方式是把convertView结合一个自定义的ViewHolder一起使用，可以有效的减少findViewById的时间。</p>
 
-<p><strong>5.handler</strong><br/>
+<p><strong>5.非静态内部类handler</strong><br/>
 Handler常见的应用场景是多线程的通信，此时要是Handler使用不当就相当容易造成内存泄露。在多线程通信的场景下，子线程通常都会持有Handler对象的引用，如果一个Handler对象在Activity中不是静态的，那么该Handler对象就会持有该Activity对象的引用，从而导致Activity组件无法正常的被GC回收，导致了内存泄露。因此一般而言我们应该把Handler对象置为Activity中的静态变量，通过软引用或者弱引用的方式来获取Activity及其内部域，避免持有Activity的强引用导致该组件无法回收。</p>
 
 <p><strong>6.集合对象清理</strong><br/>
@@ -426,6 +426,26 @@ Bitmap bitmap = BitmapFactory.decodeFile(pathName, options);
 
 <h2 id="toc_7">28. Android IPC:Binder原理</h2>
 
+<h3 id="toc_8">29. HTTPS连接流程</h3>
+
+<blockquote>
+<p>服务器端的公钥和私钥（非对称加密）<br/>
+客户端生成的随机密钥（对称加密）</p>
+</blockquote>
+
+<p>一个HTTPS包括两次HTTP传输：（8步）</p>
+
+<blockquote>
+<p>1.客 -&gt; 服，发起HTTPS请求，连接443接口；<br/>
+2.服务器端拥有一对公钥和私钥进行非对称加密；<br/>
+3.服务器 -&gt; 发送公钥给客户端<br/>
+4.客户端检查公钥的合法性，合格会生成一个随机的客户端密钥，并用公钥进行加密；<br/>
+5.客户端发送给服务器端加密后的客户密钥；<br/>
+6.服务器用私钥进行解密，获取到客户端密钥后用它对数据进行加密，这样数据就变成了密文；<br/>
+7.服务器将加密后的密文发送给客户端；<br/>
+8.客户端使用客户端密钥进行解密。 </p>
+</blockquote>
+
 
     
 
@@ -444,7 +464,7 @@ Bitmap bitmap = BitmapFactory.decodeFile(pathName, options);
       <p class="text-right" style="padding:15px 0px;">
       
           <a  href="14870545331290.html" 
-          title="Next Post: Android 常见面试题（三）">Android 常见面试题（三） &raquo;</a>
+          title="Next Post: Android 常见面试题（三） ～ 动画，Handler">Android 常见面试题（三） ～ 动画，Handler &raquo;</a>
       
       </p>
         </div>
@@ -456,7 +476,7 @@ Bitmap bitmap = BitmapFactory.decodeFile(pathName, options);
           
 
           
-              <div class="ds-thread" data-thread-key="14870550376223.html" data-url="m78snail.com/14870550376223.html" data-title="Android 常见面试题（四）"></div>
+              <div class="ds-thread" data-thread-key="14870550376223.html" data-url="m78snail.com/14870550376223.html" data-title="Android 常见面试题（四）～ 优化，网络"></div>
           
         </div>
       </div>
@@ -537,6 +557,18 @@ Bitmap bitmap = BitmapFactory.decodeFile(pathName, options);
 	      
 		      
 			      <li class="post">
+			        <a href="14903308917826.html">RxJava+Retrofit+MVP</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14903292400792.html">Android View绘制13问13答</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14901034610182.html">数据结构与算法[三]·树和图</a>
 			      </li>
 		     
@@ -550,18 +582,6 @@ Bitmap bitmap = BitmapFactory.decodeFile(pathName, options);
 		      
 			      <li class="post">
 			        <a href="14900756453783.html">数据结构与算法[一]·数据结构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14872090613431.html">操作系统</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14871457028090.html">装饰模式之女朋友系列之化妆篇</a>
 			      </li>
 		     
 		  

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Android 常见面试题（二） - m78snail
+  Android 常见面试题（二） ～ 多线程，存储，View - m78snail
   
   </title>
   
@@ -126,7 +126,7 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Android 常见面试题（二）</h1>
+          <h1>Android 常见面试题（二） ～ 多线程，存储，View</h1>
      
         <div class="read-more clearfix">
           <span class="date">2016/2/14</span>
@@ -184,22 +184,25 @@ Android四大组件之一的Service默认是在主线程中运行的，IntentSer
 
 <p>我们只需重写onHandleIntent方法即可，该方法的代码会在一个子线程中运行。</p>
 
-<h2 id="toc_1">10. 五种布局： FrameLayout 、 LinearLayout 、 AbsoluteLayout 、 RelativeLayout 、TableLayout 各自特点</h2>
+<h2 id="toc_1">10. View绘制流程</h2>
 
-<p><strong>FrameLayout</strong><br/>
-FrameLayout即单帧布局，在该布局中的所有空间都会被置于布局的左上角。</p>
+<p>从ViewRootImpl类的<strong>performTraversals()</strong>方法开始，通过判断选择：</p>
 
-<p><strong>LinearLayout</strong><br/>
-LinearLayout即线性布局，使用该布局必须为其指定orientation属性（排列方向属性，可以设置为水平或垂直的），其中的空间就会根据设置的属性呈水平或垂直排列。</p>
+<blockquote>
+<p>performMeasure()--&gt;measure()--&gt;onMeasure()<br/>
+performLayout()--&gt;layout()--&gt;onLayout()<br/>
+performDraw()--&gt;draw()--&gt;onDraw()</p>
+</blockquote>
 
-<p><strong>AbsoluteLayout</strong><br/>
-AbsoluteLayout即绝对布局，对布局中的控件我们使用x，y坐标值进行定位。</p>
+<p><strong>onMeasure():</strong></p>
 
-<p><strong>RelativeLayout</strong><br/>
-RelativeLayout即相对布局，在其中的控件可以相对于父布局或布局中别的控件的位置进行定位布局。</p>
+<blockquote>
+<p>specMode:<br/>
+1. EXACTLY:match-parent,固定dp<br/>
+2. AT_MOST:wrap_content</p>
+</blockquote>
 
-<p><strong>TableLayout</strong><br/>
-TableLayout即表格布局，TableLayout中的每一行的控件由TableRow包含，最终的布局效果会呈现成表格状。</p>
+<hr/>
 
 <h2 id="toc_2">11. Android的数据存储形式</h2>
 
@@ -379,7 +382,7 @@ viewStub.inflate();
         <p class="text-left" style="padding:15px 0px;">
       
           <a href="14870545331290.html" 
-          title="Previous Post: Android 常见面试题（三）">&laquo; Android 常见面试题（三）</a>
+          title="Previous Post: Android 常见面试题（三） ～ 动画，Handler">&laquo; Android 常见面试题（三） ～ 动画，Handler</a>
       
         </p>
         </div>
@@ -387,7 +390,7 @@ viewStub.inflate();
       <p class="text-right" style="padding:15px 0px;">
       
           <a  href="14870412116317.html" 
-          title="Next Post: Android 常见面试题（一）">Android 常见面试题（一） &raquo;</a>
+          title="Next Post: Android 常见面试题（一） ～ 四大组件">Android 常见面试题（一） ～ 四大组件 &raquo;</a>
       
       </p>
         </div>
@@ -399,7 +402,7 @@ viewStub.inflate();
           
 
           
-              <div class="ds-thread" data-thread-key="14870442740078.html" data-url="m78snail.com/14870442740078.html" data-title="Android 常见面试题（二）"></div>
+              <div class="ds-thread" data-thread-key="14870442740078.html" data-url="m78snail.com/14870442740078.html" data-title="Android 常见面试题（二） ～ 多线程，存储，View"></div>
           
         </div>
       </div>
@@ -480,6 +483,18 @@ viewStub.inflate();
 	      
 		      
 			      <li class="post">
+			        <a href="14903308917826.html">RxJava+Retrofit+MVP</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14903292400792.html">Android View绘制13问13答</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14901034610182.html">数据结构与算法[三]·树和图</a>
 			      </li>
 		     
@@ -493,18 +508,6 @@ viewStub.inflate();
 		      
 			      <li class="post">
 			        <a href="14900756453783.html">数据结构与算法[一]·数据结构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14872090613431.html">操作系统</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14871457028090.html">装饰模式之女朋友系列之化妆篇</a>
 			      </li>
 		     
 		  
