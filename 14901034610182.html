@@ -129,7 +129,7 @@
           <h1>数据结构与算法[三]·树和图</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/3/21</span>
+          <span class="date">2016/3/21</span>
 
           <span>posted in&nbsp;</span> 
           
@@ -160,7 +160,7 @@
 
 <p><strong>复杂度分析</strong></p>
 
-<p><img src="media/14900925568521/14901005309904.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+<p><img src="media/14900925568521/14901005309904.jpg" alt="c400"/></p>
 
 <ul>
 <li><p>时间复杂度<br/>
@@ -252,7 +252,7 @@ int binary_search(const int arr[], int start, int end, int key) {
 </code></pre>
 
 <p>运行结果：<br/>
-<img src="media/14900925568521/14901007638798.jpg" alt="" class="mw_img_center" style="width:100px;display: block; clear:both; margin: 0 auto;"/></p>
+<img src="media/14900925568521/14901007638798.jpg" alt="c100"/></p>
 
 <h2 id="toc_1">10. 二叉树、B+树、AVL树、红黑树、哈夫曼树。</h2>
 
@@ -319,7 +319,7 @@ int binary_search(const int arr[], int start, int end, int key) {
 <p>首先把A,B,C,D,E构造成一棵哈夫曼树（２.１有说明）；</p>
 
 <p>通过从哈夫曼树根结点开始，对左子树分配代码“0”，右子树分配代码“1”，一直到达叶子结点为止，然后将从树根沿每条路径到达叶子结点的代码排列起来，便得到了哈夫曼编码。<br/>
-<img src="media/14900925568521/14901015619752.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+<img src="media/14900925568521/14901015619752.jpg" alt="c400"/><br/>
 所以各字符对应的编码为：A-&gt;11,B-&gt;10,C-&gt;00,D-&gt;011,E-&gt;010</p>
 
 <p>霍夫曼编码是一种无前缀编码。解码时不会混淆。其主要应用在数据压缩，加密解密等场合。</p>
@@ -327,7 +327,7 @@ int binary_search(const int arr[], int start, int end, int key) {
 <h2 id="toc_3">11. 二叉树的前中后续遍历：递归与非递归写法，层序遍历算法。</h2>
 
 <p>　　遍历二叉树：L、D、R分别表示遍历左子树、访问根结点和遍历右子树，则先(根)序遍历二叉树的顺序是DLR，中(根)序遍历二叉树的顺序是LDR，后(根)序遍历二叉树的顺序是LRD。还有按层遍历二叉树。这些方法的时间复杂度都是O(n)，n为结点个数。<br/>
-　　<img src="media/14900925568521/14901016474922.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+　　<img src="media/14900925568521/14901016474922.jpg" alt="c400"/><br/>
 用二叉树表示上述表达式：a+b*(c-d)-e/f</p>
 
 <ul>
@@ -339,15 +339,15 @@ int binary_search(const int arr[], int start, int end, int key) {
 
 <p><strong>1顺序存储</strong><br/>
 　　二叉树可以用数组或线性表来存储，而且如果这是满二叉树，这种方法不会浪费空间。用这种紧凑排列，如果一个结点的索引为i，它的子结点能在索引2i+1和2i+2找到，并且它的父节点（如果有）能在索引floor((i-1)/2)找到（假设根节点的索引为0）。<br/>
-　　<img src="media/14900925568521/14901017243395.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+　　<img src="media/14900925568521/14901017243395.jpg" alt="c400"/></p>
 
 <p><strong>２二叉链表存储</strong><br/>
 　　二叉树通常用树结点结构来存储。有时也包含指向唯一的父节点的指针。如果一个结点的子结点个数小于2，一些子结点指针可能为空值，或者为特殊的哨兵结点。 使用链表能避免顺序储存浪费空间的问题，算法和结构相对简单，但使用二叉链表，由于缺乏父链的指引，在找回父节点时需要重新扫描树得知父节点的节点地址。<br/>
-<img src="media/14900925568521/14901018033160.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+<img src="media/14900925568521/14901018033160.jpg" alt="c400"/></p>
 
 <p><strong>３三叉链表存储</strong><br/>
 改进于二叉链表，增加父节点的指引，能更好地实现节点间的访问，不过算法相对复杂。 当二叉树用三叉链表表示时，有N个结点，就会有N+2个空指针。<br/>
-<img src="media/14900925568521/14901018694156.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+<img src="media/14900925568521/14901018694156.jpg" alt="c400"/></p>
 
 <p><strong>前中后续遍历（递归）</strong></p>
 
@@ -581,7 +581,7 @@ public class Graph {
 </code></pre>
 
 <p>运行结果：<br/>
-<img src="media/14900925568521/14901023008899.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+<img src="media/14900925568521/14901023008899.jpg" alt="c400"/><br/>
 **最小生成树prim算法<br/>
 **<br/>
 　　从单一顶点开始，普里姆算法按照以下步骤逐步扩大树中所含顶点的数目，直到遍及连通图的所有顶点。</p>
@@ -599,26 +599,26 @@ public class Graph {
 <p>此为原始的加权连通图。每条边一侧的数字代表其权值。</p>
 </blockquote>
 
-<p><img src="media/14900925568521/14901023734630.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+<p><img src="media/14900925568521/14901023734630.jpg" alt="c400"/></p>
 
 <blockquote>
 <p>顶点D被任意选为起始点。顶点A、B、E和F通过单条边与D相连。A是距离D最近的顶点，因此将A及对应边AD以高亮表示。<br/>
-<img src="media/14900925568521/14901024582721.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+<img src="media/14900925568521/14901024582721.jpg" alt="c400"/></p>
 
 <p>下一个顶点为距离D或A最近的顶点。B距D为9，距A为7，E为15，F为6。因此，F距D或A最近，因此将顶点F与相应边DF以高亮表示。<br/>
-<img src="media/14900925568521/14901024899486.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+<img src="media/14900925568521/14901024899486.jpg" alt="c400"/></p>
 
 <p>算法继续重复上面的步骤。距离A为7的顶点B被高亮表示。<br/>
-<img src="media/14900925568521/14901025100075.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+<img src="media/14900925568521/14901025100075.jpg" alt="c400"/></p>
 
 <p>在当前情况下，可以在C、E与G间进行选择。C距B为8，E距B为7，G距F为11。E最近，因此将顶点E与相应边BE高亮表示。<br/>
-<img src="media/14900925568521/14901025319584.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+<img src="media/14900925568521/14901025319584.jpg" alt="c400"/><br/>
 这里，可供选择的顶点只有C和G。C距E为5，G距E为9，故选取C，并与边EC一同高亮表示。<br/>
-<img src="media/14900925568521/14901025655571.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+<img src="media/14900925568521/14901025655571.jpg" alt="c400"/><br/>
 顶点G是唯一剩下的顶点，它距F为11，距E为9，E最近，故高亮表示G及相应边EG。<br/>
-<img src="media/14900925568521/14901025837779.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+<img src="media/14900925568521/14901025837779.jpg" alt="c400"/><br/>
 现在，所有顶点均已被选取，图中绿色部分即为连通图的最小生成树。在此例中，最小生成树的权值之和为39。<br/>
-<img src="media/14900925568521/14901025988208.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+<img src="media/14900925568521/14901025988208.jpg" alt="c400"/></p>
 </blockquote>
 
 <p><strong>Java代码实现</strong></p>
@@ -743,7 +743,7 @@ class Edge{
 
 <p>d.　重复步骤b和c直到所有顶点都包含在S中。</p>
 
-<p><img src="media/14900925568521/14901028040054.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+<p><img src="media/14900925568521/14901028040054.jpg" alt="c400"/></p>
 
 <p><strong>Dijkstra算法（Java实现）</strong></p>
 
@@ -837,10 +837,10 @@ class Edge{
 <p>　　我们要在 字符串<strong>Ｔ＝“ＡＢＣＤＡＢＣＤＡＢＤＥ”中查找 字符串Ｗ＝＂ＡＢＣＤＡＢＤ＂</strong>出现的位置。</p>
 </blockquote>
 
-<p><img src="media/14900925568521/14901029816301.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+<p><img src="media/14900925568521/14901029816301.jpg" alt="c400"/></p>
 
 <p>　　很明显可以看出前６位都是匹配的，然而第７位不匹配，一般的做法就是从Ｔ[i]（i从1到9）开始和W开始循环比较。直到i=4，也就是图2，比较成功返回下标4。<br/>
-　　<img src="media/14900925568521/14901030013399.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+　　<img src="media/14900925568521/14901030013399.jpg" alt="c400"/><br/>
 　　这样比较无异效率很低，然而我们发现在字符串&quot;ABCDAB&quot;之中有两个&quot;AB&quot;，第一次比较失败之后，又循环比较了四次，把W字符串从第一个&quot;AB&quot;的位置移动到了第二个&quot;AB&quot;处（显然这四次比较毫无意义）。于是Knuth、Morris、Pratt这三个人就想了个办法去掉了这些无意义的比较。</p>
 
 <p>　　然而是怎么实现的呢？就要从Ｗ字符串的部分匹配值（相等的前缀和后缀）说起。</p>
@@ -877,7 +877,7 @@ class Edge{
 </blockquote>
 
 <p>从上面我们就得出了字符串Ｗ的部分匹配表：<br/>
-<img src="media/14900925568521/14901031630439.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/></p>
+<img src="media/14900925568521/14901031630439.jpg" alt="c400"/></p>
 
 <p>我们把部分匹配表存放在一个next[]数组中，那部分匹配值究竟怎么用呢？ 我们可以根据部分匹配值计算出向后移动的位数，避免了一位位的比较：</p>
 
@@ -895,7 +895,7 @@ class Edge{
 </blockquote>
 
 <p>　　next数组是只与子串有关与主串无关的，它记录的是子串到每个字符处那个公共前缀（或后缀）的最大长度。<br/>
-　　<img src="media/14900925568521/14901032526710.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+　　<img src="media/14900925568521/14901032526710.jpg" alt="c400"/><br/>
 　　 假设我们已经求出的next[i-1] = ｊ，即Ｗ从０到i-1处这段字符串中，最大的相等的前缀和后缀长度为ｊ。 　　 那如何求得next[i]呢？</p>
 
 <p>这是后就要分为两种情况了：</p>
@@ -936,7 +936,7 @@ class Edge{
 </code></pre>
 
 <p>Ｗ字符串&quot;ABCDABD&quot;为例，运行结果如下：<br/>
-<img src="media/14900925568521/14901033346371.jpg" alt="" class="mw_img_center" style="width:400px;display: block; clear:both; margin: 0 auto;"/><br/>
+<img src="media/14900925568521/14901033346371.jpg" alt="c400"/><br/>
 <strong>KMP</strong><br/>
 　　其实进行next数组求解的过程，类似于主串和子串进行匹配的过程，只不过是在next数组求解过程中，是子串和子串自己进行比较而已。　</p>
 
@@ -1007,16 +1007,16 @@ class Edge{
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14903292400792.html" 
-          title="Previous Post: Android View绘制13问13答">&laquo; Android View绘制13问13答</a>
+          <a href="14779858228757.html" 
+          title="Previous Post: 谈谈新买的Mac和最近的生活">&laquo; 谈谈新买的Mac和最近的生活</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14901034592021.html" 
-          title="Next Post: 数据结构与算法[二]·排序算法">数据结构与算法[二]·排序算法 &raquo;</a>
+          <a  href="14900756453783.html" 
+          title="Next Post: 数据结构与算法[一]·数据结构">数据结构与算法[一]·数据结构 &raquo;</a>
       
       </p>
         </div>
@@ -1109,13 +1109,19 @@ class Edge{
 	      
 		      
 			      <li class="post">
-			        <a href="14903292400792.html">Android View绘制13问13答</a>
+			        <a href="14829144540758.html">Https完全解析 与 okHttp的结合</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14901034610182.html">数据结构与算法[三]·树和图</a>
+			        <a href="14779864279806.html">用力的人跑不远</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14903292400792.html">Android View绘制13问13答</a>
 			      </li>
 		     
 		  
@@ -1127,13 +1133,7 @@ class Edge{
 		  
 		      
 			      <li class="post">
-			        <a href="14900756453783.html">数据结构与算法[一]·数据结构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14872090613431.html">操作系统</a>
+			        <a href="14779864962440.html">xUtils框架中HttpUtils模块源码剖析</a>
 			      </li>
 		     
 		  
