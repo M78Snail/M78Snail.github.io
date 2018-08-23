@@ -4,7 +4,7 @@
   <title><![CDATA[m78snail]]></title>
   <link href="m78snail.com/atom.xml" rel="self"/>
   <link href="m78snail.com/"/>
-  <updated>2018-08-23T18:51:51+08:00</updated>
+  <updated>2018-08-23T18:53:54+08:00</updated>
   <id>m78snail.com/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -3346,34 +3346,6 @@ public class CarTest{
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[RxJava 你好！]]></title>
-    <link href="m78snail.com/14829068226408.html"/>
-    <updated>2016-12-28T14:33:42+08:00</updated>
-    <id>m78snail.com/14829068226408.html</id>
-    <content type="html"><![CDATA[
-<p>　　前段时间为 gank.io（干货集中营）网站开发的一款App,采用最流行的Rx全家桶（RxJava+RxAndroid+Retroift）。从开始尝试Rx到现在写出第一个程序，我查阅了很多资料，也踩了很多坑，希望在此记录一下，如果能帮到别人就更好了。</p>
-
-<span id="more"></span><!-- more -->
-
-<p>　　<br/>
-　　此篇文章中的代码，都来自于<a href="https://github.com/M78Snail/GoGank">https://github.com/M78Snail/GoGank</a>，这是为<a href="gank.io">gank.io</a>(干货集中营)开发的一款手机App,有兴趣的朋友可以到<a href="http://fir.im/fjke">http://fir.im/fjke</a>下载下来尝试一下。<br/>
-　　<img src="media/14827189898326/14827238912458.gif" alt="c300"/></p>
-
-<p>　　本系列文章针对的是项目实战，就不在此啰嗦Rx介绍这些了，我希望谈以下几点：<br/>
-　　　</p>
-
-<blockquote>
-<ol>
-<li>Retroift2解析与okhttp的配合</li>
-<li>Retroift2与RxJava的结合</li>
-<li>RxJava的常用操作符</li>
-</ol>
-</blockquote>
-
-]]></content>
-  </entry>
-  
-  <entry>
     <title type="html"><![CDATA[EasyAndroid (Android面试复习)]]></title>
     <link href="m78snail.com/14779863113216.html"/>
     <updated>2016-11-01T15:45:11+08:00</updated>
@@ -4154,6 +4126,46 @@ class JsInteration {
 <p><code>⌃L</code>:翻译</p>
 
 <p>参考 <a href="http://blog.csdn.net/janice0529/article/details/45322871">http://blog.csdn.net/janice0529/article/details/45322871</a></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[谈谈新买的Mac和最近的生活]]></title>
+    <link href="m78snail.com/14779858228757.html"/>
+    <updated>2016-11-01T15:37:02+08:00</updated>
+    <id>m78snail.com/14779858228757.html</id>
+    <content type="html"><![CDATA[
+<p>大学毕业也快一个月了，脱离了学生的身份，我也正式进入了社会为了生计而打拼。从学生变成打工仔，对于我来说其实影响不是多么大，也许是因为自己本来就不是什么循规蹈矩的好学生吧。<br/>
+    在公司实习的时候我就知道公司给每个人办公配的电脑是笔记本，说实话我挺失望的，不过公司有另外一个福利就是自己买电脑公司可以报销4000，前提是3年不能离开公司，这一点倒是挺爽的，因为我所属于的部门出差比较多，所以我打算入手一台MacBook Pro。下面是我用了3天的使用体验。</p>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">Mac</h2>
+
+<p>三天的使用带给我以下5点，最直观的使用感受：</p>
+
+<ul>
+<li>1. 超细致的屏幕视觉</li>
+<li>2. 精致的外观感受</li>
+<li>3. 超强的电池续航</li>
+<li>4. 秒杀一切电脑厂商的触摸板</li>
+<li>5. 良好的苹果生态</li>
+</ul>
+
+<p><img src="media/14690075075215/14690892264815.jpg" alt="c200"/></p>
+
+<p>有人说Mac 有什么好的，同样的电脑配置，别的牌子价格可能低3，4千，说实话我以前也是这么觉得，觉得Mac就是装逼而已，但是用了以后才会发现 苹果这家公司觉不是那些仅仅为追求表明上的性能数值的公司可以比的。细腻到每一个触控按键，超人性化的设计。真的是用过苹果的产品，你再也不会想要去用别家的产品了。</p>
+
+<h2 id="toc_1">贵阳出差</h2>
+
+<p>说完了Mac想谈几句贵阳出差的事情。公司是做大数据平台的，在贵阳这边有项目。才刚毕业没多久就要出差，也算是过上了四海为家的日子，不愿意去考虑太多的事情，做好眼前的事情吧。<br/>
+贵阳这里我是第二次来了，上一次还是冬天的时候过来实习，贵阳的冬天冷啊，山里的风又大，这一次正好是酷暑7月，全国很多地方都能把人热死，但是贵阳的夏天真的舒服，不是狠毒的太阳，凉爽的风拂过脸庞，还有那未被污染的蓝蓝的天空，这里真的像世外桃源。<br/>
+现在的我很快乐，来到贵阳，这里有脾气超好的鹏哥，有脾气相投的哥们，当然还有我最爱的女朋友，嘿嘿。</p>
+
+<hr/>
+
+<p><img src="media/14690075075215/14690892999707.jpg" alt="c300"/></p>
 
 ]]></content>
   </entry>
